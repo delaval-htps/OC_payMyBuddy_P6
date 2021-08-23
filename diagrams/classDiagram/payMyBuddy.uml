@@ -1,0 +1,253 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<uml:Model xmi:version="20131001" xmlns:xmi="http://www.omg.org/spec/XMI/20131001" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" xmlns:uml="http://www.eclipse.org/uml2/5.0.0/UML" xmi:id="_7ATcsADyEeyJSoGUNirAAA" name="payMyBuddy" visibility="package">
+  <packagedElement xmi:type="uml:Package" xmi:id="_grFfoAD2EeyJSoGUNirAAA" name="com.paymybuddy.model" visibility="public">
+    <ownedComment xmi:type="uml:Comment" xmi:id="_em-NgAKQEeykOdZkL17AaA" annotatedElement="_Y-1V4AEHEeyheqHRdNZSnA">
+      <body>Utilisation d'une classe abstrait Transaction pour pouvoir ajouter /modifer par la suite un autre type de transaction.
+A aujourd'hui, l'application permets de créditer un autre compte utilisateur ou de procéder a une transaction avec le compte bancaire de l'utilisateur...
+
+Demain on pourra ajouter une classe DébitTransaction par exemple pour débiter un compte utilisateur
+</body>
+    </ownedComment>
+    <packagedElement xmi:type="uml:Class" xmi:id="_9UBy0ADyEeyJSoGUNirAAA" name="User" visibility="public">
+      <ownedAttribute xmi:type="uml:Property" xmi:id="_SlMqYADzEeyJSoGUNirAAA" name="lastName" visibility="private">
+        <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
+      </ownedAttribute>
+      <ownedAttribute xmi:type="uml:Property" xmi:id="_usnBAADzEeyJSoGUNirAAA" name="firstName" visibility="private">
+        <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
+      </ownedAttribute>
+      <ownedAttribute xmi:type="uml:Property" xmi:id="_0aBPwADzEeyJSoGUNirAAA" name="email" visibility="private">
+        <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
+      </ownedAttribute>
+      <ownedAttribute xmi:type="uml:Property" xmi:id="_BgQQwAD1EeyJSoGUNirAAA" name="password" visibility="private">
+        <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
+      </ownedAttribute>
+      <ownedAttribute xmi:type="uml:Property" xmi:id="_r0N6wAD3EeyJSoGUNirAAA" name="connections" visibility="private" type="_9UBy0ADyEeyJSoGUNirAAA" aggregation="composite">
+        <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_uj4mAAD3EeyJSoGUNirAAA"/>
+        <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_uj83cAD3EeyJSoGUNirAAA" value="*"/>
+      </ownedAttribute>
+      <ownedOperation xmi:type="uml:Operation" xmi:id="_6qmeMAENEeyheqHRdNZSnA" name="addConnection">
+        <ownedParameter xmi:type="uml:Parameter" xmi:id="_fLKREAEOEeyheqHRdNZSnA" name="email" effect="read">
+          <type xmi:type="uml:Class" href="java.uml#_2e7YYuGMEeiScrMAsbkENg"/>
+        </ownedParameter>
+      </ownedOperation>
+      <ownedOperation xmi:type="uml:Operation" xmi:id="_-X-H0AENEeyheqHRdNZSnA" name="removeConnection">
+        <ownedParameter xmi:type="uml:Parameter" xmi:id="_Xd31QAEOEeyheqHRdNZSnA" name="email" effect="read">
+          <type xmi:type="uml:Class" href="java.uml#_2e7YYuGMEeiScrMAsbkENg"/>
+        </ownedParameter>
+      </ownedOperation>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Class" xmi:id="_Gmg_8AD1EeyJSoGUNirAAA" name="ApplicationAccount" visibility="public">
+      <ownedAttribute xmi:type="uml:Property" xmi:id="_Rq-y8AD1EeyJSoGUNirAAA" name="balance" visibility="private">
+        <type xmi:type="uml:PrimitiveType" href="pathmap://PapyrusJava_LIBRARIES/JavaLibrary.uml#_6j0jABydEduyofBvg4RL2w"/>
+      </ownedAttribute>
+      <ownedAttribute xmi:type="uml:Property" xmi:id="_4b6tAAD1EeyJSoGUNirAAA" name="numberAccount" visibility="private">
+        <type xmi:type="uml:PrimitiveType" href="pathmap://PapyrusJava_LIBRARIES/JavaLibrary.uml#_NeU5EPaLEeW5KOK8aDMdgA"/>
+      </ownedAttribute>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Class" xmi:id="_Y-1V4AEHEeyheqHRdNZSnA" name="Transaction" visibility="public" isAbstract="true">
+      <ownedAttribute xmi:type="uml:Property" xmi:id="_q2F14AEIEeyheqHRdNZSnA" name="amount" visibility="private">
+        <type xmi:type="uml:PrimitiveType" href="pathmap://PapyrusJava_LIBRARIES/JavaLibrary.uml#_6j0jABydEduyofBvg4RL2w"/>
+      </ownedAttribute>
+      <ownedAttribute xmi:type="uml:Property" xmi:id="_GUbLkAEPEeyheqHRdNZSnA" name="description" visibility="private">
+        <type xmi:type="uml:Class" href="java.uml#_2e7YYuGMEeiScrMAsbkENg"/>
+      </ownedAttribute>
+      <ownedAttribute xmi:type="uml:Property" xmi:id="_00q2QAG1EeyfRtPc9ZMTKg" name="commissionPercent" visibility="private">
+        <type xmi:type="uml:PrimitiveType" href="java.uml#_17NnUeGMEeiScrMAsbkENg"/>
+      </ownedAttribute>
+      <ownedAttribute xmi:type="uml:Property" xmi:id="_LbtNMAG5EeyfRtPc9ZMTKg" name="dateTransaction" visibility="private">
+        <type xmi:type="uml:Class" href="java.uml#_2QU7seGMEeiScrMAsbkENg"/>
+      </ownedAttribute>
+      <ownedAttribute xmi:type="uml:Property" xmi:id="_bXyn0AKoEeye3JVHR8RF3w" name="receivingUser" visibility="private" type="_9UBy0ADyEeyJSoGUNirAAA"/>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Class" xmi:id="_lx9LMAGYEeyfRtPc9ZMTKg" name="Invoice">
+      <ownedAttribute xmi:type="uml:Property" xmi:id="_9bcw8QHYEeyfRtPc9ZMTKg" name="transaction" type="_Y-1V4AEHEeyheqHRdNZSnA">
+        <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_9bdYAAHYEeyfRtPc9ZMTKg"/>
+        <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_9bdYAQHYEeyfRtPc9ZMTKg" value="1"/>
+      </ownedAttribute>
+      <ownedAttribute xmi:type="uml:Property" xmi:id="_q3dJ8AHbEeyfRtPc9ZMTKg" name="dateInvoice" visibility="private">
+        <type xmi:type="uml:Class" href="java.uml#_2QU7seGMEeiScrMAsbkENg"/>
+      </ownedAttribute>
+      <ownedAttribute xmi:type="uml:Property" xmi:id="_qKGCwAHdEeyfRtPc9ZMTKg" name="priceHT" visibility="private">
+        <type xmi:type="uml:Class" href="../../classDiagram/java.uml#_2e9NkuGMEeiScrMAsbkENg"/>
+      </ownedAttribute>
+      <ownedAttribute xmi:type="uml:Property" xmi:id="_3MHHkAHdEeyfRtPc9ZMTKg" name="priceTTC" visibility="private">
+        <type xmi:type="uml:Class" href="../../classDiagram/java.uml#_2e9NkuGMEeiScrMAsbkENg"/>
+      </ownedAttribute>
+      <ownedAttribute xmi:type="uml:Property" xmi:id="_HL92gAHeEeyfRtPc9ZMTKg" name="taxPercent" visibility="private">
+        <type xmi:type="uml:Class" href="java.uml#_2e9NkuGMEeiScrMAsbkENg"/>
+      </ownedAttribute>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Class" xmi:id="_s1tf0AGuEeyfRtPc9ZMTKg" name="CreditTransaction" visibility="public">
+      <generalization xmi:type="uml:Generalization" xmi:id="_TwJ_kAHNEeyfRtPc9ZMTKg" general="_Y-1V4AEHEeyheqHRdNZSnA"/>
+      <ownedOperation xmi:type="uml:Operation" xmi:id="_zZltcAG3EeyfRtPc9ZMTKg" name="creditReceivingUserAccount"/>
+      <ownedOperation xmi:type="uml:Operation" xmi:id="_kramwAKREeykOdZkL17AaA" name="withdrawalOrderingUserAccount"/>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Class" xmi:id="_IgFi4AG0EeyfRtPc9ZMTKg" name="SocialNetworkIdentifier" visibility="public" isAbstract="true">
+      <ownedAttribute xmi:type="uml:Property" xmi:id="_tEO1QAG0EeyfRtPc9ZMTKg" name="usernameLogin" visibility="private">
+        <type xmi:type="uml:Class" href="java.uml#_2e7YYuGMEeiScrMAsbkENg"/>
+      </ownedAttribute>
+      <ownedAttribute xmi:type="uml:Property" xmi:id="_7Lzz8AG0EeyfRtPc9ZMTKg" name="userPassword" visibility="private">
+        <type xmi:type="uml:Class" href="java.uml#_2e7YYuGMEeiScrMAsbkENg"/>
+      </ownedAttribute>
+      <ownedAttribute xmi:type="uml:Property" xmi:id="_zX-R8AG5EeyfRtPc9ZMTKg" name="socialNetworkId" visibility="private">
+        <type xmi:type="uml:PrimitiveType" href="java.uml#_16WEp-GMEeiScrMAsbkENg"/>
+      </ownedAttribute>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Class" xmi:id="_F46dkAG6EeyfRtPc9ZMTKg" name="GoogleIdentifier" visibility="public">
+      <generalization xmi:type="uml:Generalization" xmi:id="_KNhGUAG6EeyfRtPc9ZMTKg" general="_IgFi4AG0EeyfRtPc9ZMTKg"/>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Class" xmi:id="_b5nUoAG6EeyfRtPc9ZMTKg" name="FacebookIdentifier" visibility="public">
+      <generalization xmi:type="uml:Generalization" xmi:id="_iI9y0AG6EeyfRtPc9ZMTKg" general="_IgFi4AG0EeyfRtPc9ZMTKg"/>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Class" xmi:id="_sL5QUAG6EeyfRtPc9ZMTKg" name="GithubIdentifier" visibility="public">
+      <generalization xmi:type="uml:Generalization" xmi:id="_vlMucAG6EeyfRtPc9ZMTKg" general="_IgFi4AG0EeyfRtPc9ZMTKg"/>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Interface" xmi:id="_1PsWoAG7EeyfRtPc9ZMTKg" name="TransfertMethod" visibility="public">
+      <ownedOperation xmi:type="uml:Operation" xmi:id="_wMBs0AHZEeyfRtPc9ZMTKg" name="creditAccount"/>
+      <ownedOperation xmi:type="uml:Operation" xmi:id="_8S2twAJzEeykOdZkL17AaA" name="withdrawalAccount"/>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Enumeration" xmi:id="_DEIqAAHUEeyfRtPc9ZMTKg" name="TypeTransaction">
+      <ownedLiteral xmi:type="uml:EnumerationLiteral" xmi:id="_FzP7oAHUEeyfRtPc9ZMTKg" name="CREDIT"/>
+      <ownedLiteral xmi:type="uml:EnumerationLiteral" xmi:id="_LBapoAHUEeyfRtPc9ZMTKg" name="DEBIT"/>
+      <ownedLiteral xmi:type="uml:EnumerationLiteral" xmi:id="_gisa4AKyEeye3JVHR8RF3w" name="BANKCREDIT"/>
+      <ownedLiteral xmi:type="uml:EnumerationLiteral" xmi:id="_jwi28AKyEeye3JVHR8RF3w" name="BANKWITHDRAWAL"/>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Class" xmi:id="_iiIdwAHbEeyfRtPc9ZMTKg" name="BankAccount">
+      <ownedAttribute xmi:type="uml:Property" xmi:id="_shcPMAKOEeykOdZkL17AaA" name="numberAccount" visibility="private">
+        <type xmi:type="uml:Class" href="java.uml#_2eTtVeGMEeiScrMAsbkENg"/>
+      </ownedAttribute>
+      <ownedAttribute xmi:type="uml:Property" xmi:id="_3JZFUAKOEeykOdZkL17AaA" name="iban" visibility="private">
+        <type xmi:type="uml:Class" href="java.uml#_2e7YYuGMEeiScrMAsbkENg"/>
+      </ownedAttribute>
+      <ownedAttribute xmi:type="uml:Property" xmi:id="_H_bOUAKPEeykOdZkL17AaA" name="numberCard" visibility="private">
+        <type xmi:type="uml:PrimitiveType" href="java.uml#_16WEqOGMEeiScrMAsbkENg"/>
+      </ownedAttribute>
+      <ownedAttribute xmi:type="uml:Property" xmi:id="_iV4ksAKPEeykOdZkL17AaA" name="dateExpirationCard" visibility="private">
+        <type xmi:type="uml:Class" href="java.uml#_2QU7seGMEeiScrMAsbkENg"/>
+      </ownedAttribute>
+      <ownedAttribute xmi:type="uml:Property" xmi:id="_7zWdkAKPEeykOdZkL17AaA" name="balance" visibility="private">
+        <type xmi:type="uml:PrimitiveType" href="java.uml#_17NnUeGMEeiScrMAsbkENg"/>
+      </ownedAttribute>
+      <ownedAttribute xmi:type="uml:Property" xmi:id="_ITpVYAKQEeykOdZkL17AaA" name="numberCheckbook" visibility="private">
+        <type xmi:type="uml:PrimitiveType" href="java.uml#_16WEqOGMEeiScrMAsbkENg"/>
+      </ownedAttribute>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Class" xmi:id="_mgCwoAKSEeykOdZkL17AaA" name="BankTransfer">
+      <interfaceRealization xmi:type="uml:InterfaceRealization" xmi:id="_SxFdQAKTEeykOdZkL17AaA" client="_mgCwoAKSEeykOdZkL17AaA" supplier="_1PsWoAG7EeyfRtPc9ZMTKg" contract="_1PsWoAG7EeyfRtPc9ZMTKg"/>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Class" xmi:id="_wkvTQAKTEeykOdZkL17AaA" name="CardTransfer">
+      <interfaceRealization xmi:type="uml:InterfaceRealization" xmi:id="_wkvTQQKTEeykOdZkL17AaA" client="_wkvTQAKTEeykOdZkL17AaA" supplier="_1PsWoAG7EeyfRtPc9ZMTKg" contract="_1PsWoAG7EeyfRtPc9ZMTKg"/>
+      <interfaceRealization xmi:type="uml:InterfaceRealization" xmi:id="_a4xrMAKVEeykOdZkL17AaA" client="_wkvTQAKTEeykOdZkL17AaA" supplier="_1PsWoAG7EeyfRtPc9ZMTKg" contract="_1PsWoAG7EeyfRtPc9ZMTKg"/>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Class" xmi:id="_TbPhoAKgEey3Va3bWyBHmA" name="ChequeTransfert">
+      <interfaceRealization xmi:type="uml:InterfaceRealization" xmi:id="_TbPhoQKgEey3Va3bWyBHmA" client="_TbPhoAKgEey3Va3bWyBHmA" supplier="_1PsWoAG7EeyfRtPc9ZMTKg" contract="_1PsWoAG7EeyfRtPc9ZMTKg"/>
+      <interfaceRealization xmi:type="uml:InterfaceRealization" xmi:id="_TbPhogKgEey3Va3bWyBHmA" client="_TbPhoAKgEey3Va3bWyBHmA" supplier="_1PsWoAG7EeyfRtPc9ZMTKg" contract="_1PsWoAG7EeyfRtPc9ZMTKg"/>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Class" xmi:id="_EwTvgAKmEeye3JVHR8RF3w" name="BankTransaction" visibility="public">
+      <generalization xmi:type="uml:Generalization" xmi:id="_EwTvgQKmEeye3JVHR8RF3w" general="_Y-1V4AEHEeyheqHRdNZSnA"/>
+      <ownedOperation xmi:type="uml:Operation" xmi:id="_EwTvggKmEeye3JVHR8RF3w" name="creditReceivingUserAccount"/>
+      <ownedOperation xmi:type="uml:Operation" xmi:id="_EwTvgwKmEeye3JVHR8RF3w" name="withdrawalOrderingUserAccount"/>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Interface" xmi:id="_OiXzkAKzEeye3JVHR8RF3w" name="Invoicing">
+      <ownedOperation xmi:type="uml:Operation" xmi:id="_rQ5NgAKzEeye3JVHR8RF3w" name="sendInvoices"/>
+    </packagedElement>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Association" xmi:id="_7LEooAD6EeyJSoGUNirAAA" memberEnd="_7LFPsgD6EeyJSoGUNirAAA _7LF2wgD6EeyJSoGUNirAAA">
+    <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_7LFPsAD6EeyJSoGUNirAAA" source="org.eclipse.papyrus">
+      <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_7LFPsQD6EeyJSoGUNirAAA" key="nature" value="UML_Nature"/>
+    </eAnnotations>
+    <ownedEnd xmi:type="uml:Property" xmi:id="_7LF2wgD6EeyJSoGUNirAAA" name="user" type="_9UBy0ADyEeyJSoGUNirAAA" association="_7LEooAD6EeyJSoGUNirAAA"/>
+    <ownedEnd xmi:type="uml:Property" xmi:id="_7LFPsgD6EeyJSoGUNirAAA" name="account" type="_Gmg_8AD1EeyJSoGUNirAAA" association="_7LEooAD6EeyJSoGUNirAAA"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Association" xmi:id="_u-gK0AEKEeyheqHRdNZSnA" memberEnd="_u-pUwAEKEeyheqHRdNZSnA _u-tmMAEKEeyheqHRdNZSnA">
+    <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_u-m4gAEKEeyheqHRdNZSnA" source="org.eclipse.papyrus">
+      <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_u-nfkAEKEeyheqHRdNZSnA" key="nature" value="UML_Nature"/>
+    </eAnnotations>
+    <ownedEnd xmi:type="uml:Property" xmi:id="_u-pUwAEKEeyheqHRdNZSnA" name="account" type="_Gmg_8AD1EeyJSoGUNirAAA" association="_u-gK0AEKEeyheqHRdNZSnA"/>
+    <ownedEnd xmi:type="uml:Property" xmi:id="_u-tmMAEKEeyheqHRdNZSnA" name="transaction" type="_Y-1V4AEHEeyheqHRdNZSnA" association="_u-gK0AEKEeyheqHRdNZSnA">
+      <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_IJsA4AELEeyheqHRdNZSnA"/>
+      <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_2tDK4AEKEeyheqHRdNZSnA" value="*"/>
+    </ownedEnd>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Association" xmi:id="_dwiBsAG0EeyfRtPc9ZMTKg" memberEnd="_dwiowQG0EeyfRtPc9ZMTKg _dwjP0AG0EeyfRtPc9ZMTKg">
+    <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_dwiBsQG0EeyfRtPc9ZMTKg" source="org.eclipse.papyrus">
+      <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_dwiowAG0EeyfRtPc9ZMTKg" key="nature" value="UML_Nature"/>
+    </eAnnotations>
+    <ownedEnd xmi:type="uml:Property" xmi:id="_dwjP0AG0EeyfRtPc9ZMTKg" name="socialnetworkidentifier" type="_IgFi4AG0EeyfRtPc9ZMTKg" association="_dwiBsAG0EeyfRtPc9ZMTKg">
+      <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_pA6JwAG0EeyfRtPc9ZMTKg"/>
+      <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_pA7-8AG0EeyfRtPc9ZMTKg" value="*"/>
+    </ownedEnd>
+    <ownedEnd xmi:type="uml:Property" xmi:id="_dwiowQG0EeyfRtPc9ZMTKg" name="user" type="_9UBy0ADyEeyJSoGUNirAAA" association="_dwiBsAG0EeyfRtPc9ZMTKg"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Association" xmi:id="_h13R0AHUEeyfRtPc9ZMTKg" memberEnd="_h15HAQHUEeyfRtPc9ZMTKg _h16VIQHUEeyfRtPc9ZMTKg">
+    <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_h14f8AHUEeyfRtPc9ZMTKg" source="org.eclipse.papyrus">
+      <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_h15HAAHUEeyfRtPc9ZMTKg" key="nature" value="UML_Nature"/>
+    </eAnnotations>
+    <ownedEnd xmi:type="uml:Property" xmi:id="_h16VIQHUEeyfRtPc9ZMTKg" name="transaction" type="_Y-1V4AEHEeyheqHRdNZSnA" association="_h13R0AHUEeyfRtPc9ZMTKg"/>
+    <ownedEnd xmi:type="uml:Property" xmi:id="_h15HAQHUEeyfRtPc9ZMTKg" name="typetransaction" type="_DEIqAAHUEeyfRtPc9ZMTKg" association="_h13R0AHUEeyfRtPc9ZMTKg"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Association" xmi:id="_Dw4B8AHZEeyfRtPc9ZMTKg" memberEnd="_Dw53IAHZEeyfRtPc9ZMTKg _Dw6eMgHZEeyfRtPc9ZMTKg">
+    <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_Dw5QEAHZEeyfRtPc9ZMTKg" source="org.eclipse.papyrus">
+      <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_Dw5QEQHZEeyfRtPc9ZMTKg" key="nature" value="UML_Nature"/>
+    </eAnnotations>
+    <ownedEnd xmi:type="uml:Property" xmi:id="_Dw6eMgHZEeyfRtPc9ZMTKg" name="invoice" type="_lx9LMAGYEeyfRtPc9ZMTKg" association="_Dw4B8AHZEeyfRtPc9ZMTKg"/>
+    <ownedEnd xmi:type="uml:Property" xmi:id="_Dw53IAHZEeyfRtPc9ZMTKg" name="transaction" type="_Y-1V4AEHEeyheqHRdNZSnA" association="_Dw4B8AHZEeyfRtPc9ZMTKg"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Association" xmi:id="_Y6xlIAHfEeyfRtPc9ZMTKg" memberEnd="_Y6yMMgHfEeyfRtPc9ZMTKg _Y6yzQQHfEeyfRtPc9ZMTKg">
+    <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_Y6yMMAHfEeyfRtPc9ZMTKg" source="org.eclipse.papyrus">
+      <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_Y6yMMQHfEeyfRtPc9ZMTKg" key="nature" value="UML_Nature"/>
+    </eAnnotations>
+    <ownedEnd xmi:type="uml:Property" xmi:id="_Y6yzQQHfEeyfRtPc9ZMTKg" name="user" type="_9UBy0ADyEeyJSoGUNirAAA" association="_Y6xlIAHfEeyfRtPc9ZMTKg"/>
+    <ownedEnd xmi:type="uml:Property" xmi:id="_Y6yMMgHfEeyfRtPc9ZMTKg" name="invoice" type="_lx9LMAGYEeyfRtPc9ZMTKg" association="_Y6xlIAHfEeyfRtPc9ZMTKg">
+      <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_Y6yMMwHfEeyfRtPc9ZMTKg"/>
+      <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_Y6yzQAHfEeyfRtPc9ZMTKg" value="*"/>
+    </ownedEnd>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Association" xmi:id="_VY8nsAHgEeyfRtPc9ZMTKg" memberEnd="_VY9OwgHgEeyfRtPc9ZMTKg _VY910gHgEeyfRtPc9ZMTKg">
+    <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_VY9OwAHgEeyfRtPc9ZMTKg" source="org.eclipse.papyrus">
+      <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_VY9OwQHgEeyfRtPc9ZMTKg" key="nature" value="UML_Nature"/>
+    </eAnnotations>
+    <ownedEnd xmi:type="uml:Property" xmi:id="_VY910gHgEeyfRtPc9ZMTKg" name="bankaccount" type="_iiIdwAHbEeyfRtPc9ZMTKg" association="_VY8nsAHgEeyfRtPc9ZMTKg"/>
+    <ownedEnd xmi:type="uml:Property" xmi:id="_VY9OwgHgEeyfRtPc9ZMTKg" name="user" type="_9UBy0ADyEeyJSoGUNirAAA" association="_VY8nsAHgEeyfRtPc9ZMTKg"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Association" xmi:id="_8Cg1wAKhEey3Va3bWyBHmA" memberEnd="_8CkgIAKhEey3Va3bWyBHmA _8CluQAKhEey3Va3bWyBHmA">
+    <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_8Ciq8AKhEey3Va3bWyBHmA" source="org.eclipse.papyrus">
+      <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_8CjSAAKhEey3Va3bWyBHmA" key="nature" value="UML_Nature"/>
+    </eAnnotations>
+    <ownedEnd xmi:type="uml:Property" xmi:id="_8CluQAKhEey3Va3bWyBHmA" name="transaction" type="_Y-1V4AEHEeyheqHRdNZSnA" association="_8Cg1wAKhEey3Va3bWyBHmA">
+      <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_I4bYQAKiEey3Va3bWyBHmA"/>
+      <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_I4iF8AKiEey3Va3bWyBHmA" value="*"/>
+    </ownedEnd>
+    <ownedEnd xmi:type="uml:Property" xmi:id="_8CkgIAKhEey3Va3bWyBHmA" name="user" type="_9UBy0ADyEeyJSoGUNirAAA" association="_8Cg1wAKhEey3Va3bWyBHmA"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Association" xmi:id="_E1HPoAKpEeye3JVHR8RF3w" memberEnd="_E1Jr4AKpEeye3JVHR8RF3w _E1UrAAKpEeye3JVHR8RF3w">
+    <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_E1IdwAKpEeye3JVHR8RF3w" source="org.eclipse.papyrus">
+      <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_E1IdwQKpEeye3JVHR8RF3w" key="nature" value="UML_Nature"/>
+    </eAnnotations>
+    <ownedEnd xmi:type="uml:Property" xmi:id="_E1UrAAKpEeye3JVHR8RF3w" name="banktransaction" type="_EwTvgAKmEeye3JVHR8RF3w" association="_E1HPoAKpEeye3JVHR8RF3w"/>
+    <ownedEnd xmi:type="uml:Property" xmi:id="_E1Jr4AKpEeye3JVHR8RF3w" name="paymentmethod" type="_1PsWoAG7EeyfRtPc9ZMTKg" association="_E1HPoAKpEeye3JVHR8RF3w"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Association" xmi:id="_UmfdsAKpEeye3JVHR8RF3w" name="&lt;&lt;use data>>" memberEnd="_Umgr0gKpEeye3JVHR8RF3w _UmmLYAKpEeye3JVHR8RF3w">
+    <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_Umgr0AKpEeye3JVHR8RF3w" source="org.eclipse.papyrus">
+      <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_Umgr0QKpEeye3JVHR8RF3w" key="nature" value="UML_Nature"/>
+    </eAnnotations>
+    <ownedEnd xmi:type="uml:Property" xmi:id="_UmmLYAKpEeye3JVHR8RF3w" name="banktransaction" type="_EwTvgAKmEeye3JVHR8RF3w" association="_UmfdsAKpEeye3JVHR8RF3w">
+      <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_j0USwAKpEeye3JVHR8RF3w"/>
+      <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_j0c1oAKpEeye3JVHR8RF3w" value="*"/>
+    </ownedEnd>
+    <ownedEnd xmi:type="uml:Property" xmi:id="_Umgr0gKpEeye3JVHR8RF3w" name="bankaccount" type="_iiIdwAHbEeyfRtPc9ZMTKg" association="_UmfdsAKpEeye3JVHR8RF3w"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Association" xmi:id="_bN0ygAKzEeye3JVHR8RF3w" memberEnd="_bN1ZkQKzEeye3JVHR8RF3w _bN2AoQKzEeye3JVHR8RF3w">
+    <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_bN0ygQKzEeye3JVHR8RF3w" source="org.eclipse.papyrus">
+      <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_bN1ZkAKzEeye3JVHR8RF3w" key="nature" value="UML_Nature"/>
+    </eAnnotations>
+    <ownedEnd xmi:type="uml:Property" xmi:id="_bN2AoQKzEeye3JVHR8RF3w" name="invoicing" type="_OiXzkAKzEeye3JVHR8RF3w" association="_bN0ygAKzEeye3JVHR8RF3w"/>
+    <ownedEnd xmi:type="uml:Property" xmi:id="_bN1ZkQKzEeye3JVHR8RF3w" name="invoice" type="_lx9LMAGYEeyfRtPc9ZMTKg" association="_bN0ygAKzEeye3JVHR8RF3w"/>
+  </packagedElement>
+  <profileApplication xmi:type="uml:ProfileApplication" xmi:id="_GFZh0ADzEeyJSoGUNirAAA">
+    <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_GFav8ADzEeyJSoGUNirAAA" source="http://www.eclipse.org/uml2/2.0.0/UML">
+      <references xmi:type="ecore:EPackage" href="pathmap://PAPYRUS_ACTIONLANGUAGE_PROFILE/ActionLanguage-Profile.profile.uml#_Kv8EIKFXEeS_KNX0nfvIVQ"/>
+    </eAnnotations>
+    <appliedProfile xmi:type="uml:Profile" href="pathmap://PAPYRUS_ACTIONLANGUAGE_PROFILE/ActionLanguage-Profile.profile.uml#ActionLanguage"/>
+  </profileApplication>
+</uml:Model>
