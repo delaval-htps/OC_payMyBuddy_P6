@@ -59,7 +59,7 @@ Demain on pourra ajouter une classe DébitTransaction par exemple pour débiter 
       </ownedAttribute>
       <ownedAttribute xmi:type="uml:Property" xmi:id="_bXyn0AKoEeye3JVHR8RF3w" name="receivingUser" visibility="private" type="_9UBy0ADyEeyJSoGUNirAAA"/>
     </packagedElement>
-    <packagedElement xmi:type="uml:Class" xmi:id="_lx9LMAGYEeyfRtPc9ZMTKg" name="Invoice">
+    <packagedElement xmi:type="uml:Class" xmi:id="_lx9LMAGYEeyfRtPc9ZMTKg" name="DailyInvoices">
       <ownedAttribute xmi:type="uml:Property" xmi:id="_9bcw8QHYEeyfRtPc9ZMTKg" name="transaction" type="_Y-1V4AEHEeyheqHRdNZSnA">
         <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_9bdYAAHYEeyfRtPc9ZMTKg"/>
         <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_9bdYAQHYEeyfRtPc9ZMTKg" value="1"/>
@@ -186,13 +186,6 @@ Demain on pourra ajouter une classe DébitTransaction par exemple pour débiter 
     <ownedEnd xmi:type="uml:Property" xmi:id="_h16VIQHUEeyfRtPc9ZMTKg" name="transaction" type="_Y-1V4AEHEeyheqHRdNZSnA" association="_h13R0AHUEeyfRtPc9ZMTKg"/>
     <ownedEnd xmi:type="uml:Property" xmi:id="_h15HAQHUEeyfRtPc9ZMTKg" name="typetransaction" type="_DEIqAAHUEeyfRtPc9ZMTKg" association="_h13R0AHUEeyfRtPc9ZMTKg"/>
   </packagedElement>
-  <packagedElement xmi:type="uml:Association" xmi:id="_Dw4B8AHZEeyfRtPc9ZMTKg" memberEnd="_Dw53IAHZEeyfRtPc9ZMTKg _Dw6eMgHZEeyfRtPc9ZMTKg">
-    <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_Dw5QEAHZEeyfRtPc9ZMTKg" source="org.eclipse.papyrus">
-      <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_Dw5QEQHZEeyfRtPc9ZMTKg" key="nature" value="UML_Nature"/>
-    </eAnnotations>
-    <ownedEnd xmi:type="uml:Property" xmi:id="_Dw6eMgHZEeyfRtPc9ZMTKg" name="invoice" type="_lx9LMAGYEeyfRtPc9ZMTKg" association="_Dw4B8AHZEeyfRtPc9ZMTKg"/>
-    <ownedEnd xmi:type="uml:Property" xmi:id="_Dw53IAHZEeyfRtPc9ZMTKg" name="transaction" type="_Y-1V4AEHEeyheqHRdNZSnA" association="_Dw4B8AHZEeyfRtPc9ZMTKg"/>
-  </packagedElement>
   <packagedElement xmi:type="uml:Association" xmi:id="_Y6xlIAHfEeyfRtPc9ZMTKg" memberEnd="_Y6yMMgHfEeyfRtPc9ZMTKg _Y6yzQQHfEeyfRtPc9ZMTKg">
     <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_Y6yMMAHfEeyfRtPc9ZMTKg" source="org.eclipse.papyrus">
       <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_Y6yMMQHfEeyfRtPc9ZMTKg" key="nature" value="UML_Nature"/>
@@ -243,6 +236,19 @@ Demain on pourra ajouter une classe DébitTransaction par exemple pour débiter 
     </eAnnotations>
     <ownedEnd xmi:type="uml:Property" xmi:id="_bN2AoQKzEeye3JVHR8RF3w" name="invoicing" type="_OiXzkAKzEeye3JVHR8RF3w" association="_bN0ygAKzEeye3JVHR8RF3w"/>
     <ownedEnd xmi:type="uml:Property" xmi:id="_bN1ZkQKzEeye3JVHR8RF3w" name="invoice" type="_lx9LMAGYEeyfRtPc9ZMTKg" association="_bN0ygAKzEeye3JVHR8RF3w"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:AssociationClass" xmi:id="_4EHwoAQtEeyFmqd06W37rw" name="LineTransaction" memberEnd="_4EJl0QQtEeyFmqd06W37rw _4ELbAAQtEeyFmqd06W37rw">
+    <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_4EI-wAQtEeyFmqd06W37rw" source="org.eclipse.papyrus">
+      <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_4EJl0AQtEeyFmqd06W37rw" key="nature" value="UML_Nature"/>
+    </eAnnotations>
+    <ownedAttribute xmi:type="uml:Property" xmi:id="_s_S70AQuEeyFmqd06W37rw" name="timeTransaction" visibility="private">
+      <type xmi:type="uml:Class" href="java.uml#_2QU7seGMEeiScrMAsbkENg"/>
+    </ownedAttribute>
+    <ownedEnd xmi:type="uml:Property" xmi:id="_4EJl0QQtEeyFmqd06W37rw" name="dailyinvoice" type="_lx9LMAGYEeyfRtPc9ZMTKg" association="_4EHwoAQtEeyFmqd06W37rw"/>
+    <ownedEnd xmi:type="uml:Property" xmi:id="_4ELbAAQtEeyFmqd06W37rw" name="transaction" type="_Y-1V4AEHEeyheqHRdNZSnA" association="_4EHwoAQtEeyFmqd06W37rw">
+      <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_-8U-kAQtEeyFmqd06W37rw"/>
+      <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_-8c6YAQtEeyFmqd06W37rw" value="*"/>
+    </ownedEnd>
   </packagedElement>
   <profileApplication xmi:type="uml:ProfileApplication" xmi:id="_GFZh0ADzEeyJSoGUNirAAA">
     <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_GFav8ADzEeyJSoGUNirAAA" source="http://www.eclipse.org/uml2/2.0.0/UML">
