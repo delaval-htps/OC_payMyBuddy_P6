@@ -131,7 +131,7 @@
    </folder>
   </table>
   <table id="TAB34" populated="true" UUID="c10e452f-c858-4a1f-b293-7e25c21d88a7" name="transaction" objectType="TABLE" physicalName="transaction" >
-   <remarks>					</remarks>
+   <remarks></remarks>
    <folder id="FOLTAB341" populated="true" name="Columns" physicalName="Columns" type="1">
     <column id="COL35" populated="true" UUID="f4659334-1b2b-4ffa-999f-dc1cc259dfa6" autoIncrement="true" autoIncrementSequenceName="transaction_transaction_id_seq" defaultValue="" name="transaction_id" nullable="0" physicalName="transaction_id" precision="0" primaryKeySeq="0" referenceCount="1" scale="0" sourceDataTypeName="UserDefinedSQLType" type="4" userDefinedTypeUUID="63b011c7-c81f-4c75-8271-632b3c87f727" >
      <remarks></remarks>
@@ -204,7 +204,7 @@
    </folder>
   </table>
   <table id="TAB55" populated="true" UUID="3fe150e1-0be9-49b7-bb54-933fd1161875" name="line_transaction" objectType="TABLE" physicalName="line_transaction" >
-   <remarks>	</remarks>
+   <remarks></remarks>
    <folder id="FOLTAB551" populated="true" name="Columns" physicalName="Columns" type="1">
     <column id="COL56" populated="true" UUID="fdd5678c-810f-46e3-8f90-f90e0739f5ea" autoIncrement="false" autoIncrementSequenceName="transaction_transaction_id_seq" defaultValue="" name="transaction_id" nullable="0" physicalName="transaction_id" precision="0" primaryKeySeq="0" referenceCount="1" scale="0" sourceDataTypeName="UserDefinedSQLType" type="4" userDefinedTypeUUID="63b011c7-c81f-4c75-8271-632b3c87f727" >
      <remarks></remarks>
@@ -348,7 +348,7 @@
    </relationship>
   </relationships>
  </target-database>
- <ddl-generator type="ca.sqlpower.architect.ddl.MySqlDDLGenerator" allow-connection="false" target-catalog="paymybuddy"> </ddl-generator>
+ <ddl-generator type="ca.sqlpower.architect.ddl.MySqlDDLGenerator" allow-connection="true" target-catalog="paymybuddy"> </ddl-generator>
  <liquibase-settings useSeparateChangeSets="false" generateId="false" idStart="1"/>
  <create-kettle-job-settings filePath="" jobName="" schemaName="" kettleJoinType="0" savingToFile="true" />
  <play-pen zoom="1.0" viewportX="0" viewportY="0" relationship-style="rectilinear" names-displayLogicalNames="true" showPrimaryTag="true" showForeignTag="true" showAlternateTag="true" columnVisibility="ALL" relationshipLabelVisibility="true">

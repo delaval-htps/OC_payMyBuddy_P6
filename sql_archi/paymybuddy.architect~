@@ -37,7 +37,7 @@
     <folder id="FOLTAB12" populated="true" name="Imported Keys" physicalName="Imported Keys" type="2">
     </folder>
     <folder id="FOLTAB14" populated="true" name="Indices" physicalName="Indices" type="4">
-    <index id="IDX8" populated="true" UUID="308cd012-023f-4c42-8caf-4ef878f613b2" clustered="false" name="userId" physicalName="userId" primaryKeyIndex="true" unique="false" >
+    <index id="IDX8" populated="true" UUID="308cd012-023f-4c42-8caf-4ef878f613b2" clustered="false" name="userId" physicalName="userid" primaryKeyIndex="true" unique="false" >
      <index-column id="IDC9" populated="true" UUID="34c17aab-9bf4-4cb3-93ad-aefb1199e257" ascendingOrDescending="UNSPECIFIED" column-ref="COL2" name="user_id" physicalName="user_id" />
     </index>
    </folder>
@@ -242,7 +242,7 @@
     <folder id="FOLTAB622" populated="true" name="Imported Keys" physicalName="Imported Keys" type="2">
     </folder>
     <folder id="FOLTAB624" populated="true" name="Indices" physicalName="Indices" type="4">
-    <index id="IDX65" populated="true" UUID="8b2a518f-7cfd-401c-88d6-8d3de4f8e513" clustered="false" name="connection_user_pk" physicalName="connection_pk" primaryKeyIndex="true" unique="false" >
+    <index id="IDX65" populated="true" UUID="8b2a518f-7cfd-401c-88d6-8d3de4f8e513" clustered="false" name="connection_user_pk" physicalName="connection_user_pk" primaryKeyIndex="true" unique="false" >
      <index-column id="IDC66" populated="true" UUID="a842d3a8-6189-49af-910a-fb8e00c648d5" ascendingOrDescending="UNSPECIFIED" column-ref="COL63" name="user_id" physicalName="user_id" />
      <index-column id="IDC67" populated="true" UUID="ee68405f-be57-4844-bf7f-a2a33500a5fd" ascendingOrDescending="UNSPECIFIED" column-ref="COL64" name="user_connection_id" physicalName="user_connection_id" />
     </index>
