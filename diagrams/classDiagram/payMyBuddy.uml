@@ -20,16 +20,8 @@
       <ownedAttribute xmi:type="uml:Property" xmi:id="_89G2kATiEeyWE823455wpQ" name="phone" visibility="private">
         <type xmi:type="uml:Class" href="java.uml#_2e7YYuGMEeiScrMAsbkENg"/>
       </ownedAttribute>
-      <ownedOperation xmi:type="uml:Operation" xmi:id="_6qmeMAENEeyheqHRdNZSnA" name="addConnection">
-        <ownedParameter xmi:type="uml:Parameter" xmi:id="_fLKREAEOEeyheqHRdNZSnA" name="email" effect="read">
-          <type xmi:type="uml:Class" href="java.uml#_2e7YYuGMEeiScrMAsbkENg"/>
-        </ownedParameter>
-      </ownedOperation>
-      <ownedOperation xmi:type="uml:Operation" xmi:id="_-X-H0AENEeyheqHRdNZSnA" name="removeConnection">
-        <ownedParameter xmi:type="uml:Parameter" xmi:id="_Xd31QAEOEeyheqHRdNZSnA" name="email" effect="read">
-          <type xmi:type="uml:Class" href="java.uml#_2e7YYuGMEeiScrMAsbkENg"/>
-        </ownedParameter>
-      </ownedOperation>
+      <ownedOperation xmi:type="uml:Operation" xmi:id="_6qmeMAENEeyheqHRdNZSnA" name="addConnection"/>
+      <ownedOperation xmi:type="uml:Operation" xmi:id="_-X-H0AENEeyheqHRdNZSnA" name="removeConnection"/>
       <nestedClassifier xmi:type="uml:Interaction" xmi:id="_RfvYgAS0EeyWE823455wpQ" name="Interaction8"/>
     </packagedElement>
     <packagedElement xmi:type="uml:Class" xmi:id="_Gmg_8AD1EeyJSoGUNirAAA" name="ApplicationAccount" visibility="public">
@@ -39,6 +31,9 @@
       <ownedAttribute xmi:type="uml:Property" xmi:id="_4b6tAAD1EeyJSoGUNirAAA" name="numberAccount" visibility="private">
         <type xmi:type="uml:PrimitiveType" href="pathmap://PapyrusJava_LIBRARIES/JavaLibrary.uml#_NeU5EPaLEeW5KOK8aDMdgA"/>
       </ownedAttribute>
+      <ownedOperation xmi:type="uml:Operation" xmi:id="__cYagAWUEeytv_yfaPqcgQ" name="performPaymentMethod"/>
+      <ownedOperation xmi:type="uml:Operation" xmi:id="_Fi2pgAWVEeytv_yfaPqcgQ" name="setPaymentMethod"/>
+      <ownedOperation xmi:type="uml:Operation" xmi:id="_JpGGIAWVEeytv_yfaPqcgQ" name="getPaymentMethod"/>
     </packagedElement>
     <packagedElement xmi:type="uml:Class" xmi:id="_lx9LMAGYEeyfRtPc9ZMTKg" name="Invoice" visibility="public">
       <ownedAttribute xmi:type="uml:Property" xmi:id="_9bcw8QHYEeyfRtPc9ZMTKg" name="transaction">
