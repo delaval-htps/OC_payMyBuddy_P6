@@ -4,10 +4,11 @@ CREATE DATABASE IF NOT EXISTS paymybuddy DEFAULT CHARACTER SET utf8mb4 ^;
 USE paymybuddy ^;
 
 -- creation of Tables if not exists
+
 CREATE TABLE IF NOT EXISTS application_identifier (
                 application_identifier_id INT AUTO_INCREMENT NOT NULL,
                 email VARCHAR(30) NOT NULL,
-                password CHAR(68) NOT NULL,
+                password CHAR(68) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
                 PRIMARY KEY (application_identifier_id)
 )ENGINE=InnoDB, DEFAULT CHARSET=utf8mb4^;
 
