@@ -53,9 +53,10 @@ CREATE TABLE IF NOT EXISTS user (
                 zip INT NOT NULL,
                 city VARCHAR(30) NOT NULL,
                 phone INT NOT NULL,
-                number_application_account INT NOT NULL,
-                number_bank_account INT NOT NULL,
-                social_network_identifier_id INT NOT NULL,
+                -- number_application_account,number_bank_account,social_network_identifier can be null if it' a new user 
+                number_application_account INT , 
+                number_bank_account INT ,
+                social_network_identifier_id INT ,
                 application_identifier_id INT NOT NULL,
                 PRIMARY KEY (user_id)
 )ENGINE=InnoDB, DEFAULT CHARSET=utf8mb4 ^;
