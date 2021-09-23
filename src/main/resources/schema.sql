@@ -3,18 +3,19 @@ CREATE DATABASE IF NOT EXISTS paymybuddy DEFAULT CHARACTER SET utf8mb4 ^;
 -- use of database 
 USE paymybuddy ^;
 
--- creation of Tables if not exists
+-- creation of Tables if not exists -- 
+
 CREATE TABLE IF NOT EXISTS application_identifier (
                 application_identifier_id INT AUTO_INCREMENT NOT NULL,
                 email VARCHAR(30) NOT NULL,
-                password VARCHAR(30) NOT NULL,
+                password CHAR(68) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
                 PRIMARY KEY (application_identifier_id)
 )ENGINE=InnoDB, DEFAULT CHARSET=utf8mb4^;
 
 
 CREATE TABLE IF NOT EXISTS social_network_identifier (
                 social_network_identifier_id INT AUTO_INCREMENT NOT NULL,
-                social_nnetwork_id INT NOT NULL,
+                social_network_id INT NOT NULL,
                 username_login VARCHAR(30) NOT NULL,
                 user_password VARCHAR(30) NOT NULL,
                 PRIMARY KEY (social_network_identifier_id)
@@ -52,10 +53,11 @@ CREATE TABLE IF NOT EXISTS user (
                 address VARCHAR(100) NOT NULL,
                 zip INT NOT NULL,
                 city VARCHAR(30) NOT NULL,
-                phone INT NOT NULL,
-                number_application_account INT NOT NULL,
-                number_bank_account INT NOT NULL,
-                social_network_identifier_id INT NOT NULL,
+                phone VARCHAR(10) NOT NULL,
+                -- number_application_account,number_bank_account,social_network_identifier can be null if it' a new user 
+                number_application_account INT , 
+                number_bank_account INT ,
+                social_network_identifier_id INT ,
                 application_identifier_id INT NOT NULL,
                 PRIMARY KEY (user_id)
 )ENGINE=InnoDB, DEFAULT CHARSET=utf8mb4 ^;
@@ -94,7 +96,7 @@ CREATE TABLE IF NOT EXISTS invoice (
 
 
 -- creation of foreign keys 
--- use of procedure because of sql don't support if not exists --
+-- use of procedure because sql don't support if not exists --
 
 CREATE PROCEDURE application_identifier_user_fk() 
 BEGIN
@@ -128,100 +130,159 @@ BEGIN
 	END IF;
 END ^;
 
+CREATE PROCEDURE card_bank_bank_account_fk() 
+BEGIN
+	IF NOT EXISTS(SELECT null 
+				FROM information_schema.TABLE_CONSTRAINTS
+				WHERE TABLE_SCHEMA = 'paymybuddy' 
+				AND CONSTRAINT_NAME= 'card_bank_bank_account_fk'
+				AND CONSTRAINT_TYPE= 'FOREIGN KEY')
+	THEN
+		ALTER TABLE bank_account ADD CONSTRAINT card_bank_bank_account_fk
+		FOREIGN KEY (numberCard)
+		REFERENCES card_bank (numberCard)
+		ON DELETE NO ACTION
+		ON UPDATE NO ACTION;
+	END IF;
+END ^;
+
+CREATE PROCEDURE application_account_user_fk() 
+BEGIN
+	IF NOT EXISTS(SELECT null 
+				FROM information_schema.TABLE_CONSTRAINTS
+				WHERE TABLE_SCHEMA = 'paymybuddy' 
+				AND CONSTRAINT_NAME= 'application_account_user_fk'
+				AND CONSTRAINT_TYPE= 'FOREIGN KEY')
+	THEN
+		ALTER TABLE user ADD CONSTRAINT application_account_user_fk
+		FOREIGN KEY (number_application_account)
+		REFERENCES application_account (number_account)
+		ON DELETE NO ACTION
+		ON UPDATE NO ACTION;
+	END IF;
+END ^;
+
+CREATE PROCEDURE bank_account_user_fk() 
+BEGIN
+	IF NOT EXISTS(SELECT null 
+				FROM information_schema.TABLE_CONSTRAINTS
+				WHERE TABLE_SCHEMA = 'paymybuddy' 
+				AND CONSTRAINT_NAME= 'bank_account_user_fk'
+				AND CONSTRAINT_TYPE= 'FOREIGN KEY')
+	THEN
+		ALTER TABLE user ADD CONSTRAINT bank_account_user_fk
+		FOREIGN KEY (number_bank_account)
+		REFERENCES bank_account (number_account)
+		ON DELETE NO ACTION
+		ON UPDATE NO ACTION;
+	END IF;
+END ^;
+
+CREATE PROCEDURE user_connection_fk() 
+BEGIN
+	IF NOT EXISTS(SELECT null 
+				FROM information_schema.TABLE_CONSTRAINTS
+				WHERE TABLE_SCHEMA = 'paymybuddy' 
+				AND CONSTRAINT_NAME= 'user_connection_fk'
+				AND CONSTRAINT_TYPE= 'FOREIGN KEY')
+	THEN
+		ALTER TABLE connection_user ADD CONSTRAINT user_connection_fk
+		FOREIGN KEY (user_id)
+		REFERENCES user (user_id)
+		ON DELETE NO ACTION
+		ON UPDATE NO ACTION;
+	END IF;
+END ^;
+
+CREATE PROCEDURE user_connection_fk1() 
+BEGIN
+	IF NOT EXISTS(SELECT null 
+				FROM information_schema.TABLE_CONSTRAINTS
+				WHERE TABLE_SCHEMA = 'paymybuddy' 
+				AND CONSTRAINT_NAME= 'user_connection_fk1'
+				AND CONSTRAINT_TYPE= 'FOREIGN KEY')
+	THEN
+		ALTER TABLE connection_user ADD CONSTRAINT user_connection_fk1
+		FOREIGN KEY (user_connection_id)
+		REFERENCES user (user_id)
+		ON DELETE NO ACTION
+		ON UPDATE NO ACTION;
+
+	END IF;
+END ^;
+
+CREATE PROCEDURE user_invoice_fk() 
+BEGIN
+	IF NOT EXISTS(SELECT null 
+				FROM information_schema.TABLE_CONSTRAINTS
+				WHERE TABLE_SCHEMA = 'paymybuddy' 
+				AND CONSTRAINT_NAME= 'user_invoice_fk'
+				AND CONSTRAINT_TYPE= 'FOREIGN KEY')
+	THEN
+		ALTER TABLE invoice ADD CONSTRAINT user_invoice_fk
+		FOREIGN KEY (user_id)
+		REFERENCES user (user_id)
+		ON DELETE NO ACTION
+		ON UPDATE NO ACTION;
+	END IF;
+END ^;
+
+CREATE PROCEDURE connection_transaction_fk() 
+BEGIN
+	IF NOT EXISTS(SELECT null 
+				FROM information_schema.TABLE_CONSTRAINTS
+				WHERE TABLE_SCHEMA = 'paymybuddy' 
+				AND CONSTRAINT_NAME= 'connection_transaction_fk'
+				AND CONSTRAINT_TYPE= 'FOREIGN KEY')
+	THEN
+		ALTER TABLE transaction ADD CONSTRAINT connection_transaction_fk
+		FOREIGN KEY (user_id, user_connection_id)
+		REFERENCES connection_user (user_id, user_connection_id)
+		ON DELETE NO ACTION
+		ON UPDATE NO ACTION;
+	END IF;
+END ^;
+
+CREATE PROCEDURE transaction_daily_invoice_fk() 
+BEGIN
+	IF NOT EXISTS(SELECT null 
+				FROM information_schema.TABLE_CONSTRAINTS
+				WHERE TABLE_SCHEMA = 'paymybuddy' 
+				AND CONSTRAINT_NAME= 'transaction_daily_invoice_fk'
+				AND CONSTRAINT_TYPE= 'FOREIGN KEY')
+	THEN
+		ALTER TABLE invoice ADD CONSTRAINT transaction_daily_invoice_fk
+		FOREIGN KEY (transaction_id)
+		REFERENCES transaction (transaction_id)
+		ON DELETE NO ACTION
+		ON UPDATE NO ACTION;
+	END IF;
+END ^;
+
+-- call of procedures
 CALL application_identifier_user_fk()^;
 CALL social_network_identifer_user_fk()^;
+CALL card_bank_bank_account_fk()^;
+CALL application_account_user_fk()^;
+CALL bank_account_user_fk()^;
+CALL user_connection_fk()^;
+CALL user_connection_fk1()^;
+CALL user_invoice_fk()^;
+CALL connection_transaction_fk()^;
+CALL transaction_daily_invoice_fk()^;
 
+-- drop procedures to be able to recreate them when restart app
 DROP PROCEDURE IF EXISTS social_network_identifer_user_fk^;
 DROP PROCEDURE IF EXISTS application_identifier_user_fk^;
+DROP PROCEDURE IF EXISTS social_network_identifer_user_fk^;
+DROP PROCEDURE IF EXISTS card_bank_bank_account_fk^;
+DROP PROCEDURE IF EXISTS application_account_user_fk^;
+DROP PROCEDURE IF EXISTS bank_account_user_fk^;
+DROP PROCEDURE IF EXISTS user_connection_fk^;
+DROP PROCEDURE IF EXISTS user_connection_fk1^;
+DROP PROCEDURE IF EXISTS user_invoice_fk^;
+DROP PROCEDURE IF EXISTS connection_transaction_fk^;
+DROP PROCEDURE IF EXISTS transaction_daily_invoice_fk^;
 
--- 
--- ALTER TABLE bank_account ADD CONSTRAINT card_bank_bank_account_fk
--- FOREIGN KEY (numberCard)
--- REFERENCES card_bank (numberCard)
--- ON DELETE NO ACTION
--- ON UPDATE NO ACTION^;
--- 
--- 
--- ALTER TABLE user ADD CONSTRAINT application_account_user_fk
--- FOREIGN KEY (number_application_account)
--- REFERENCES application_account (number_account)
--- ON DELETE NO ACTION
--- ON UPDATE NO ACTION^;
--- 
--- 
--- ALTER TABLE user ADD CONSTRAINT bank_account_user_fk
--- FOREIGN KEY (number_bank_account)
--- REFERENCES bank_account (number_account)
--- ON DELETE NO ACTION
--- ON UPDATE NO ACTION^;
--- 
--- 
--- 
--- ALTER TABLE connection_user ADD CONSTRAINT user_connection_fk
--- FOREIGN KEY (user_id)
--- REFERENCES user (user_id)
--- ON DELETE NO ACTION
--- ON UPDATE NO ACTION^;
--- 
--- 
--- ALTER TABLE connection_user ADD CONSTRAINT user_connection_fk1
--- FOREIGN KEY (user_connection_id)
--- REFERENCES user (user_id)
--- ON DELETE NO ACTION
--- ON UPDATE NO ACTION^;
--- 
--- 
--- ALTER TABLE invoice ADD CONSTRAINT user_invoice_fk
--- FOREIGN KEY (user_id)
--- REFERENCES user (user_id)
--- ON DELETE NO ACTION
--- ON UPDATE NO ACTION^;
--- 
--- 
--- ALTER TABLE transaction ADD CONSTRAINT connection_transaction_fk
--- FOREIGN KEY (user_id, user_connection_id)
--- REFERENCES connection_user (user_id, user_connection_id)
--- ON DELETE NO ACTION
--- ON UPDATE NO ACTION^;
--- 
--- 
--- ALTER TABLE invoice ADD CONSTRAINT transaction_daily_invoice_fk
--- FOREIGN KEY (transaction_id)
--- REFERENCES transaction (transaction_id)
--- ON DELETE NO ACTION
--- ON UPDATE NO ACTION^;
--- 
--- 	
--- DROP PROCEDURE If EXISTs rajout_fk ^;
--- 
--- CREATE PROCEDURE rajout_fk( IN p_alter_table_name VARCHAR(50),
--- 							IN p_contraint_name VARCHAR(50),
--- 							IN p_fk_name VARCHAR(50),
--- 							IN p_fk_name_in_fk_table VARCHAR(50),
--- 							IN p_fk_table VARCHAR(50)) 
--- BEGINcreation of foreign feys
--- 	IF NOT EXISTS(SELECT null 
--- 				FROM information_schema.TABLE_CONSTRAINTS
--- 				WHERE TABLE_SCHEMA = 'paymybuddy' 
--- 				AND CONSTRAINT_NAME= p_contraint_name  
--- 				AND CONSTRAINT_TYPE= 'FOREIGN KEY')
--- 	THEN
--- 	DECLARE @p_sql_query varchar(100)
--- 		SET @p_sql_query = 
--- 		'ALTER TABLE'+ p_alter_table_name+  
--- 		'ADD CONSTRAINT' + p_contraint_name+
--- 		'FOREIGN KEY ('+p_fk_name+')'+
--- 		'REFERENCES'+ p_fk_table+'('+ p_fk_name_in_fk_table+')'+
--- 		'ON DELETE NO ACTION ON UPDATE NO ACTION^;'
--- 		EXEC(@p_sql_query)
--- 	END IF^;
--- END ^;
--- 
--- SET @p_alter_table_name = 'user' ^;
--- SET @p_contraint_name = 'application_identifier_user_fk' ^;
--- SET @p_fk_name = 'application_identifier_id' ^;
--- SET @p_fk_table = 'application_identifier' ^;
--- 
--- CALL  rajout_fk(@p_alter_table_name,@p_contraint_name,@p_fk_name,@p_fk_name,@p_fk_table) ^;
 
 
