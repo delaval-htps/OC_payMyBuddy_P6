@@ -2,12 +2,12 @@
 
 INSERT INTO application_identifier ( application_identifier_id,email,password)
 VALUES
-	(1,'delaval.htps@gmail.com','{BCRYPT}$2a$10$a7gjURC2zg97BnIJw61WOOdG.Fz7sDbU6tSmUuN.bqtvxrh89BOF2'),
-	(2,'emilie.baudouin@gmail.com','{BCRYPT}$2a$10$a7gjURC2zg97BnIJw61WOOdG.Fz7sDbU6tSmUuN.bqtvxrh89BOF2'),
-	(3,'monique.baudouin@gmail.com','{BCRYPT}$2a$10$a7gjURC2zg97BnIJw61WOOdG.Fz7sDbU6tSmUuN.bqtvxrh89BOF2'),
-	(4,'caroline.verrier@gmail.com','{BCRYPT}$2a$10$a7gjURC2zg97BnIJw61WOOdG.Fz7sDbU6tSmUuN.bqtvxrh89BOF2'),
-	(5,'beatrice.hubald@gmail.com','{BCRYPT}$2a$10$a7gjURC2zg97BnIJw61WOOdG.Fz7sDbU6tSmUuN.bqtvxrh89BOF2'),
-	(6,'manon.rollin@gmail.com','{BCRYPT}$2a$10$a7gjURC2zg97BnIJw61WOOdG.Fz7sDbU6tSmUuN.bqtvxrh89BOF2')
+	(1,'delaval.htps@gmail.com','{bcrypt}$2a$10$a7gjURC2zg97BnIJw61WOOdG.Fz7sDbU6tSmUuN.bqtvxrh89BOF2'),
+	(2,'emilie.baudouin@gmail.com','{bcrypt}$2a$10$a7gjURC2zg97BnIJw61WOOdG.Fz7sDbU6tSmUuN.bqtvxrh89BOF2'),
+	(3,'monique.baudouin@gmail.com','{bcrypt}$2a$10$a7gjURC2zg97BnIJw61WOOdG.Fz7sDbU6tSmUuN.bqtvxrh89BOF2'),
+	(4,'caroline.verrier@gmail.com','{bcrypt}$2a$10$a7gjURC2zg97BnIJw61WOOdG.Fz7sDbU6tSmUuN.bqtvxrh89BOF2'),
+	(5,'beatrice.hubald@gmail.com','{bcrypt}$2a$10$a7gjURC2zg97BnIJw61WOOdG.Fz7sDbU6tSmUuN.bqtvxrh89BOF2'),
+	(6,'manon.rollin@gmail.com','{bcrypt}$2a$10$a7gjURC2zg97BnIJw61WOOdG.Fz7sDbU6tSmUuN.bqtvxrh89BOF2')
 	as new(aid,m,p)
 ON DUPLICATE KEY UPDATE  application_identifier_id= aid ^;
 	
