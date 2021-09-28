@@ -1,14 +1,14 @@
 --insert into application_identifier 
 
-INSERT INTO application_identifier ( application_identifier_id,email,password)
+INSERT INTO application_identifier ( application_identifier_id,email,password,enabled)
 VALUES
-	(1,'delaval.htps@gmail.com','{bcrypt}$2a$10$a7gjURC2zg97BnIJw61WOOdG.Fz7sDbU6tSmUuN.bqtvxrh89BOF2'),
-	(2,'emilie.baudouin@gmail.com','{bcrypt}$2a$10$a7gjURC2zg97BnIJw61WOOdG.Fz7sDbU6tSmUuN.bqtvxrh89BOF2'),
-	(3,'monique.baudouin@gmail.com','{bcrypt}$2a$10$a7gjURC2zg97BnIJw61WOOdG.Fz7sDbU6tSmUuN.bqtvxrh89BOF2'),
-	(4,'caroline.verrier@gmail.com','{bcrypt}$2a$10$a7gjURC2zg97BnIJw61WOOdG.Fz7sDbU6tSmUuN.bqtvxrh89BOF2'),
-	(5,'beatrice.hubald@gmail.com','{bcrypt}$2a$10$a7gjURC2zg97BnIJw61WOOdG.Fz7sDbU6tSmUuN.bqtvxrh89BOF2'),
-	(6,'manon.rollin@gmail.com','{bcrypt}$2a$10$a7gjURC2zg97BnIJw61WOOdG.Fz7sDbU6tSmUuN.bqtvxrh89BOF2')
-	as new(aid,m,p)
+	(1,'delaval.htps@gmail.com','$2a$10$a7gjURC2zg97BnIJw61WOOdG.Fz7sDbU6tSmUuN.bqtvxrh89BOF2',1),
+	(2,'emilie.baudouin@gmail.com','$2a$10$a7gjURC2zg97BnIJw61WOOdG.Fz7sDbU6tSmUuN.bqtvxrh89BOF2',1),
+	(3,'monique.baudouin@gmail.com','$2a$10$a7gjURC2zg97BnIJw61WOOdG.Fz7sDbU6tSmUuN.bqtvxrh89BOF2',1),
+	(4,'caroline.verrier@gmail.com','$2a$10$a7gjURC2zg97BnIJw61WOOdG.Fz7sDbU6tSmUuN.bqtvxrh89BOF2',1),
+	(5,'beatrice.hubald@gmail.com','$2a$10$a7gjURC2zg97BnIJw61WOOdG.Fz7sDbU6tSmUuN.bqtvxrh89BOF2',1),
+	(6,'manon.rollin@gmail.com','$2a$10$a7gjURC2zg97BnIJw61WOOdG.Fz7sDbU6tSmUuN.bqtvxrh89BOF2',1)
+	as new(aid,m,p,t)
 ON DUPLICATE KEY UPDATE  application_identifier_id= aid ^;
 	
 INSERT INTO application_account (number_account,balance)
