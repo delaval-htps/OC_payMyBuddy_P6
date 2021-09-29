@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html 
+
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5" >
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	
+	<title>Login Page</title>
+	
+	<!-- custom css  -->
+	
+	<link rel="stylesheet" type="text/css" href="/css/mycss.css" th:href="@{/css/mycss.css}">
+	
+	<!-- CDN bootstrap  -->
+	
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
+	
+	<!-- CDN personal font Awesome  -->
+	
+	<script src="https://kit.fontawesome.com/0d6685bccf.js" crossorigin="anonymous"></script>
+</head>
+<body>
+
+<div class= "container-fluid">
+
+	<div class="row h-100 justify-content-center align-items-center">
+		
+		<div class="col-auto">
+			
+			<div id="card-login" class="card text-center" >
+
+				<div class="card-body">	
+						
+						<!--  validation of login if error message is displayed -->		
+						
+						<div class="message-login">
+						<p th:if="${param.error != null}" class="error">Wrong user or password</p>
+						<p th:if="${param.logout != null}" class="logout">You have been correctly logged out!</p>
+						</div>
+					
+						<!-- logo of application -->
+						
+						<div class="text-center mt-3 mb-5">
+						<button  id="logo" class="btn-lg btn-gradient text-white " disabled>Pay My Buddy</button>
+						</div>
+						
+						<!-- form for login with email and password -->
+					
+						<form  th:action="@{/authenticateTheUser}" method="POST">
+					
+						  <div class=" input-field mb-3">
+						    
+						    <input type="email" class="form-control form-control-lg"  id="email" name="username" placeholder="&#xf0e0; Email"  style="font-family:FontAwesome"/>
+						  </div>
+				
+						  <div class=" input-field mb-3">
+						    <input type="password" class="form-control form-control-lg" id="password" name="password"  placeholder="&#xf621; Password" autocomplete="on" style="font-family:FontAwesome">
+						    
+						  </div>
+				
+						  <div class="  text-center mt-5 mb-5 form-check">
+						  	
+						    <input type="checkbox" class="form-check-input" id="rememberMe" name="remember-me">
+						    <label class="form-check-label " for="rememberMe">Remember Me</label>
+		  				  </div>
+						
+						  <button type="submit" id="login" class="btn-lg btn-primary mt-5 mb-5 ">  Login  </button>
+						</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ" crossorigin="anonymous"></script>
+</body>
+</html>

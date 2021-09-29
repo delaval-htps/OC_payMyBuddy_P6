@@ -35,12 +35,12 @@ class PayMyBuddySecurityConfigIT {
 
   @Test
   void shouldReturnLoginPage() throws Exception {
-    mockMvc.perform(get("/login")).andDo(print()).andExpect(status().isOk());
+    mockMvc.perform(get("/myLoginPage")).andDo(print()).andExpect(status().isOk());
   }
 
   @Test
   void userLoginTest_WhenUserExist_ShouldReturnAuthenticated() throws Exception {
-    mockMvc.perform(formLogin("/login")
+    mockMvc.perform(formLogin("/authenticateTheUser")
         .user("delaval.htps@gmail.com")
         .password("Jsadmin4all"))
         .andDo(print())
@@ -49,7 +49,7 @@ class PayMyBuddySecurityConfigIT {
 
   @Test
   void userLoginTest_WhenUserNotExists_ShouldReturnNoAuthenticated() throws Exception {
-    mockMvc.perform(formLogin("/login")
+    mockMvc.perform(formLogin("/authenticateTheUser")
         .user("delaval.htps@gmail.com")
         .password("passwordNotValid"))
         .andDo(print())

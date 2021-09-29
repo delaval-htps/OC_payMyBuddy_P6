@@ -1,0 +1,48 @@
+
+.container-fluid {
+	height: 100vh;
+	
+}
+#card-login{
+	font-size: 1.5em;
+	border-radius: .8rem;
+}
+
+.error{
+	color:red;
+	text-align: center;
+}
+
+.logout{
+	color: blue;
+	text-align: center;
+}
+
+.btn-gradient{
+	background:#198754;  /* fallback for old browsers */
+    background: -webkit-linear-gradient(to left, #90C652, #198754);  /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(to left, #90C652, #198754); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+	border-width: 0px;
+}
+
+#logo{
+	font-size: 1.5em;
+	border-radius: 0.5rem;
+}
+#login{
+	font-size :1.1em;
+	padding: 2px 30px 2px 30px;
+	
+}
+
+#rememberMe{
+	float:none;
+	font-style: normal;
+}
+#email, #password{
+	border: 1.5px solid rgba(0,0,0,.125);
+	border-radius: .5rem;
+	font-size:1em;
+	
+}
+
