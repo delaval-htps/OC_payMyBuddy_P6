@@ -37,13 +37,18 @@ public class PayMyBuddySecurityConfig extends WebSecurityConfigurerAdapter {
         .antMatchers("/css/**").permitAll() // allowed to access to mycss.css
         .antMatchers("/home").hasRole("USER")
         .anyRequest().authenticated()
+
         .and()
         .formLogin()
         .loginPage("/myLoginPage")
         .loginProcessingUrl("/authenticateTheUser")
         .permitAll()
+
         .and()
-        .logout().permitAll();
+        .logout().deleteCookies("JSESSIONID").permitAll()
+
+        .and()
+        .rememberMe().key("uniqueAndSecret");
   }
 
   @Bean
