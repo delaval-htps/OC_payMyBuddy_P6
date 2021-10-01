@@ -45,6 +45,9 @@ public class PayMyBuddySecurityConfig extends WebSecurityConfigurerAdapter {
         .permitAll()
 
         .and()
+        .oauth2Login().defaultSuccessUrl("/")
+
+        .and()
         .logout().deleteCookies("JSESSIONID").permitAll()
 
         .and()
@@ -54,5 +57,6 @@ public class PayMyBuddySecurityConfig extends WebSecurityConfigurerAdapter {
   @Bean
   public PasswordEncoder passwordEncoder() {
     return new BCryptPasswordEncoder();
+
   }
 }
