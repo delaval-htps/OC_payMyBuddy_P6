@@ -6,11 +6,13 @@
 <title>Home PAge</title>
 </head>
 <body>
-<h1>Welcome Home Page</h1>
+<h1>Welcome Home Page ,<span th:text=${userName}></span> </h1>
+<br>
+<h2>OauthInformation: <span style="white-space: pre-wrap;" th:text="${Oauth2Info}"></span> </h2>
 
 <!-- Add a logout button -->
-	<form th:action="@{/logout}" 
-			   method="POST">
+
+	<form th:action="@{/logout}" method="POST">
 	
 		<input type="submit" value="Logout" />
 	

@@ -45,7 +45,8 @@ public class PayMyBuddySecurityConfig extends WebSecurityConfigurerAdapter {
         .permitAll()
 
         .and()
-        .oauth2Login().defaultSuccessUrl("/")
+        .oauth2Login()
+        .loginPage("/myLoginPage").defaultSuccessUrl("/")
 
         .and()
         .logout().deleteCookies("JSESSIONID").permitAll()
