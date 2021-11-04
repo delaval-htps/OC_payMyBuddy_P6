@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <notation:Diagram xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" xmlns:notation="http://www.eclipse.org/gmf/runtime/1.0.3/notation" xmlns:style="http://www.eclipse.org/papyrus/infra/gmfdiag/style" xmlns:uml="http://www.eclipse.org/uml2/5.0.0/UML" xmi:id="_7Dc3UADyEeyJSoGUNirAAA" type="PapyrusUMLClassDiagram" name="Class Diagram" measurementUnit="Pixel">
-  <children xmi:type="notation:Shape" xmi:id="_grIi8AD2EeyJSoGUNirAAA" type="Package_Shape" bold="true" transparency="80">
+  <children xmi:type="notation:Shape" xmi:id="_grIi8AD2EeyJSoGUNirAAA" type="Package_Shape" bold="true" transparency="0">
     <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_vK6mQAD2EeyJSoGUNirAAA" source="PapyrusCSSForceValue">
       <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_vK7NUAD2EeyJSoGUNirAAA" key="fillColor" value="true"/>
     </eAnnotations>
@@ -398,7 +398,7 @@
           <layoutConstraint xmi:type="notation:Bounds" xmi:id="_Bva2PgS7EeyWE823455wpQ"/>
         </children>
         <element xmi:type="uml:Class" href="payMyBuddy.uml#_BuoMAAS7EeyWE823455wpQ"/>
-        <layoutConstraint xmi:type="notation:Bounds" xmi:id="_BvaPIQS7EeyWE823455wpQ" x="1174" y="252"/>
+        <layoutConstraint xmi:type="notation:Bounds" xmi:id="_BvaPIQS7EeyWE823455wpQ" x="1174" y="252" width="281" height="161"/>
       </children>
       <children xmi:type="notation:Shape" xmi:id="_ky8GgAS_EeyWE823455wpQ" type="Class_Shape_CN" fillColor="8047085">
         <children xmi:type="notation:DecorationNode" xmi:id="_ky8tkAS_EeyWE823455wpQ" type="Class_NameLabel_CN"/>
@@ -413,6 +413,10 @@
           <children xmi:type="notation:Shape" xmi:id="_BgikoAD1EeyJSoGUNirAAA" type="Property_ClassAttributeLabel">
             <element xmi:type="uml:Property" href="payMyBuddy.uml#_BgQQwAD1EeyJSoGUNirAAA"/>
             <layoutConstraint xmi:type="notation:Location" xmi:id="_BgikoQD1EeyJSoGUNirAAA"/>
+          </children>
+          <children xmi:type="notation:Shape" xmi:id="_2BpCMCKPEeytIfmT20PWFA" type="Property_ClassAttributeLabel">
+            <element xmi:type="uml:Property" href="payMyBuddy.uml#_1-BtgCKPEeytIfmT20PWFA"/>
+            <layoutConstraint xmi:type="notation:Location" xmi:id="_2BpCMSKPEeytIfmT20PWFA"/>
           </children>
           <styles xmi:type="notation:TitleStyle" xmi:id="_ky8tlAS_EeyWE823455wpQ"/>
           <styles xmi:type="notation:SortingStyle" xmi:id="_ky8tlQS_EeyWE823455wpQ"/>
@@ -824,7 +828,7 @@
     <styles xmi:type="notation:FontStyle" xmi:id="_ppNOsQS7EeyWE823455wpQ"/>
     <element xmi:type="uml:InformationFlow" href="payMyBuddy.uml#_poYvUAS7EeyWE823455wpQ"/>
     <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_ppNOsgS7EeyWE823455wpQ" points="[1560, 240, -643984, -643984]$[1400, 240, -643984, -643984]"/>
-    <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_pq8UEAS7EeyWE823455wpQ" id="(0.0,0.26490066225165565)"/>
+    <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_pq8UEAS7EeyWE823455wpQ" id="(0.0,0.2484472049689441)"/>
     <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_pq8UEQS7EeyWE823455wpQ" id="(0.823321554770318,0.6766467065868264)"/>
   </edges>
   <edges xmi:type="notation:Connector" xmi:id="_yrGJIAS_EeyWE823455wpQ" type="Association_Edge" source="_ky8GgAS_EeyWE823455wpQ" target="_9UXKAADyEeyJSoGUNirAAA" routing="Rectilinear">
@@ -886,7 +890,7 @@
     <styles xmi:type="notation:FontStyle" xmi:id="_894gMQTCEeyWE823455wpQ"/>
     <element xmi:type="uml:Association" href="payMyBuddy.uml#_89NKwATCEeyWE823455wpQ"/>
     <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_894gMgTCEeyWE823455wpQ" points="[1660, 200, -643984, -643984]$[1660, 104, -643984, -643984]"/>
-    <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_8_BvsATCEeyWE823455wpQ" id="(0.4366812227074236,0.0)"/>
+    <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_8_BvsATCEeyWE823455wpQ" id="(0.35587188612099646,0.0)"/>
     <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_8_BvsQTCEeyWE823455wpQ" id="(0.5617977528089888,1.0)"/>
   </edges>
   <edges xmi:type="notation:Connector" xmi:id="_oU6OEATjEeyWE823455wpQ" type="Association_Edge" source="_iihfUAHbEeyfRtPc9ZMTKg" target="_ikVMAATiEeyWE823455wpQ">

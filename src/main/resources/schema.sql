@@ -9,6 +9,7 @@ CREATE TABLE IF NOT EXISTS application_identifier (
                 application_identifier_id INT AUTO_INCREMENT NOT NULL,
                 email VARCHAR(30) NOT NULL,
                 password CHAR(68) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
+                enabled TINYINT NOT NULL DEFAULT 1,
                 PRIMARY KEY (application_identifier_id)
 )ENGINE=InnoDB, DEFAULT CHARSET=utf8mb4^;
 
