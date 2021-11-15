@@ -68,10 +68,19 @@
 						
 						  <button type="submit" id="login" class="btn-lg btn-primary mt-5 mb-5 ">  Login  </button>
 						</form>
-						
+						<!-- Connection with Oauth2 /github-->
 						<div>
 							<div sec:authorize="!isAuthenticated()">
 					            <a th:href="@{/oauth2/authorization/github}">Log In with github</a>
+					        </div>
+					        <div sec:authorize="isAuthenticated()">
+					            <p>You are logged in!</p>
+		        			</div>
+						</div>
+						<!-- Connection with Oauth2 /Google-->
+						<div>
+							<div sec:authorize="!isAuthenticated()">
+					            <a th:href="@{/oauth2/authorization/google}">Log In with google</a>
 					        </div>
 					        <div sec:authorize="isAuthenticated()">
 					            <p>You are logged in!</p>
