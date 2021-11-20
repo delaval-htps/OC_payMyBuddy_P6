@@ -36,6 +36,7 @@ public class PayMyBuddySecurityConfig extends WebSecurityConfigurerAdapter {
     http.authorizeRequests()
         .antMatchers("/css/**").permitAll() // allowed to access to mycss.css
         .antMatchers("/home").hasRole("USER")
+        .antMatchers("/inscription").permitAll()
         .anyRequest().authenticated()
 
         .and()

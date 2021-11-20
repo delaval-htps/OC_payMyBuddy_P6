@@ -16,9 +16,8 @@ CREATE TABLE IF NOT EXISTS application_identifier (
 
 CREATE TABLE IF NOT EXISTS social_network_identifier (
                 social_network_identifier_id INT AUTO_INCREMENT NOT NULL,
-                social_network_id INT NOT NULL,
-                username_login VARCHAR(30) NOT NULL,
-                user_password VARCHAR(30) NOT NULL,
+               	network_provider_name VARCHAR(50) NOT NULL,
+                provider_user_id INT NOT NULL,
                 PRIMARY KEY (social_network_identifier_id)
 )ENGINE=InnoDB, DEFAULT CHARSET=utf8mb4 ^;
 

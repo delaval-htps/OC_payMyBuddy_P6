@@ -1,49 +1,45 @@
-CREATE DATABASE IF NOT EXISTS paymybuddy DEFAULT CHARACTER SET utf8mb4;
 
-USE paymybuddy;
-
-CREATE TABLE IF NOT EXISTS application_identifier (
+CREATE TABLE application_identifier (
                 application_identifier_id INT AUTO_INCREMENT NOT NULL,
                 email VARCHAR(30) NOT NULL,
                 password VARCHAR(30) NOT NULL,
                 PRIMARY KEY (application_identifier_id)
-)ENGINE=InnoDB, DEFAULT CHARSET=utf8mb4;
+);
 
 
-CREATE TABLE IF NOT EXISTS social_network_identifier (
+CREATE TABLE social_network_identifier (
                 social_network_identifier_id INT AUTO_INCREMENT NOT NULL,
-                social_nnetwork_id INT NOT NULL,
-                username_login VARCHAR(30) NOT NULL,
-                user_password VARCHAR(30) NOT NULL,
+                network_provider_name VARCHAR(50) NOT NULL,
+                provider_user_id INT NOT NULL,
                 PRIMARY KEY (social_network_identifier_id)
-)ENGINE=InnoDB, DEFAULT CHARSET=utf8mb4;
+);
 
 
-CREATE TABLE IF NOT EXISTS card_bank (
+CREATE TABLE card_bank (
                 numberCard INT NOT NULL,
                 card_code INT NOT NULL,
                 date_expiration_card DATE NOT NULL,
                 PRIMARY KEY (numberCard)
-)ENGINE=InnoDB, DEFAULT CHARSET=utf8mb4;
+);
 
 
-CREATE TABLE IF NOT EXISTS application_account (
+CREATE TABLE application_account (
                 number_account INT AUTO_INCREMENT NOT NULL,
                 balance DECIMAL(8,2) NOT NULL,
                 PRIMARY KEY (number_account)
-)ENGINE=InnoDB, DEFAULT CHARSET=utf8mb4;
+);
 
 
-CREATE TABLE IF NOT EXISTS bank_account (
+CREATE TABLE bank_account (
                 number_account INT NOT NULL,
                 iban VARCHAR(34) NOT NULL,
                 balance DECIMAL(8,2) NOT NULL,
                 numberCard INT NOT NULL,
                 PRIMARY KEY (number_account)
-)ENGINE=InnoDB, DEFAULT CHARSET=utf8mb4;
+);
 
 
-CREATE TABLE IF NOT EXISTS user (
+CREATE TABLE user (
                 user_id INT AUTO_INCREMENT NOT NULL,
                 lastName VARCHAR(30) NOT NULL,
                 firstName VARCHAR(30) NOT NULL,
@@ -56,17 +52,17 @@ CREATE TABLE IF NOT EXISTS user (
                 social_network_identifier_id INT NOT NULL,
                 application_identifier_id INT NOT NULL,
                 PRIMARY KEY (user_id)
-)ENGINE=InnoDB, DEFAULT CHARSET=utf8mb4;
+);
 
 
-CREATE TABLE IF NOT EXISTS connection_user (
+CREATE TABLE connection_user (
                 user_id INT NOT NULL,
                 user_connection_id INT NOT NULL,
                 PRIMARY KEY (user_id, user_connection_id)
-)ENGINE=InnoDB, DEFAULT CHARSET=utf8mb4;
+);
 
 
-CREATE TABLE IF NOT EXISTS transaction (
+CREATE TABLE transaction (
                 transaction_id INT AUTO_INCREMENT NOT NULL,
                 date_transaction DATETIME NOT NULL,
                 description VARCHAR(100) NOT NULL,
@@ -76,10 +72,10 @@ CREATE TABLE IF NOT EXISTS transaction (
                 user_id INT NOT NULL,
                 user_connection_id INT NOT NULL,
                 PRIMARY KEY (transaction_id)
-)ENGINE=InnoDB, DEFAULT CHARSET=utf8mb4;
+);
 
 
-CREATE TABLE IF NOT EXISTS invoice (
+CREATE TABLE invoice (
                 daily_invoice_id INT AUTO_INCREMENT NOT NULL,
                 date_invoice DATETIME NOT NULL,
                 price_ht DECIMAL(8,2) NOT NULL,
@@ -88,7 +84,7 @@ CREATE TABLE IF NOT EXISTS invoice (
                 transaction_id INT NOT NULL,
                 user_id INT NOT NULL,
                 PRIMARY KEY (daily_invoice_id)
-)ENGINE=InnoDB, DEFAULT CHARSET=utf8mb4;
+);
 
 
 ALTER TABLE user ADD CONSTRAINT application_identifier_user_fk
