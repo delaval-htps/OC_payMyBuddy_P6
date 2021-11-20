@@ -170,10 +170,6 @@
           <layoutConstraint xmi:type="notation:Location" xmi:id="_IgXPtAG0EeyfRtPc9ZMTKg" y="15"/>
         </children>
         <children xmi:type="notation:BasicCompartment" xmi:id="_IgXPtQG0EeyfRtPc9ZMTKg" type="Class_AttributeCompartment_CN">
-          <children xmi:type="notation:Shape" xmi:id="_zYhrkAG5EeyfRtPc9ZMTKg" type="Property_ClassAttributeLabel">
-            <element xmi:type="uml:Property" href="payMyBuddy.uml#_zX-R8AG5EeyfRtPc9ZMTKg"/>
-            <layoutConstraint xmi:type="notation:Location" xmi:id="_zYhrkQG5EeyfRtPc9ZMTKg"/>
-          </children>
           <children xmi:type="notation:Shape" xmi:id="_tEhJIAG0EeyfRtPc9ZMTKg" type="Property_ClassAttributeLabel">
             <element xmi:type="uml:Property" href="payMyBuddy.uml#_tEO1QAG0EeyfRtPc9ZMTKg"/>
             <layoutConstraint xmi:type="notation:Location" xmi:id="_tEhJIQG0EeyfRtPc9ZMTKg"/>

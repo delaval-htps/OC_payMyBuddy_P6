@@ -54,14 +54,11 @@
       </ownedAttribute>
     </packagedElement>
     <packagedElement xmi:type="uml:Class" xmi:id="_IgFi4AG0EeyfRtPc9ZMTKg" name="SocialNetworkIdentifier" visibility="public" isAbstract="true">
-      <ownedAttribute xmi:type="uml:Property" xmi:id="_tEO1QAG0EeyfRtPc9ZMTKg" name="usernameLogin" visibility="private">
+      <ownedAttribute xmi:type="uml:Property" xmi:id="_tEO1QAG0EeyfRtPc9ZMTKg" name="networkProviderName" visibility="private">
         <type xmi:type="uml:Class" href="java.uml#_2e7YYuGMEeiScrMAsbkENg"/>
       </ownedAttribute>
-      <ownedAttribute xmi:type="uml:Property" xmi:id="_7Lzz8AG0EeyfRtPc9ZMTKg" name="userPassword" visibility="private">
+      <ownedAttribute xmi:type="uml:Property" xmi:id="_7Lzz8AG0EeyfRtPc9ZMTKg" name="providerUserId" visibility="private">
         <type xmi:type="uml:Class" href="java.uml#_2e7YYuGMEeiScrMAsbkENg"/>
-      </ownedAttribute>
-      <ownedAttribute xmi:type="uml:Property" xmi:id="_zX-R8AG5EeyfRtPc9ZMTKg" name="socialNetworkId" visibility="private">
-        <type xmi:type="uml:PrimitiveType" href="java.uml#_16WEp-GMEeiScrMAsbkENg"/>
       </ownedAttribute>
     </packagedElement>
     <packagedElement xmi:type="uml:Class" xmi:id="_F46dkAG6EeyfRtPc9ZMTKg" name="GoogleIdentifier" visibility="public">
