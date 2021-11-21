@@ -36,11 +36,11 @@ public class User {
   private Long userId;
 
   @NotBlank
-  @Column
+  @Column(name = "last_name")
   private String lastName;
 
   @NotBlank
-  @Column
+  @Column(name = "first_name")
   private String firstName;
 
   @Column
@@ -56,15 +56,14 @@ public class User {
   private String phone;
 
   @OneToMany(
+      mappedBy = "user", // nom de l'attribut dans SocialNetworkIdentifier
       cascade = CascadeType.ALL,
-      orphanRemoval = true, // si socialnetworkidentifier non relié il est supprimer
-      mappedBy = "user") // attribut definissant la relation dans l'autre entity
-                         // SocialNetworkIdentifier
+      orphanRemoval = true)
   private Set<SocialNetworkIdentifier> socialNetWorkIdentifiers = new HashSet<>();
 
   /**
    * method to link a SocialNetworkIdentier to a user.
-   * 
+   *
    * @param sni the socialnetworkidentifier to add to Set of user
    */
   public void addSocialNetworkIdentifier(SocialNetworkIdentifier sni) {
@@ -74,7 +73,7 @@ public class User {
 
   /**
    * method to remove a SocialNetWorkIdentifer from user.
-   * 
+   *
    * @param sni the socialnetworkidentifier to remove
    */
   public void removeSocialNetworkIdentifier(SocialNetworkIdentifier sni) {

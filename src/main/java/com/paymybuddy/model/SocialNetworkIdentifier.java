@@ -40,4 +40,5 @@ public class SocialNetworkIdentifier {
   @ManyToOne(cascade = CascadeType.ALL)
   @JoinColumn(name = "user_id") // pour determiner la fk dans la table SocialNetWorkIdentifier
   private User user;
+
 }

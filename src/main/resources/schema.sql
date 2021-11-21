@@ -62,8 +62,8 @@ CREATE TABLE IF NOT EXISTS bank_account (
 
 CREATE TABLE IF NOT EXISTS user (
                 user_id INT AUTO_INCREMENT NOT NULL,
-                lastName VARCHAR(30) NOT NULL,
-                firstName VARCHAR(30) NOT NULL,
+                last_name VARCHAR(30) NOT NULL,
+                first_name VARCHAR(30) NOT NULL,
                 address VARCHAR(100) NOT NULL,
                 zip INT NOT NULL,
                 city VARCHAR(30) NOT NULL,

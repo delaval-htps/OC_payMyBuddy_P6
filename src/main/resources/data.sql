@@ -24,7 +24,7 @@ ON DUPLICATE KEY UPDATE number_account = nid ^;
 	
 --	insert datas in table use
   
-INSERT INTO user (user_id,lastName, firstName,address,zip,city,phone,number_application_account,application_identifier_id)
+INSERT INTO user (user_id,last_name, first_name,address,zip,city,phone,number_application_account,application_identifier_id)
 VALUES
 	(1,'Delaval','Dorian','26 av Maréchal Foch',13260,'Cassis','0618460160',
 		(SELECT number_account FROM application_account WHERE balance = 1000),
