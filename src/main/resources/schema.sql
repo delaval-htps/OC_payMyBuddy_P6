@@ -3,6 +3,19 @@ CREATE DATABASE IF NOT EXISTS paymybuddy DEFAULT CHARACTER SET utf8mb4 ^;
 -- use of database 
 USE paymybuddy ^;
 
+-- drop procedures to be able to recreate them when restart app
+DROP PROCEDURE IF EXISTS application_identifier_user_fk^;
+DROP PROCEDURE IF EXISTS user_social_network_identifier_fk^;
+DROP PROCEDURE IF EXISTS social_network_identifer_user_fk^;
+DROP PROCEDURE IF EXISTS card_bank_bank_account_fk^;
+DROP PROCEDURE IF EXISTS application_account_user_fk^;
+DROP PROCEDURE IF EXISTS bank_account_user_fk^;
+DROP PROCEDURE IF EXISTS user_connection_fk^;
+DROP PROCEDURE IF EXISTS user_connection_fk1^;
+DROP PROCEDURE IF EXISTS user_invoice_fk^;
+DROP PROCEDURE IF EXISTS connection_transaction_fk^;
+DROP PROCEDURE IF EXISTS transaction_daily_invoice_fk^;
+
 -- creation of Tables if not exists -- 
 
 CREATE TABLE IF NOT EXISTS application_identifier (
@@ -18,6 +31,7 @@ CREATE TABLE IF NOT EXISTS social_network_identifier (
                 social_network_identifier_id INT AUTO_INCREMENT NOT NULL,
                	network_provider_name VARCHAR(50) NOT NULL,
                 provider_user_id INT NOT NULL,
+                user_id INT NOT NULL,
                 PRIMARY KEY (social_network_identifier_id)
 )ENGINE=InnoDB, DEFAULT CHARSET=utf8mb4 ^;
 
@@ -57,7 +71,6 @@ CREATE TABLE IF NOT EXISTS user (
                 -- number_application_account,number_bank_account,social_network_identifier can be null if it' a new user 
                 number_application_account INT , 
                 number_bank_account INT ,
-                social_network_identifier_id INT ,
                 application_identifier_id INT NOT NULL,
                 PRIMARY KEY (user_id)
 )ENGINE=InnoDB, DEFAULT CHARSET=utf8mb4 ^;
@@ -114,17 +127,17 @@ BEGIN
 	END IF;
 END ^;
 
-CREATE PROCEDURE social_network_identifer_user_fk() 
+CREATE PROCEDURE user_social_network_identifier_fk() 
 BEGIN
 	IF NOT EXISTS(SELECT null 
 				FROM information_schema.TABLE_CONSTRAINTS
 				WHERE TABLE_SCHEMA = 'paymybuddy' 
-				AND CONSTRAINT_NAME= 'social_network_identifer_user_fk'
+				AND CONSTRAINT_NAME= 'user_social_network_identifier_fk'
 				AND CONSTRAINT_TYPE= 'FOREIGN KEY')
 	THEN
-		ALTER TABLE user ADD CONSTRAINT social_network_identifer_user_fk
-		FOREIGN KEY (social_network_identifier_id)
-		REFERENCES social_network_identifier (social_network_identifier_id)
+		ALTER TABLE social_network_identifier ADD CONSTRAINT user_social_network_identifier_fk
+		FOREIGN KEY (user_id)
+		REFERENCES user (user_id)
 		ON DELETE NO ACTION
 		ON UPDATE NO ACTION;
 	END IF;
@@ -261,7 +274,7 @@ END ^;
 
 -- call of procedures
 CALL application_identifier_user_fk()^;
-CALL social_network_identifer_user_fk()^;
+CALL user_social_network_identifier_fk()^;
 CALL card_bank_bank_account_fk()^;
 CALL application_account_user_fk()^;
 CALL bank_account_user_fk()^;
@@ -271,18 +284,7 @@ CALL user_invoice_fk()^;
 CALL connection_transaction_fk()^;
 CALL transaction_daily_invoice_fk()^;
 
--- drop procedures to be able to recreate them when restart app
-DROP PROCEDURE IF EXISTS social_network_identifer_user_fk^;
-DROP PROCEDURE IF EXISTS application_identifier_user_fk^;
-DROP PROCEDURE IF EXISTS social_network_identifer_user_fk^;
-DROP PROCEDURE IF EXISTS card_bank_bank_account_fk^;
-DROP PROCEDURE IF EXISTS application_account_user_fk^;
-DROP PROCEDURE IF EXISTS bank_account_user_fk^;
-DROP PROCEDURE IF EXISTS user_connection_fk^;
-DROP PROCEDURE IF EXISTS user_connection_fk1^;
-DROP PROCEDURE IF EXISTS user_invoice_fk^;
-DROP PROCEDURE IF EXISTS connection_transaction_fk^;
-DROP PROCEDURE IF EXISTS transaction_daily_invoice_fk^;
+
 
 
 
