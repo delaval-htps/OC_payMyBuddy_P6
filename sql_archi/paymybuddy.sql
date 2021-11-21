@@ -7,14 +7,6 @@ CREATE TABLE application_identifier (
 );
 
 
-CREATE TABLE social_network_identifier (
-                social_network_identifier_id INT AUTO_INCREMENT NOT NULL,
-                network_provider_name VARCHAR(50) NOT NULL,
-                provider_user_id INT NOT NULL,
-                PRIMARY KEY (social_network_identifier_id)
-);
-
-
 CREATE TABLE card_bank (
                 numberCard INT NOT NULL,
                 card_code INT NOT NULL,
@@ -40,7 +32,7 @@ CREATE TABLE bank_account (
 
 
 CREATE TABLE user (
-                user_id INT AUTO_INCREMENT NOT NULL,
+                user_id INT NOT NULL,
                 lastName VARCHAR(30) NOT NULL,
                 firstName VARCHAR(30) NOT NULL,
                 address VARCHAR(100) NOT NULL,
@@ -49,9 +41,17 @@ CREATE TABLE user (
                 phone INT NOT NULL,
                 number_application_account INT NOT NULL,
                 number_bank_account INT NOT NULL,
-                social_network_identifier_id INT NOT NULL,
                 application_identifier_id INT NOT NULL,
                 PRIMARY KEY (user_id)
+);
+
+
+CREATE TABLE social_network_identifier (
+                social_network_identifier_id INT AUTO_INCREMENT NOT NULL,
+                network_provider_name VARCHAR(50) NOT NULL,
+                provider_user_id INT NOT NULL,
+                user_id INT NOT NULL,
+                PRIMARY KEY (social_network_identifier_id)
 );
 
 
@@ -93,12 +93,6 @@ REFERENCES application_identifier (application_identifier_id)
 ON DELETE NO ACTION
 ON UPDATE NO ACTION;
 
-ALTER TABLE user ADD CONSTRAINT social_network_identifer_user_fk
-FOREIGN KEY (social_network_identifier_id)
-REFERENCES social_network_identifier (social_network_identifier_id)
-ON DELETE NO ACTION
-ON UPDATE NO ACTION;
-
 ALTER TABLE bank_account ADD CONSTRAINT card_bank_bank_account_fk
 FOREIGN KEY (numberCard)
 REFERENCES card_bank (numberCard)
@@ -130,6 +124,12 @@ ON DELETE NO ACTION
 ON UPDATE NO ACTION;
 
 ALTER TABLE invoice ADD CONSTRAINT user_invoice_fk
+FOREIGN KEY (user_id)
+REFERENCES user (user_id)
+ON DELETE NO ACTION
+ON UPDATE NO ACTION;
+
+ALTER TABLE social_network_identifier ADD CONSTRAINT user_social_network_identifier_fk
 FOREIGN KEY (user_id)
 REFERENCES user (user_id)
 ON DELETE NO ACTION
