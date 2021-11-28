@@ -6,18 +6,17 @@
 	
 	</head>
 	<body>
-	
+	<div class="container-fluid">
+		
 		<header th:replace="~{/fragments/my-template::header}"> </header>
 		
-		<nav th:replace="~{/fragments/my-template::nav-breadcrumb('Home,Registration')}">
-		
-		
-		</nav>
+		<nav th:replace="~{/fragments/my-template::nav-breadcrumb('Home,Registration')}"></nav>
 		<article th:replace="~{/fragments/my-template::article}">
 			<h1>fragment bien remplacé!</h1>	
 		</article>
 		<footer th:replace="~{/fragments/my-template::footer}"></footer>
-		
+	</div>
+	
 	</body>
 	
 </html>

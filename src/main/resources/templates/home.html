@@ -2,24 +2,24 @@
 <html  lang="fr"
  xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 
-<head th:replace="~{/fragments/my-template::html-head('Registration Page')}">
+	<head th:replace="~{/fragments/my-template::html-head('Registration Page')}"></head>
 	
-	</head>
-<body>
-	
-	
-		<header th:replace="~{/fragments/my-template::header}"></header> 
+	<body>
+		<div class="container-fluid">
 		
-		<nav th:replace="~{/fragments/my-template::nav-breadcrumb('Home')}">
-		
-		
-		
-		<article th:replace="~{/fragments/my-template::article}">
-			<h1>Welcome Home Page ,<span th:text=${userName}></span> </h1>
-			<br>
-			<h2>OauthInformation: <span style="white-space: pre-wrap;" th:text="${Oauth2Info}"></span> </h2>
-		</article>
-		<footer th:replace="~{/fragments/my-template::footer}"></footer>
-
+			<header th:replace="~{/fragments/my-template::header}"></header> 
+			
+			<nav th:replace="~{/fragments/my-template::nav-breadcrumb('Home')}"></nav>
+			
+			<div class="container mt-3">
+			<div class="d-flex flex-column align-items-between main-content">
+				<article th:replace="~{/fragments/my-template::article}" >
+							
+				</article>
+			
+				<footer th:replace="~{/fragments/my-template::footer}"></footer>
+			</div>
+			</div>
+		</div>
 	</body>
 </html>
