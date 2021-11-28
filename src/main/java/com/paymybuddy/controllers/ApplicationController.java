@@ -65,15 +65,25 @@ public class ApplicationController {
     Map<String, Object> userDetails = ((DefaultOAuth2User) authenticateToken.getPrincipal())
         .getAttributes();
 
-    protectedInfo.append("\n" + userDetails.get("name") + " \n");
+    /**
+     * on peut récupérer toutes les informations de l'utilisateur grace au Token d'authentification
+     * Il suffit d'itérer et qi le scope est bon on récupére les infos ... (emails, nom prénom... )
+     * authorisées
+     */
+    for (String key : userDetails.keySet()) {
+      protectedInfo.append("\n clef : " + key + " , valeur : " + userDetails.get(key) + "\n");
 
-    if (idToken != null) {
-      protectedInfo.append(idToken.getEmail() + "\n");
-    } else {
-      protectedInfo.append("le id token est null " + "\n");
     }
-    protectedInfo.append(authenticateToken.getName() + "\n");
-    protectedInfo.append(authenticateToken.getAuthorizedClientRegistrationId());
+
+    // protectedInfo.append("\n" + userDetails.get("name") + " \n");
+    //
+    // if (idToken != null) {
+    // protectedInfo.append(idToken.getEmail() + "\n");
+    // } else {
+    // protectedInfo.append("le id token est null " + "\n");
+    // }
+    // protectedInfo.append(authenticateToken.getName() + "\n");
+    // protectedInfo.append(authenticateToken.getAuthorizedClientRegistrationId());
 
 
     return protectedInfo;
