@@ -2,11 +2,17 @@
 <html lang="fr"
 	xmlns:th="http://www.thymeleaf.org">
 	
-	<head th:replace="~{/fragments/my-template::head}">
-	<title>Registration Page</title></head>
+	<head th:replace="~{/fragments/my-template::html-head('Registration Page')}">
+	
+	</head>
 	<body>
 	
-		<header th:replace="~{/fragments/my-template::header}"></header>
+		<header th:replace="~{/fragments/my-template::header}"> </header>
+		
+		<nav th:replace="~{/fragments/my-template::nav-breadcrumb('Home,Registration')}">
+		
+		
+		</nav>
 		<article th:replace="~{/fragments/my-template::article}">
 			<h1>fragment bien remplacé!</h1>	
 		</article>

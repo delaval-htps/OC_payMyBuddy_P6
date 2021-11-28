@@ -1,21 +1,25 @@
 <!DOCTYPE html>
 <html  lang="fr"
  xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
-<head>
-<meta charset="UTF-8">
-<title>Home Page</title>
-</head>
+
+<head th:replace="~{/fragments/my-template::html-head('Registration Page')}">
+	
+	</head>
 <body>
-<h1>Welcome Home Page ,<span th:text=${userName}></span> </h1>
-<br>
-<h2>OauthInformation: <span style="white-space: pre-wrap;" th:text="${Oauth2Info}"></span> </h2>
-
-<!-- Add a logout button -->
-
-	<form th:action="@{/logout}" method="POST">
 	
-		<input type="submit" value="Logout" />
 	
-	</form>	
-</body>
+		<header th:replace="~{/fragments/my-template::header}"></header> 
+		
+		<nav th:replace="~{/fragments/my-template::nav-breadcrumb('Home')}">
+		
+		
+		
+		<article th:replace="~{/fragments/my-template::article}">
+			<h1>Welcome Home Page ,<span th:text=${userName}></span> </h1>
+			<br>
+			<h2>OauthInformation: <span style="white-space: pre-wrap;" th:text="${Oauth2Info}"></span> </h2>
+		</article>
+		<footer th:replace="~{/fragments/my-template::footer}"></footer>
+
+	</body>
 </html>
