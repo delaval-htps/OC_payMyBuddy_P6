@@ -1,4 +1,4 @@
-package com.paymybuddy;
+package com.paymybuddy.configuration;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestBuilders.formLogin;
 import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.authenticated;
