@@ -4,9 +4,8 @@ CREATE DATABASE IF NOT EXISTS paymybuddy DEFAULT CHARACTER SET utf8mb4 ^;
 USE paymybuddy ^;
 
 -- drop procedures to be able to recreate them when restart app
-DROP PROCEDURE IF EXISTS application_identifier_user_fk^;
-DROP PROCEDURE IF EXISTS user_social_network_identifier_fk^;
-DROP PROCEDURE IF EXISTS social_network_identifer_user_fk^;
+DROP PROCEDURE IF EXISTS user_oauth2_identifier_fk^;
+DROP PROCEDURE IF EXISTS oauth2_identifer_user_fk^;
 DROP PROCEDURE IF EXISTS card_bank_bank_account_fk^;
 DROP PROCEDURE IF EXISTS application_account_user_fk^;
 DROP PROCEDURE IF EXISTS bank_account_user_fk^;
@@ -18,21 +17,12 @@ DROP PROCEDURE IF EXISTS transaction_daily_invoice_fk^;
 
 -- creation of Tables if not exists -- 
 
-CREATE TABLE IF NOT EXISTS application_identifier (
-                application_identifier_id INT AUTO_INCREMENT NOT NULL,
-                email VARCHAR(30) NOT NULL,
-                password CHAR(68) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
-                enabled TINYINT NOT NULL DEFAULT 1,
-                PRIMARY KEY (application_identifier_id)
-)ENGINE=InnoDB, DEFAULT CHARSET=utf8mb4^;
-
-
-CREATE TABLE IF NOT EXISTS social_network_identifier (
-                social_network_identifier_id INT AUTO_INCREMENT NOT NULL,
+CREATE TABLE IF NOT EXISTS oauth2_identifier (
+                oauth2_identifier_id INT AUTO_INCREMENT NOT NULL,
                	network_provider_name VARCHAR(50) NOT NULL,
                 provider_user_id INT NOT NULL,
                 user_id INT NOT NULL,
-                PRIMARY KEY (social_network_identifier_id)
+                PRIMARY KEY (oauth2_identifier_id)
 )ENGINE=InnoDB, DEFAULT CHARSET=utf8mb4 ^;
 
 
@@ -62,6 +52,9 @@ CREATE TABLE IF NOT EXISTS bank_account (
 
 CREATE TABLE IF NOT EXISTS user (
                 user_id INT AUTO_INCREMENT NOT NULL,
+                email VARCHAR(30) NOT NULL,
+                password CHAR(68) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
+                enabled TINYINT NOT NULL DEFAULT 1,
                 last_name VARCHAR(30) NOT NULL,
                 first_name VARCHAR(30) NOT NULL,
                 address VARCHAR(100) NOT NULL,
@@ -71,7 +64,6 @@ CREATE TABLE IF NOT EXISTS user (
                 -- number_application_account,number_bank_account,social_network_identifier can be null if it' a new user 
                 number_application_account INT , 
                 number_bank_account INT ,
-                application_identifier_id INT NOT NULL,
                 PRIMARY KEY (user_id)
 )ENGINE=InnoDB, DEFAULT CHARSET=utf8mb4 ^;
 
@@ -111,31 +103,17 @@ CREATE TABLE IF NOT EXISTS invoice (
 -- creation of foreign keys 
 -- use of procedure because sql don't support if not exists --
 
-CREATE PROCEDURE application_identifier_user_fk() 
-BEGIN
-	IF NOT EXISTS(SELECT null 
-				FROM information_schema.TABLE_CONSTRAINTS
-				WHERE TABLE_SCHEMA = 'paymybuddy' 
-				AND CONSTRAINT_NAME= 'application_identifier_user_fk'
-				AND CONSTRAINT_TYPE= 'FOREIGN KEY')
-	THEN
-		ALTER TABLE user ADD CONSTRAINT application_identifier_user_fk
-		FOREIGN KEY (application_identifier_id)	
-		REFERENCES application_identifier (application_identifier_id)
-		ON DELETE NO ACTION
-		ON UPDATE NO ACTION;
-	END IF;
-END ^;
 
-CREATE PROCEDURE user_social_network_identifier_fk() 
+
+CREATE PROCEDURE user_oauth2_identifier_fk() 
 BEGIN
 	IF NOT EXISTS(SELECT null 
 				FROM information_schema.TABLE_CONSTRAINTS
 				WHERE TABLE_SCHEMA = 'paymybuddy' 
-				AND CONSTRAINT_NAME= 'user_social_network_identifier_fk'
+				AND CONSTRAINT_NAME= 'user_oauth2_identifier_fk'
 				AND CONSTRAINT_TYPE= 'FOREIGN KEY')
 	THEN
-		ALTER TABLE social_network_identifier ADD CONSTRAINT user_social_network_identifier_fk
+		ALTER TABLE oauth2_identifier ADD CONSTRAINT user_oauth2_identifier_fk
 		FOREIGN KEY (user_id)
 		REFERENCES user (user_id)
 		ON DELETE NO ACTION
@@ -273,8 +251,7 @@ BEGIN
 END ^;
 
 -- call of procedures
-CALL application_identifier_user_fk()^;
-CALL user_social_network_identifier_fk()^;
+CALL user_oauth2_identifier_fk()^;
 CALL card_bank_bank_account_fk()^;
 CALL application_account_user_fk()^;
 CALL bank_account_user_fk()^;

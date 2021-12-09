@@ -9,10 +9,8 @@ import com.paymybuddy.model.User;
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
 
-  @Query(value = "select u from User as u "
-      + "left join u.applicationIdentifier as uai "
-      + "where u.firstName =?1 and u.lastName=?2 and uai.email=?3")
+  @Query(value = "select u from User as u where u.firstName =?1 and u.lastName=?2 and u.email=?3")
   Optional<User> findbyOauth2Information(String firstName, String lastName, String email);
 
-
+  User findByEmail(String username);
 }

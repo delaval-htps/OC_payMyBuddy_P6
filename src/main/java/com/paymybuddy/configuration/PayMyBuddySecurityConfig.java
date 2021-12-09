@@ -15,18 +15,15 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @EnableWebSecurity
 public class PayMyBuddySecurityConfig extends WebSecurityConfigurerAdapter {
 
-  @Autowired
-  private DataSource datasource;
+  @Autowired private DataSource datasource;
 
   @Override
   protected void configure(AuthenticationManagerBuilder auth) throws Exception {
 
     auth.jdbcAuthentication()
         .dataSource(datasource)
-        .usersByUsernameQuery(
-            "SELECT email,password,enabled FROM application_identifier WHERE email =?")
-        .authoritiesByUsernameQuery(
-            "SELECT email,'ROLE_USER' FROM application_identifier WHERE email=?")
+        .usersByUsernameQuery("SELECT email,password,enabled FROM user WHERE email =?")
+        .authoritiesByUsernameQuery("SELECT email,'ROLE_USER' FROM user WHERE email=?")
         .passwordEncoder(passwordEncoder());
   }
 
@@ -34,31 +31,34 @@ public class PayMyBuddySecurityConfig extends WebSecurityConfigurerAdapter {
   protected void configure(HttpSecurity http) throws Exception {
 
     http.authorizeRequests()
-        .antMatchers("/css/**").permitAll() // allowed to access to mycss.css
-        .antMatchers("/home").hasRole("USER")
-        .antMatchers("/registration").permitAll()
-        .anyRequest().authenticated()
-
+        .antMatchers("/css/**")
+        .permitAll() // allowed to access to mycss.css
+        .antMatchers("/home")
+        .hasRole("USER")
+        .antMatchers("/registration")
+        .permitAll()
+        .anyRequest()
+        .authenticated()
         .and()
         .formLogin()
         .loginPage("/myLoginPage")
         .loginProcessingUrl("/authenticateTheUser")
         .permitAll()
-
         .and()
         .oauth2Login()
-        .loginPage("/myLoginPage").defaultSuccessUrl("/")
-
+        .loginPage("/myLoginPage")
+        .defaultSuccessUrl("/")
         .and()
-        .logout().deleteCookies("JSESSIONID").permitAll()
-
+        .logout()
+        .deleteCookies("JSESSIONID")
+        .permitAll()
         .and()
-        .rememberMe().key("uniqueAndSecret");
+        .rememberMe()
+        .key("uniqueAndSecret");
   }
 
   @Bean
   public PasswordEncoder passwordEncoder() {
     return new BCryptPasswordEncoder();
-
   }
 }

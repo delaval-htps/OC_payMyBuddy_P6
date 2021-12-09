@@ -26,7 +26,7 @@
 	</head>
 	<body>
 		<header th:fragment="header">
-			<nav class="navbar navbar-expand-lg navbar-light bg-white fs-2 row  justify-content-between align-items-center pe-3">	
+			<nav class="navbar navbar-expand-lg navbar-light bg-white fs-4 row  justify-content-between align-items-center pe-3">	
 				
 					<a class="navbar-brand col-4 justify-content-start" href="#">
 						<button  id="logo" class="navbar-brand btn-lg btn-gradient text-white" disabled>Pay My Buddy</button>
@@ -37,20 +37,20 @@
 					<div class="collapse navbar-collapse col-8 justify-content-end" id="navbarNavDropdown">
 							<ul class="navbar-nav ">
 								<li class="nav-item active me-5">
-									<a class="nav-link " href="#">Home<span class="sr-only">(current)</span></a>
+									<a class="nav-link " th:href="@{/home}">Home<span class="sr-only">(current)</span></a>
 								</li>
 								<li class="nav-item me-5">
-									<a class="nav-link " href="#">Transfert</a>
+									<a class="nav-link " th:href="@{/transfert}">Transfert</a>
 								</li>
 					     		<li class="nav-item me-5">
-					     		  <a class="nav-link " href="#">Profile</a>
+					     		  <a class="nav-link " th:href="@{/profile}">Profile</a>
 					     		</li>
 					  		 	<li class="nav-item me-5">
-					     		  <a class="nav-link " href="#">Contact</a>
+					     		  <a class="nav-link " th:href="@{/contact}">Contact</a>
 					     		</li>
-					  		 	<li class="nav-item fs-3 mt-2">
+					  		 	<li class="nav-item ">
 					     		  <form  th:action="@{/logout}" method="post">
-					     		  	<input  id ="logout" type="submit" value="Log Off"/>
+					     		  	<input class="btn btn-sm mt-2" id ="logout" type="submit" value="Log Off"/>
 					     		  </form>
 					     		</li>
 	  		 				</ul>
@@ -59,11 +59,11 @@
 		</header>
 		
 		<!-- breadcrumb -->	
-		<nav id="breadcrumb" class="fs-3 col-12" th:fragment="nav-breadcrumb(page)" style="--bs-breadcrumb-divider: '/';" aria-label="breadcrumb">
+		<nav id="breadcrumb" class="fs-5 col-12" th:fragment="nav-breadcrumb(page)" style="--bs-breadcrumb-divider: '/';" aria-label="breadcrumb">
  				<ol  class="breadcrumb" >
  					<li  class="breadcrumb-item"th:each="content,iterStatus : ${#strings.arraySplit(page,',')}"th:classappend="${iterStatus.last}?'active'">
   					<a  th:href="@{${iterStatus.first}?'/':'/${content}'}" th:text="${content}" th:if=${!iterStatus.last}>Home</a>
-  					<span class="fs-3" th:if="${iterStatus.last}" th:text="${content}">text</span>
+  					<span  th:if="${iterStatus.last}" th:text="${content}">text</span>
  					</li>
  				</ol>
 		</nav>
