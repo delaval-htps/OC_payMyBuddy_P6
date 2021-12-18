@@ -15,7 +15,9 @@
 	<description>application to transfert money</description>
 	<properties>
 		<java.version>11</java.version>
-	</properties>
+		<sonar.organization>delaval-htps</sonar.organization>
+		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
+	  </properties>
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
