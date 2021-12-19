@@ -26,7 +26,7 @@ public class ApplicationController {
     if (authenticationUser.isAuthenticated()) {
       if (authenticationUser instanceof OAuth2AuthenticationToken) {
         Map<String, Object> oauth2LoginInfo = oauth2Service.getOauth2LoginInfo(authenticationUser);
-
+        
         Optional<User> user =
             userService.findUserByOauth2Information(
                 oauth2LoginInfo.get("name").toString(), oauth2LoginInfo.get("email").toString());
