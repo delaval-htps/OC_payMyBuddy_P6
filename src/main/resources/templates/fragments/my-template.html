@@ -53,11 +53,12 @@
 					<li class="nav-item me-5">
 						<a class="nav-link " th:href="@{/contact}">Contact</a>
 					</li>
-					<li th:if="${title != registration}" class="nav-item ">
+					<li sec:authorize="isAuthenticated()" class="nav-item ">
 						<form th:action="@{/logout}" method="post">
 							<input class="btn btn-sm mt-2" id="logout" type="submit" value="Log Off" />
 						</form>
 					</li>
+
 				</ul>
 			</div>
 		</nav>
