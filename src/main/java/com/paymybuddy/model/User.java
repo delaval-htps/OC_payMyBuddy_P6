@@ -2,15 +2,23 @@ package com.paymybuddy.model;
 
 import java.util.HashSet;
 import java.util.Set;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+
+import org.hibernate.validator.constraints.UniqueElements;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -33,13 +41,20 @@ public class User {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "user_id")
-  private Long userId;
+  private Long id;
 
-  @Column @NotBlank @Email private String email;
+  @Column
+  @NotBlank
+  @UniqueElements
+  @Email
+  private String email;
 
-  @Column @NotBlank private String password;
+  @Column
+  @NotBlank
+  private String password;
 
-  @Column private Byte enabled;
+  @Column
+  private Byte enabled;
 
   @NotBlank
   @Column(name = "last_name")
@@ -49,36 +64,41 @@ public class User {
   @Column(name = "first_name")
   private String firstName;
 
-  @Column private String address;
+  @Column
+  private String address;
 
-  @Column private int zip;
+  @Column
+  private int zip;
 
-  @Column private String city;
+  @Column
+  private String city;
 
-  @Column private String phone;
+  @Column
+  private String phone;
 
-  @OneToMany(
-      mappedBy = "user", // nom de l'attribut dans SocialNetworkIdentifier
-      cascade = CascadeType.ALL,
-      orphanRemoval = true)
+  @ManyToMany(fetch = FetchType.EAGER)
+  @JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
+  private Set<Role> roles;
+
+  @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
   private Set<Oauht2Identifier> oauth2Identifiers = new HashSet<>();
 
   /**
-   * method to link a SocialNetworkIdentier to a user.
+   * method to link a OAuth2Identier to a user.
    *
-   * @param sni the socialnetworkidentifier to add to Set of user
+   * @param identifier the OAuth2identifier to add to Set of user
    */
-  public void addSocialNetworkIdentifier(Oauht2Identifier identifier) {
+  public void addOAuth2Identifier(Oauht2Identifier identifier) {
     this.oauth2Identifiers.add(identifier);
     identifier.setUser(this);
   }
 
   /**
-   * method to remove a SocialNetWorkIdentifer from user.
+   * method to remove a OAuth2Identifer from user.
    *
-   * @param sni the socialnetworkidentifier to remove
+   * @param identifier the OAuth2identifier to remove
    */
-  public void removeSocialNetworkIdentifier(Oauht2Identifier identifier) {
+  public void removeOAuth2Identifier(Oauht2Identifier identifier) {
     this.oauth2Identifiers.remove(identifier);
     identifier.setUser(null);
   }

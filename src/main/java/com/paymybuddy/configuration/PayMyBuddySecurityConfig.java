@@ -45,7 +45,7 @@ public class PayMyBuddySecurityConfig extends WebSecurityConfigurerAdapter {
         .oauth2Login()
         .loginPage("/myLoginPage")
         .defaultSuccessUrl("/")
-        .failureHandler(new SimpleUrlAuthenticationFailureHandler())
+        .failureHandler(new SimpleUrlAuthenticationFailureHandler("/login?error"))
         .and()
         .logout()
         .deleteCookies("JSESSIONID")
