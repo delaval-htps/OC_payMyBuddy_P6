@@ -1,6 +1,7 @@
-package com.paymybuddy.configuration;
+package com.paymybuddy.security.configuration;
 
-import javax.sql.DataSource;
+import com.paymybuddy.security.UserDetailsServiceImpl;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,16 +18,12 @@ import org.springframework.security.web.authentication.SimpleUrlAuthenticationFa
 public class PayMyBuddySecurityConfig extends WebSecurityConfigurerAdapter {
 
   @Autowired
-  private DataSource datasource;
+  private UserDetailsServiceImpl userDetailsService;
 
   @Override
   protected void configure(AuthenticationManagerBuilder auth) throws Exception {
 
-    auth.jdbcAuthentication()
-        .dataSource(datasource)
-        .usersByUsernameQuery("SELECT email,password,enabled FROM user WHERE email =?")
-        .authoritiesByUsernameQuery("SELECT email,'ROLE_USER' FROM user WHERE email=?")
-        .passwordEncoder(passwordEncoder());
+    auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
   }
 
   @Override
