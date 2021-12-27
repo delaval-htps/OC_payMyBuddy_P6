@@ -77,7 +77,8 @@ CREATE TABLE IF NOT EXISTS user (
 	-- number_application_account,number_bank_account,oAuth2_identifier can be null if it' a new user 
 	number_application_account INT , 
 	number_bank_account INT ,
-	PRIMARY KEY (id)
+	PRIMARY KEY (id),
+	UNIQUE KEY(email)
 )ENGINE=InnoDB, DEFAULT CHARSET=utf8mb4 ^;
 
 
@@ -142,7 +143,7 @@ BEGIN
 				AND CONSTRAINT_NAME = 'user_role_fk'
 				AND CONSTRAINT_TYPE = 'FOREIGN KEY')
 	THEN
-		ALTER TABLE user_role ADD CONSTRAINT user_user_id
+		ALTER TABLE user_role ADD CONSTRAINT user_role_fk
 		FOREIGN KEY (user_id)
 		REFERENCES user(id)
 		ON DELETE  NO ACTION
@@ -158,7 +159,7 @@ BEGIN
 				AND CONSTRAINT_NAME = 'user_role_fk1'
 				AND CONSTRAINT_TYPE = 'FOREIGN KEY')
 	THEN
-		ALTER TABLE user_role ADD CONSTRAINT user_role_id
+		ALTER TABLE user_role ADD CONSTRAINT user_role_fk1
 		FOREIGN KEY (role_id)
 		REFERENCES role (id)
 		ON DELETE  NO ACTION

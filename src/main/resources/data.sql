@@ -28,3 +28,16 @@ VALUES
 	as new(uid,m,pa,e,l,f,a,z,c,ph,n)
 ON DUPLICATE KEY UPDATE id= uid ^;
 
+INSERT INTO role (id,name)
+VALUES
+	(1,"ROLE_ADMIN"),
+	(2,"ROLE_USER")
+as new (uid,name)
+ON DUPLICATE KEY UPDATE id= uid ^;
+
+INSERT INTO user_role (user_id,role_id)
+VALUES
+	(1,2),
+	(2,1)
+as new (uid,rid)
+ON DUPLICATE KEY UPDATE user_id=uid ^;
