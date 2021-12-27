@@ -11,28 +11,29 @@ import org.springframework.stereotype.Service;
 public class Oauth2Service {
 
   /**
-   * Return a Map with all informations relative to user and its Oauth2 registration provider.
+   * Return a Map with all informations relative to user and its Oauth2
+   * registration provider.
    *
    * @param user the principal of user
-   * @return oauth2 informations of user and registration name , null if don't retrieve them.
+   * @return oauth2 informations of user and registration name , null if don't
+   *         retrieve them.
    */
   public Map<String, Object> getOauth2LoginInfo(Principal user) {
 
-    Map<String, Object> Oauth2LoginInformation = new HashMap<String, Object>();
+    Map<String, Object> oAuth2LoginInformation = new HashMap<>();
 
     OAuth2AuthenticationToken authenticateToken = ((OAuth2AuthenticationToken) user);
 
-    Map<String, Object> oauth2Map =
-        ((DefaultOAuth2User) authenticateToken.getPrincipal()).getAttributes();
+    Map<String, Object> oauth2Map = ((DefaultOAuth2User) authenticateToken.getPrincipal()).getAttributes();
 
     if (oauth2Map != null && authenticateToken.isAuthenticated()) {
-      Oauth2LoginInformation.put(
+      oAuth2LoginInformation.put(
           "ClientRegistrationId", authenticateToken.getAuthorizedClientRegistrationId());
-      Oauth2LoginInformation.put("email", oauth2Map.get("email"));
-      Oauth2LoginInformation.put("name", oauth2Map.get("name"));
-      Oauth2LoginInformation.put("userId", oauth2Map.get("clientId"));
+      oAuth2LoginInformation.put("email", oauth2Map.get("email"));
+      oAuth2LoginInformation.put("name", oauth2Map.get("name"));
+      oAuth2LoginInformation.put("userId", oauth2Map.get("clientId"));
     }
 
-    return Oauth2LoginInformation;
+    return oAuth2LoginInformation;
   }
 }

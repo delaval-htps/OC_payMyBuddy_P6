@@ -17,6 +17,8 @@ import org.springframework.security.web.authentication.SimpleUrlAuthenticationFa
 @EnableWebSecurity
 public class PayMyBuddySecurityConfig extends WebSecurityConfigurerAdapter {
 
+  private static final String HOME = "/home";
+
   @Autowired
   private UserDetailsServiceImpl userDetailsService;
 
@@ -30,18 +32,19 @@ public class PayMyBuddySecurityConfig extends WebSecurityConfigurerAdapter {
   protected void configure(HttpSecurity http) throws Exception {
 
     http.authorizeRequests().antMatchers("/css/**").permitAll() // allowed to access to mycss.css
-        .antMatchers("/home").hasRole("USER")
+        .antMatchers(HOME).hasRole("USER")
         .antMatchers("/registration").permitAll()
         .anyRequest().authenticated()
         .and()
         .formLogin()
         .loginPage("/myLoginPage")
         .loginProcessingUrl("/authenticateTheUser")
+        .defaultSuccessUrl(HOME)
         .permitAll()
         .and()
         .oauth2Login()
         .loginPage("/myLoginPage")
-        .defaultSuccessUrl("/")
+        .defaultSuccessUrl(HOME)
         .failureHandler(new SimpleUrlAuthenticationFailureHandler("/login?error"))
         .and()
         .logout()

@@ -14,7 +14,12 @@
 		<div class="container mt-3">
 			<div class="d-flex flex-column align-items-between main-content">
 
-				<h1 th:if="${user != null}">Welcome <span th:text="${user.lastName}"></span></h1>
+				<h1 th:if="${user != null}">Welcome
+					<span th:text="${user.lastName}"></span>
+					<span th:each="role : ${user.roles}">
+						<span th:text="${role.name}"></span>
+					</span>
+				</h1>
 
 
 				<footer th:replace="~{/fragments/my-template::footer}"></footer>

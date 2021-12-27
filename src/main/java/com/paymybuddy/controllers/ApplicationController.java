@@ -17,19 +17,20 @@ import com.paymybuddy.service.UserService;
 @Controller
 public class ApplicationController {
 
-  @Autowired private Oauth2Service oauth2Service;
-  @Autowired private UserService userService;
+  @Autowired
+  private Oauth2Service oauth2Service;
+  @Autowired
+  private UserService userService;
 
-  @GetMapping("/")
+  @GetMapping("/home")
   @RolesAllowed("USER")
   public String getHome(Authentication authenticationUser, Model model) {
     if (authenticationUser.isAuthenticated()) {
       if (authenticationUser instanceof OAuth2AuthenticationToken) {
         Map<String, Object> oauth2LoginInfo = oauth2Service.getOauth2LoginInfo(authenticationUser);
-        
-        Optional<User> user =
-            userService.findUserByOauth2Information(
-                oauth2LoginInfo.get("name").toString(), oauth2LoginInfo.get("email").toString());
+
+        Optional<User> user = userService.findUserByOauth2Information(
+            oauth2LoginInfo.get("name").toString(), oauth2LoginInfo.get("email").toString());
 
         if (user.isPresent()) {
           model.addAttribute("user", user.get());

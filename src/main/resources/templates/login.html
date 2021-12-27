@@ -78,32 +78,17 @@
 
 
 						<!-- Connection with Oauth2 /github-->
-						<div>
-							<div sec:authorize="!isAuthenticated()">
+						<div sec:authorize="!isAuthenticated()">
+							<div>
 								<a th:href="@{/oauth2/authorization/github}">Log In with github</a>
 							</div>
-							<div sec:authorize="isAuthenticated()">
-								Logged user: <span sec:authentication="name">Bob</span>
-							</div>
-						</div>
-						<!-- Connection with Oauth2 /Google-->
-						<div>
-							<div sec:authorize="!isAuthenticated()">
+							<div>
 								<a th:href="@{/oauth2/authorization/google}">Log In with google</a>
 							</div>
-							<div sec:authorize="isAuthenticated()">
-								Logged user: <span sec:authentication="name">Bob</span>
-							</div>
-						</div>
-
-						<!-- Connection with Oauth2 /facebook-->
-						<div>
-							<div sec:authorize="!isAuthenticated()">
+							<div>
 								<a th:href="@{/oauth2/authorization/facebook}">Log In with facebook</a>
 							</div>
-							<div sec:authorize="isAuthenticated()">
-								Logged user: <span sec:authentication="name">Bob</span>
-							</div>
+
 						</div>
 					</div>
 				</div>
