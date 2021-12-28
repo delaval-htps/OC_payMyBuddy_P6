@@ -35,16 +35,17 @@ public class PayMyBuddySecurityConfig extends WebSecurityConfigurerAdapter {
     http.authorizeRequests().antMatchers("/css/**").permitAll() // allowed to access to mycss.css
         .antMatchers(HOME).hasRole("USER")
         .antMatchers("/registration").permitAll()
+        .antMatchers("/loginPage", "/login").permitAll()
         .anyRequest().authenticated()
-        .and()
-        .formLogin()
-        .loginPage("/showLoginPage")
-        .loginProcessingUrl("/authenticateUser")
-        .defaultSuccessUrl(HOME)
-        .permitAll()
+        // .and()
+        // .formLogin()
+        // .loginPage("/loginPage")
+        // .loginProcessingUrl("/login")
+        // .defaultSuccessUrl(HOME)
+        // .permitAll()
         .and()
         .oauth2Login()
-        .loginPage("/showLoginPage")
+        .loginPage("/loginPage")
         .defaultSuccessUrl(HOME)
         .failureHandler(new SimpleUrlAuthenticationFailureHandler("/login?error"))
         .permitAll()
@@ -62,9 +63,9 @@ public class PayMyBuddySecurityConfig extends WebSecurityConfigurerAdapter {
     return new BCryptPasswordEncoder();
   }
 
-  @Override
   @Bean
-  protected AuthenticationManager authenticationManager() throws Exception {
-    return super.authenticationManager();
+  @Override
+  public AuthenticationManager authenticationManagerBean() throws Exception {
+    return super.authenticationManagerBean();
   }
 }

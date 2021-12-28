@@ -28,8 +28,11 @@ public class SecurityServiceImpl implements SecurityService {
                 userDetails.getAuthorities());
 
         // pass the token to authenticationManager
-        authenticationManager.authenticate(token);
-
+        try {
+            authenticationManager.authenticate(token);
+        } catch (Exception e) {
+            return false;
+        }
         // check the token if it is authenticated
         boolean result = token.isAuthenticated();
 

@@ -9,6 +9,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class UserController {
@@ -16,7 +17,8 @@ public class UserController {
   @Autowired
   private SecurityService securityService;
 
-  @GetMapping("/showLoginPage")
+  // mapping to not be able to return on loginPage if user is authenticated
+  @GetMapping("/loginPage")
   public String showLoginPage() {
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
     if (authentication == null || authentication instanceof AnonymousAuthenticationToken) {
@@ -26,12 +28,12 @@ public class UserController {
     }
   }
 
-  @PostMapping("/authenticateUser")
-  public String login(String username, String password) {
+  @PostMapping("/login")
+  public String login(@RequestParam String username, String password) {
     boolean responseLogin = securityService.login(username, password);
     if (responseLogin) {
-      return "home";
+      return "redirect:/home";
     }
-    return "login";
+    return "redirect:/loginPage?error";
   }
 }
