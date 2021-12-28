@@ -1,4 +1,4 @@
-package com.paymybuddy.service;
+package com.paymybuddy.security.services;
 
 import java.security.Principal;
 import java.util.HashMap;

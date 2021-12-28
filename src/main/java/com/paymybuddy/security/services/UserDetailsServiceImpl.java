@@ -1,4 +1,4 @@
-package com.paymybuddy.security;
+package com.paymybuddy.security.services;
 
 import com.paymybuddy.model.User;
 import com.paymybuddy.repository.UserRepository;

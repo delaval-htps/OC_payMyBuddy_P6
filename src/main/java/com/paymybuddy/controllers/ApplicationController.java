@@ -11,7 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import com.paymybuddy.model.User;
-import com.paymybuddy.service.Oauth2Service;
+import com.paymybuddy.security.services.Oauth2Service;
 import com.paymybuddy.service.UserService;
 
 @Controller
