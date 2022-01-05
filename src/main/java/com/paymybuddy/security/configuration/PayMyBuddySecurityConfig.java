@@ -1,17 +1,19 @@
 package com.paymybuddy.security.configuration;
 
-import com.paymybuddy.security.services.UserDetailsServiceImpl;
-
+import com.paymybuddy.security.components.OAuth2AuthenticationProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 
 @Configuration
@@ -21,11 +23,15 @@ public class PayMyBuddySecurityConfig extends WebSecurityConfigurerAdapter {
   private static final String HOME = "/home";
 
   @Autowired
-  private UserDetailsServiceImpl userDetailsService;
+  private UserDetailsService userDetailsService;
+
+  @Autowired
+  private AuthenticationProvider oAuth2AuthenticationProvider;
 
   @Override
   protected void configure(AuthenticationManagerBuilder auth) throws Exception {
 
+    auth.authenticationProvider(oAuth2AuthenticationProvider);
     auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
   }
 
@@ -35,22 +41,20 @@ public class PayMyBuddySecurityConfig extends WebSecurityConfigurerAdapter {
     http.authorizeRequests().antMatchers("/css/**").permitAll() // allowed to access to mycss.css
         .antMatchers(HOME).hasRole("USER")
         .antMatchers("/registration").permitAll()
-        .antMatchers("/loginPage", "/login").permitAll()
         .anyRequest().authenticated()
-        // .and()
-        // .formLogin()
-        // .loginPage("/loginPage")
-        // .loginProcessingUrl("/login")
-        // .defaultSuccessUrl(HOME)
-        // .permitAll()
+        .and()
+        .formLogin()
+        .loginPage("/loginPage")
+        .loginProcessingUrl("/login")
+        .permitAll()
         .and()
         .oauth2Login()
         .loginPage("/loginPage")
-        .defaultSuccessUrl(HOME)
         .failureHandler(new SimpleUrlAuthenticationFailureHandler("/login?error"))
         .permitAll()
         .and()
         .logout()
+        .logoutSuccessUrl("/loginPage?logout")
         .deleteCookies("JSESSIONID")
         .permitAll()
         .and()
@@ -66,6 +70,8 @@ public class PayMyBuddySecurityConfig extends WebSecurityConfigurerAdapter {
   @Bean
   @Override
   public AuthenticationManager authenticationManagerBean() throws Exception {
+
     return super.authenticationManagerBean();
   }
+
 }
