@@ -2,7 +2,7 @@ package com.paymybuddy.security.components;
 
 import java.util.Map;
 
-import com.paymybuddy.security.services.OAuth2ServiceImpl;
+import com.paymybuddy.security.services.GithubUserInfoServiceImpl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -23,7 +23,7 @@ public class OAuth2AuthenticationProvider implements AuthenticationProvider {
     private UserDetailsService userDetailsService;
 
     @Autowired
-    private OAuth2ServiceImpl oAuth2Service;
+    private GithubUserInfoServiceImpl oAuth2Service;
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {

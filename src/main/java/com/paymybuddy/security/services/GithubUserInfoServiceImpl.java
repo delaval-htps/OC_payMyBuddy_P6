@@ -8,7 +8,7 @@ import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.stereotype.Service;
 
 @Service
-public class OAuth2ServiceImpl implements OAuth2Service {
+public class GithubUserInfoServiceImpl implements OAuth2UserInfoService {
 
   /**
    * Return a Map with all informations relative to user and its Oauth2

@@ -7,7 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
-public class UserController {
+public class AuthController {
 
   // mapping to not be able to return on loginPage if user is authenticated
   @GetMapping("/loginPage")
