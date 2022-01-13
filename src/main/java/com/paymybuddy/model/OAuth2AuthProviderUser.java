@@ -3,6 +3,8 @@ package com.paymybuddy.model;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -23,7 +25,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @ToString
 @Table(name = "oauth2_identifier")
-public class Oauht2Identifier {
+public class OAuth2AuthProviderUser {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,11 +34,12 @@ public class Oauht2Identifier {
 
   @NotBlank
   @Column(name = "network_provider_name")
-  private String networkProviderName;
+  @Enumerated(EnumType.STRING)
+  private AuthProvider registrationId;
 
   @NotBlank
   @Column(name = "provider_user_id")
-  private Long providerUserId;
+  private String providerUserId;
 
   @ManyToOne(cascade = CascadeType.ALL)
   @JoinColumn(name = "user_id") // pour determiner la fk

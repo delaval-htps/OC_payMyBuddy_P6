@@ -23,16 +23,17 @@ public class UserService {
    * @param email    the email of this user
    * @return return user if he's registred in application, null if not.
    */
-  public Optional<User> findUserByOauth2Information(String username, String email) {
-    String lastname = null;
-    String firstname = null;
+  // public Optional<User> findUserByOauth2Information(String username, String
+  // email) {
+  // String lastname = null;
+  // String firstname = null;
 
-    if (username != null && !username.trim().equalsIgnoreCase("")) {
-      firstname = username.trim().split(" ")[0];
-      lastname = username.trim().split(" ")[1];
-    }
-    return userRepository.findbyOauth2Information(firstname, lastname, email);
-  }
+  // if (username != null && !username.trim().equalsIgnoreCase("")) {
+  // firstname = username.trim().split(" ")[0];
+  // lastname = username.trim().split(" ")[1];
+  // }
+  // return userRepository.findbyOauth2Information(firstname, lastname, email);
+  // }
 
   /**
    * save a user in application.
@@ -51,7 +52,7 @@ public class UserService {
    * @param email the email of user
    * @return return the user if existing or null if not
    */
-  public User findByEmail(String email) {
+  public Optional<User> findByEmail(String email) {
     return userRepository.findByEmail(email);
   }
 }

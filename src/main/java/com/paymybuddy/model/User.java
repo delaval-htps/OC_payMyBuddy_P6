@@ -81,14 +81,14 @@ public class User {
   private Set<Role> roles;
 
   @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-  private Set<Oauht2Identifier> oauth2Identifiers = new HashSet<>();
+  private Set<OAuth2AuthProviderUser> oauth2Identifiers = new HashSet<>();
 
   /**
    * method to link a OAuth2Identier to a user.
    *
    * @param identifier the OAuth2identifier to add to Set of user
    */
-  public void addOAuth2Identifier(Oauht2Identifier identifier) {
+  public void addOAuth2Identifier(OAuth2AuthProviderUser identifier) {
     this.oauth2Identifiers.add(identifier);
     identifier.setUser(this);
   }
@@ -98,7 +98,7 @@ public class User {
    *
    * @param identifier the OAuth2identifier to remove
    */
-  public void removeOAuth2Identifier(Oauht2Identifier identifier) {
+  public void removeOAuth2Identifier(OAuth2AuthProviderUser identifier) {
     this.oauth2Identifiers.remove(identifier);
     identifier.setUser(null);
   }
