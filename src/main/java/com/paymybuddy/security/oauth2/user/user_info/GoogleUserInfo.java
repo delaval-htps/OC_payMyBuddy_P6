@@ -8,12 +8,11 @@ public class GoogleUserInfo extends OAuth2UserInfo {
 
   public GoogleUserInfo(Map<String, Object> attributes) {
     super(attributes);
-    // TODO Auto-generated constructor stub
   }
 
   @Override
-  public String getClientId() {
-    return attributes.get("sub").toString();
+  public Long getClientId() {
+    return Long.parseLong(attributes.get("sub").toString());
   }
 
   @Override

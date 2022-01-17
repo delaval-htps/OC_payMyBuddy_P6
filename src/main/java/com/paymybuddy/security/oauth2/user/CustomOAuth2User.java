@@ -51,6 +51,10 @@ public class CustomOAuth2User implements OAuth2User {
         return oAuth2UserInfo.getEmail();
     }
 
+    public Long getClientId() {
+        return Long.parseLong(oAuth2UserInfo.getClientId().toString());
+    }
+
     @Override
     public String toString() {
         return "CustomOAuth2User: \n [oAuth2User=" + oAuth2User + ",\n oAuth2UserInfo=" + oAuth2UserInfo + "]";

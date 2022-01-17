@@ -80,15 +80,15 @@ public class User {
   @JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
   private Set<Role> roles;
 
-  @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-  private Set<OAuth2AuthProviderUser> oauth2Identifiers = new HashSet<>();
+  @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+  private Set<OAuth2Provider> oauth2Identifiers = new HashSet<>();
 
   /**
    * method to link a OAuth2Identier to a user.
    *
    * @param identifier the OAuth2identifier to add to Set of user
    */
-  public void addOAuth2Identifier(OAuth2AuthProviderUser identifier) {
+  public void addOAuth2Identifier(OAuth2Provider identifier) {
     this.oauth2Identifiers.add(identifier);
     identifier.setUser(this);
   }
@@ -98,7 +98,7 @@ public class User {
    *
    * @param identifier the OAuth2identifier to remove
    */
-  public void removeOAuth2Identifier(OAuth2AuthProviderUser identifier) {
+  public void removeOAuth2Identifier(OAuth2Provider identifier) {
     this.oauth2Identifiers.remove(identifier);
     identifier.setUser(null);
   }

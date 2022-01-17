@@ -12,6 +12,12 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
+import org.springframework.security.oauth2.client.registration.ClientRegistration;
+import org.springframework.security.oauth2.core.OAuth2AccessToken;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -25,14 +31,14 @@ import lombok.ToString;
 @NoArgsConstructor
 @ToString
 @Table(name = "oauth2_identifier")
-public class OAuth2AuthProviderUser {
+public class OAuth2Provider {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Column(name = "oauht2_identifier_id")
+  @Column(name = "oauth2_identifier_id")
   private Long oauth2IdentifierId;
 
-  @NotBlank
+  @NotNull
   @Column(name = "network_provider_name")
   @Enumerated(EnumType.STRING)
   private AuthProvider registrationId;
@@ -44,4 +50,5 @@ public class OAuth2AuthProviderUser {
   @ManyToOne(cascade = CascadeType.ALL)
   @JoinColumn(name = "user_id") // pour determiner la fk
   private User user;
+
 }

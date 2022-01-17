@@ -11,7 +11,7 @@ public abstract class OAuth2UserInfo {
 
     protected Map<String, Object> attributes;
 
-    public abstract String getClientId();
+    public abstract Long getClientId();
 
     public abstract String getEmail();
 
