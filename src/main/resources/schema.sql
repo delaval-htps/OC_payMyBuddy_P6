@@ -22,7 +22,7 @@ DROP PROCEDURE IF EXISTS user_role_fk1^;
 CREATE TABLE IF NOT EXISTS oauth2_identifier (
 	oauth2_identifier_id INT AUTO_INCREMENT NOT NULL,
 	network_provider_name VARCHAR(50) NOT NULL,
-	provider_user_id INT NOT NULL,
+	provider_user_id VARCHAR(50) NOT NULL,
 	user_id INT NOT NULL,
 	PRIMARY KEY (oauth2_identifier_id)
 )ENGINE=InnoDB, DEFAULT CHARSET=utf8mb4 ^;
@@ -129,7 +129,7 @@ BEGIN
 	THEN
 		ALTER TABLE oauth2_identifier ADD CONSTRAINT user_oauth2_identifier_fk
 		FOREIGN KEY (user_id)
-		REFERENCES user (id)
+		REFERENCES user(id)
 		ON DELETE NO ACTION
 		ON UPDATE NO ACTION;
 	END IF;

@@ -11,8 +11,8 @@ public class GoogleUserInfo extends OAuth2UserInfo {
   }
 
   @Override
-  public Long getClientId() {
-    return Long.parseLong(attributes.get("sub").toString());
+  public String getClientId() {
+    return attributes.get("sub").toString();
   }
 
   @Override

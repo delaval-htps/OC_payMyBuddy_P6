@@ -11,9 +11,8 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface OAuth2ProviderRepository extends JpaRepository<OAuth2Provider, Long> {
 
-    @Query("select oap from OAuth2Provider as oap "
-            + "join   oap.user as u "
-            + "join  u.roles as r "
+    @Query("select op from OAuth2Provider as op "
+            + "join op.user as u "
             + "where u.email =?1")
     Optional<OAuth2Provider> findByEmail(String email);
 
