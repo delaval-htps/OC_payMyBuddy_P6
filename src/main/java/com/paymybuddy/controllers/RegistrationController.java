@@ -6,6 +6,7 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.neo4j.Neo4jProperties.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.core.OAuth2AuthenticatedPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,15 +27,17 @@ public class RegistrationController {
   private UserService userService;
 
   @GetMapping("/registration")
-  public String registerNewUser(Model model, Principal userPrincipal) {
+  public String registerNewUser(Model model, org.springframework.security.core.Authentication authentication) {
 
     UserDto userDto = new UserDto();
-    CustomOAuth2User oAuth2User = (CustomOAuth2User) userPrincipal;
-    userDto.setEmail(oAuth2User.getEmail());
-    userDto.setLastName(oAuth2User.getLastName());
-    userDto.setFirstName(oAuth2User.getFirstName());
+    if (authentication != null && authentication.isAuthenticated()) {
+      CustomOAuth2User oAuth2User = (CustomOAuth2User) authentication.getPrincipal();
+      userDto.setEmail(oAuth2User.getEmail());
+      userDto.setLastName(oAuth2User.getLastName());
+      userDto.setFirstName(oAuth2User.getFirstName());
 
-    model.addAttribute("user", userDto);
+      model.addAttribute("user", userDto);
+    }
     return "registration";
   }
 

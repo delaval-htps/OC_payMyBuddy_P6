@@ -12,7 +12,11 @@ public class ApplicationController {
 
   @GetMapping("/home")
   @RolesAllowed("USER")
-  public String getHome(Authentication authenticationUser, Model model) {
-    return "home";
+  public String getHome(Authentication authentication, Model model) {
+    if (authentication != null && authentication.isAuthenticated()) {
+      return "home";
+    } else {
+      return "/login";
+    }
   }
 }

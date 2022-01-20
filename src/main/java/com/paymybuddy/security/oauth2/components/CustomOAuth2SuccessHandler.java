@@ -77,6 +77,7 @@ public class CustomOAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHa
         } else {
 
             // case of user not registred
+
             response.sendRedirect("/registration");
         }
 

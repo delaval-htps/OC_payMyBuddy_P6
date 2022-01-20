@@ -24,24 +24,18 @@
 							<div class="row g-3  align-items-center">
 								<div class="col-auto mb-3">
 									<label class="col-form-label" for="user"><i class="fas fa-user"></i></label>
-									<div th:if="${oauth2User == null}">
-										<input type="text" class="form_control" id="user" placeholder="lastname"
-											name="lastName" />
-										<input type="text" class="form_control" id="user" placeholder="firstname"
-											name="firstName" />
-									</div>
-									<div th:if="${oauth2User != null}">
-										<input type="text" class="form_control" id="user"
-											th:value="${oauth2User.name != null ? oauth2User.name:''}"
-											placeholder="lastname" name="lastName" />
-										<input type="text" class="form_control" id="user" placeholder="firstname"
-											name="firstName" />
+
+									<div>
+										<input type="text" class="form_control" id="user_lastname"
+											th:value="${user?.lastName}" placeholder="lastname" name="lastName" />
+										<input type="text" class="form_control" id="user_firstname"
+											th:value="${user?.firstName}" placeholder="firstname" name="firstName" />
 									</div>
 								</div>
 								<div class="col-auto mb-3">
 									<label class="col-form-label" for="email"><i class="far fa-envelope"></i></label>
 									<input type="email" class="form_control" id="email" placeholder="email"
-										name="email" />
+										th:value="${user?.email}" name="email" />
 								</div>
 								<div class="col-auto mb-3">
 									<label class="col-form-label" for="address"><i
@@ -75,13 +69,19 @@
 										Repeat your password to check it.
 									</div>
 								</div>
+
 							</div>
-						</form>
+							<div class="col-auto mb-3">
+								<input class="btn-gradient" type="submit" value="enregistrer">
+
+							</div>
 					</div>
+					</form>
 				</div>
-			</section>
-		</article>
-		<footer th:replace="~{/fragments/my-template::footer}"></footer>
+	</div>
+	</section>
+	</article>
+	<footer th:replace="~{/fragments/my-template::footer}"></footer>
 	</div>
 
 </body>

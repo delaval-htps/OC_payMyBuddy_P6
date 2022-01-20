@@ -44,18 +44,24 @@
 					<li class="nav-item active me-5">
 						<a class="nav-link " th:href="@{/home}">Home<span class="sr-only">(current)</span></a>
 					</li>
+
 					<li class="nav-item me-5">
 						<a class="nav-link " th:href="@{/transfert}">Transfert</a>
 					</li>
+
 					<li class="nav-item me-5">
 						<a class="nav-link " th:href="@{/profile}">Profile</a>
 					</li>
+
 					<li class="nav-item me-5">
 						<a class="nav-link " th:href="@{/contact}">Contact</a>
 					</li>
-					<li sec:authorize="isAuthenticated()" class="nav-item ">
+
+					<li sec:authorize="isAuthenticated()" th:if="${#httpServletRequest.requestURI !='/registration'}"
+						class="nav-item ">
 						<form th:action="@{/logout}" method="post">
 							<input class="btn btn-sm mt-2" id="logout" type="submit" value="Log Off" />
+
 						</form>
 					</li>
 
@@ -70,7 +76,7 @@
 		<ol class="breadcrumb">
 			<li class="breadcrumb-item" th:each="content,iterStatus : ${#strings.arraySplit(page,',')}"
 				th:classappend="${iterStatus.last}?'active'">
-				<a th:href="@{${iterStatus.first}?'/':'/${content}'}" th:text="${content}"
+				<a th:href="@{${iterStatus.first}? '/home':'/${content}'}" th:text="${content}"
 					th:if=${!iterStatus.last}>Home</a>
 				<span th:if="${iterStatus.last}" th:text="${content}">text</span>
 			</li>
