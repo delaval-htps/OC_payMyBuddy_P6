@@ -71,8 +71,8 @@
 	</header>
 
 	<!-- breadcrumb -->
-	<nav id="breadcrumb" class="fs-5 col-12" th:fragment="nav-breadcrumb(page)" style="--bs-breadcrumb-divider: '/';"
-		aria-label="breadcrumb">
+	<nav th:if="${#httpServletRequest.requestURI !='/registration'}" id="breadcrumb" class="fs-5 col-12"
+		th:fragment="nav-breadcrumb(page)" style="--bs-breadcrumb-divider: '/';" aria-label="breadcrumb">
 		<ol class="breadcrumb">
 			<li class="breadcrumb-item" th:each="content,iterStatus : ${#strings.arraySplit(page,',')}"
 				th:classappend="${iterStatus.last}?'active'">

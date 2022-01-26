@@ -1,23 +1,16 @@
 package com.paymybuddy.controllers;
 
-import java.security.Principal;
-
-import javax.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.neo4j.Neo4jProperties.Authentication;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.oauth2.core.OAuth2AuthenticatedPrincipal;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import com.paymybuddy.dto.UserDto;
 import com.paymybuddy.exceptions.UserException;
 import com.paymybuddy.model.User;
 import com.paymybuddy.security.oauth2.user.CustomOAuth2User;
 import com.paymybuddy.service.UserService;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 
 @Controller
 @Log4j2
@@ -30,7 +23,8 @@ public class RegistrationController {
   public String registerNewUser(Model model, org.springframework.security.core.Authentication authentication) {
 
     UserDto userDto = new UserDto();
-    if (authentication != null && authentication.isAuthenticated()) {
+
+    if (authentication != null) {
       CustomOAuth2User oAuth2User = (CustomOAuth2User) authentication.getPrincipal();
       userDto.setEmail(oAuth2User.getEmail());
       userDto.setLastName(oAuth2User.getLastName());
@@ -42,8 +36,7 @@ public class RegistrationController {
   }
 
   @PostMapping("/registration")
-  public String saveNewUser(Model model, @RequestBody @Valid UserDto userDto) {
-
+  public String saveNewUser(Model model, UserDto userDto) {
     User newUser = new User();
 
     if (userDto != null) {

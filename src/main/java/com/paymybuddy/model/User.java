@@ -14,10 +14,10 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
+import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
-
-import org.hibernate.validator.constraints.UniqueElements;
+import javax.validation.constraints.NotNull;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -45,7 +45,6 @@ public class User {
 
   @Column
   @NotBlank
-  @UniqueElements
   @Email
   private String email;
 
@@ -65,15 +64,19 @@ public class User {
   private String firstName;
 
   @Column
+  @NotBlank
   private String address;
 
   @Column
+  @NotNull
   private int zip;
 
   @Column
+  @NotBlank(message = "the city must be not null")
   private String city;
 
   @Column
+  @NotBlank(message = "the phone must be not null")
   private String phone;
 
   @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
