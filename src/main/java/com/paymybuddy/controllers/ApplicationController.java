@@ -14,11 +14,15 @@ public class ApplicationController {
   @RolesAllowed("USER")
   public String getHome(Authentication authentication, Model model) {
 
-    if (authentication != null && !(authentication instanceof OAuth2AuthenticationToken)) {
+    String username =authentication.getName();
+    model.addAttribute("userName", username);   
+    if (!(authentication instanceof OAuth2AuthenticationToken)){ 
       return "home";
-
-    } else {
-      return "login";
+    }else{
+      authentication.setAuthenticated(false);
+      return ("redirect:/logout");
     }
+    
+    
   }
 }
