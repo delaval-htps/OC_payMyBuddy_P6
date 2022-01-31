@@ -65,7 +65,7 @@
 							th:href="@{/contact}">Contact</a>
 					</li>
 
-					<li sec:authorize="isAuthenticated()" 
+					<li sec:authorize="isAuthenticated()" th:if="${#httpServletRequest.requestURI != '/registration'}"
 						class="nav-item ">
 						<form th:action="@{/logout}" method="post">
 							<input class="btn btn-sm mt-2" id="logout" type="submit" value="Log Off" />
