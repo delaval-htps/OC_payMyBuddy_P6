@@ -2,7 +2,6 @@ package com.paymybuddy.model;
 
 import java.util.HashSet;
 import java.util.Set;
-
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -14,11 +13,12 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
-import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.Email;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-
+import javax.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -50,33 +50,32 @@ public class User {
 
   @Column
   @NotBlank
+  @Size(min = 8)
   private String password;
 
   @Column
   private Byte enabled;
 
   @NotBlank
+  @Size(max=20)
   @Column(name = "last_name")
   private String lastName;
 
   @NotBlank
+  @Size(max=20)
   @Column(name = "first_name")
   private String firstName;
 
   @Column
-  @NotBlank
   private String address;
 
   @Column
-  @NotNull
   private int zip;
 
   @Column
-  @NotBlank(message = "the city must be not null")
   private String city;
 
   @Column
-  @NotBlank(message = "the phone must be not null")
   private String phone;
 
   @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)

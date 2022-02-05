@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="fr" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<html lang="fr" xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 
 <head th:replace="~{/fragments/my-template::html-head('Registration')}">
 
@@ -24,31 +25,34 @@
 
 				<div class="card-body">
 
-					<form th:action="@{/registration}" method="post">
+					<form th:action="@{/registration}" th:object="${user}" method="post" id="registration">
 						<fieldset class="border p-3 mb-3">
 							<legend class="float-none w-auto lead bg-white ps-2 pe-2"> Personal
 								Informations</legend>
 							<div class="row g-3 mb-3">
-								<label class="col-1 col-form-label" for="user"><i class="fas fa-user"></i></label>
+								<label class="col-1 mb-4 col-form-label" for="LastName"><i
+										class="fas fa-user"></i></label>
+								<input type="text" class="col-4 mb-4 form_control is-valid" id="LastName"
+									th:value="${user?.lastName}" placeholder="lastname"
+									name="lastName"  />	
+								
 
-								<input type="text" class="col-4 form_control" id="user_lastname"
-									th:value="${user?.lastName}" placeholder="lastname" name="lastName" />
 
-								<input type="text" class="col-4 offset-2 form_control" id="user_firstname"
-									th:value="${user?.firstName}" placeholder="firstname" name="firstName" />
+								<input type="text" class="col-4 mb-4 offset-2 form_control is-valid" id="user_firstname"
+									th:value="${user?.firstName}" placeholder="firstname" name="firstName" required />
 
 							</div>
 
 							<div class="row  mb-3 g-3 ">
 
-								<label class="col-1 col-form-label" for="email">
+								<label class="col-1  col-form-label" for="email">
 									<i class="far fa-envelope"></i></label>
 								<input type="email" class=" col-4 form_control" id="email" placeholder="email"
-									th:value="${user?.email}" name="email" />
+									th:value="${user?.email}" name="email" required />
 
 								<label class=" col-1 offset-1 col-form-label" for="phone"><i
 										class="fas fa-phone-alt"></i></label>
-								<input type="text" class="col-4 form_control" id="phone" name="phone" />
+								<input type="text" class="col-4 form_control" id="phone" name="phone" required />
 							</div>
 						</fieldset>
 
@@ -56,17 +60,17 @@
 							<legend class="float-none w-auto lead bg-white ps-2 pe-2"> Personal Address</legend>
 							<div class="row mb-3 g-3">
 
-								<label class="col-1 col-form-label" for="address">
+								<label class="col-1 mb-4 col-form-label" for="address">
 									<i class="fas fa-map-marker-alt"></i></label>
-								<input type="text" class="col-10 col-form_control" id="address" placeholder="address"
-									name="address" />
+								<input type="text" class="col-10 mb-4 col-form_control" id="address"
+									placeholder="address" name="address" required />
 							</div>
 							<div class="row mb-3 g-3">
 
 								<label class=" col-1 col-form-label" for="zip">Zip:</label>
-								<input type="number" class=" col-4 form_control" id="zip" name="zip" />
+								<input type="number" class=" col-4 form_control" id="zip" name="zip" required />
 								<label class=" col-1 offset-1 col-form-label" for="city">City:</label>
-								<input type="text" class="col-4 form_control" id="city" name="city" />
+								<input type="text" class="col-4 form_control" id="city" name="city" required />
 							</div>
 						</fieldset>
 
@@ -74,8 +78,8 @@
 							<legend class="float-none w-auto lead bg-white ps-2 pe-2"> Personal password</legend>
 							<div class="row mb-3 g-3 justify-content-center align-items-center">
 								<label class="col-1 col-form-label" for="password"><i class="fas fa-lock"></i></label>
-								<input type="password" class="col-5 form_control" id="password" name="password"
-									placeholder="password" />
+								<input type="password" class="col-5 mb-4 form_control" id="password" name="password"
+									placeholder="password" required />
 
 								<span id="passwordHelpBlock" class="col-6 form-text">
 									Your password must be 8-20 characters long, contain letters and numbers, and
@@ -86,9 +90,12 @@
 								<label class="col-1 col-form-label" for="matchingPassword"><i
 										class="fas fa-key"></i></label>
 								<input type="password" class="col-5 form_control" id="matchingPassword"
-									name="matchingPassword" />
+									name="matchingPassword" required />
 								<div id="passwordHelpBlock" class="col-6 form-text">
 									Repeat your password to check it.
+								</div>
+								<div class="col-12">
+									<span id="message"></span>
 								</div>
 							</div>
 						</fieldset>
@@ -99,8 +106,9 @@
 
 						</div>
 					</form>
-					<form  class="row justify-content-center" th:action="@{/logout}" method="post">
-						<input class="col-4 btn btn-outline-dark text-center" id="logout" type="submit" value="Annuler" />
+					<form class="row justify-content-center" th:action="@{/logout}" method="post">
+						<input class="col-4 btn btn-outline-dark text-center" id="logout" type="submit"
+							value="Annuler" />
 
 					</form>
 				</div>
@@ -112,5 +120,16 @@
 	</div>
 
 </body>
-
+<script type="text/javascript">
+	$('#registration').submit(function (e) {
+		
+		if ($('#password') != $('matchingPassword')){
+			$('#message').html('passwords are not the same!').css('font-color','red');
+			e.preventDefault(); 
+		}else{
+			$('#message').html('Matching password').css('font-color','red').fadeOut(600);
+		}
+		
+	});
+</script>
 </html>

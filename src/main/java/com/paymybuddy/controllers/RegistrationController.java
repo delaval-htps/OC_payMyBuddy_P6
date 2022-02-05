@@ -1,16 +1,19 @@
 package com.paymybuddy.controllers;
 
+import javax.validation.Valid;
 import com.paymybuddy.dto.UserDto;
 import com.paymybuddy.exceptions.UserException;
 import com.paymybuddy.model.User;
 import com.paymybuddy.security.oauth2.user.CustomOAuth2User;
 import com.paymybuddy.service.UserService;
-import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import lombok.extern.log4j.Log4j2;
 
 @Controller
 @Log4j2
@@ -19,8 +22,12 @@ public class RegistrationController {
   @Autowired
   private UserService userService;
 
+  @Autowired
+  PasswordEncoder passwordEncoder;
+
   @GetMapping("/registration")
-  public String registerNewUser(Model model, org.springframework.security.core.Authentication authentication) {
+  public String registerNewUser(Model model,
+      org.springframework.security.core.Authentication authentication) {
 
     UserDto userDto = new UserDto();
 
@@ -36,18 +43,26 @@ public class RegistrationController {
   }
 
   @PostMapping("/registration")
-  public String saveNewUser(Model model, UserDto userDto) {
+  public String saveNewUser(Model model, @Valid UserDto userDto) {
+
+
     User newUser = new User();
 
     if (userDto != null) {
-      newUser.setLastName(userDto.getLastName());
-      newUser.setFirstName(userDto.getLastName());
-      newUser.setAddress(userDto.getAddress());
-      newUser.setAddress(userDto.getAddress());
+      if (userDto.getLastName() != null && !userDto.getLastName().trim().equalsIgnoreCase("")) {
+        newUser.setLastName(userDto.getLastName());
+      }
+      if (userDto.getFirstName() != null && !userDto.getFirstName().trim().equalsIgnoreCase("")) {
+        newUser.setFirstName(userDto.getFirstName());
+      }
+      if (userDto.getAddress() != null && !userDto.getAddress().trim().equalsIgnoreCase("")) {
+        newUser.setAddress(userDto.getAddress());
+      }
       newUser.setPhone(userDto.getPhone());
       newUser.setZip(userDto.getZip());
+      newUser.setCity(userDto.getCity());
       newUser.setEmail(userDto.getEmail());
-      newUser.setPassword(userDto.getPassword());
+      newUser.setPassword(passwordEncoder.encode(userDto.getPassword()));
       newUser.setEnabled((byte) 1);
 
       userService.saveUser(newUser);

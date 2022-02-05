@@ -1,5 +1,11 @@
 package com.paymybuddy.security.oauth2.components;
 
+import java.io.IOException;
+import java.util.Optional;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.transaction.Transactional;
 import com.paymybuddy.exceptions.OAuth2ProviderNotFoundException;
 import com.paymybuddy.model.AuthProvider;
 import com.paymybuddy.model.OAuth2Provider;
@@ -7,20 +13,12 @@ import com.paymybuddy.model.User;
 import com.paymybuddy.repository.UserRepository;
 import com.paymybuddy.security.oauth2.user.CustomOAuth2User;
 import com.paymybuddy.service.OAuth2ProviderService;
-import java.io.IOException;
-import java.util.Optional;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.transaction.Transactional;
-import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 
 @Component
-@Log4j2
 public class CustomOAuth2SuccessHandler
     extends SimpleUrlAuthenticationSuccessHandler {
 
