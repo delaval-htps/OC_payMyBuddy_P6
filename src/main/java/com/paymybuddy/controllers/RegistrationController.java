@@ -12,7 +12,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import lombok.extern.log4j.Log4j2;
 
 @Controller
@@ -37,14 +39,18 @@ public class RegistrationController {
       userDto.setLastName(oAuth2User.getLastName());
       userDto.setFirstName(oAuth2User.getFirstName());
 
-      model.addAttribute("user", userDto);
     }
+    model.addAttribute("user", userDto);
     return "registration";
   }
 
   @PostMapping("/registration")
-  public String saveNewUser(Model model, @Valid UserDto userDto) {
-
+  public String saveNewUser(Model model, @Valid @ModelAttribute(value ="user") UserDto userDto,BindingResult bindingResult) {
+    
+    if (bindingResult.hasErrors()){
+      System.out.println(bindingResult.toString());
+            return "registration";
+    }
 
     User newUser = new User();
 

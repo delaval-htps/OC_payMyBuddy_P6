@@ -15,7 +15,7 @@
 
 
 		<article class="row justify-content-center align-items-center">
-			<div class="card p-0  col-5 m-auto ">
+			<div class="card p-0  col-6 m-auto custom-shadow ">
 
 				<div class="card-header">
 					<h4 class="card-title">Registration</h4>
@@ -25,90 +25,148 @@
 
 				<div class="card-body">
 
-					<form th:action="@{/registration}" th:object="${user}" method="post" id="registration">
-						<fieldset class="border p-3 mb-3">
+					<form th:action="@{/registration}" th:object="${user}" method="post" id="registrationForm"
+						novalidate>
+						<fieldset class="border p-3 mb-3 custom-shadow">
 							<legend class="float-none w-auto lead bg-white ps-2 pe-2"> Personal
 								Informations</legend>
-							<div class="row g-3 mb-3">
-								<label class="col-1 mb-4 col-form-label" for="LastName"><i
+							<div class="row mb-3">
+
+								<label class="col-form-label col-sm-1 " for="LastName"><i
 										class="fas fa-user"></i></label>
-								<input type="text" class="col-4 mb-4 form_control is-valid" id="LastName"
-									th:value="${user?.lastName}" placeholder="lastname"
-									name="lastName"  />	
-								
+								<div class="col-md-5 col-sm-12 mb-3">
+									<input type="text" class=" col-12 form-control " id="LastName"
+										th:field="*{lastName}" placeholder="lastname" name="lastName"
+										th:classappend="${#fields.hasErrors('lastName')? 'is-invalid':''}" required />
+
+									<div class="valid-feedback">Valid.</div>
+									<div class="invalid-feedback">
+										<span th:each="error:${#fields.errors('lastName')}" th:text="${error}">
+										</span>
+									</div>
 
 
-								<input type="text" class="col-4 mb-4 offset-2 form_control is-valid" id="user_firstname"
-									th:value="${user?.firstName}" placeholder="firstname" name="firstName" required />
+
+								</div>
+								<div class=" col-sm-12 col-md-5 offset-md-1 mb-3">
+									<input type="text" class="col-12 form-control" id="user_firstname"
+										th:value="*{firstName}" placeholder="firstname" name="firstName"
+										th:classappend="${#fields.hasErrors('firstName')? 'is-invalid':''}" required />
+
+									<div class="invalid-feedback">
+										<span th:each="error:${#fields.errors('firstName')}" th:text="${error}">
+										</span>
+									</div>
+								</div>
 
 							</div>
 
-							<div class="row  mb-3 g-3 ">
+							<div class="row  mb-3">
 
-								<label class="col-1  col-form-label" for="email">
+								<label class="col-sm-1 col-form-label" for="email">
 									<i class="far fa-envelope"></i></label>
-								<input type="email" class=" col-4 form_control" id="email" placeholder="email"
-									th:value="${user?.email}" name="email" required />
+								<div class="col-md-5 col-sm-12 mb-3">
+									<input type="email" class=" col-12 form-control" id="email" placeholder="email"
+										th:field="*{email}" name="email"
+										th:classappend="${#fields.hasErrors('email')?'is-invalid':''}" required />
 
-								<label class=" col-1 offset-1 col-form-label" for="phone"><i
+									<div class="valid-feedback">Valid.</div>
+									<div class="invalid-feedback">
+										<span th:each="error:${#fields.errors('email')}" th:text="${error}"></span>
+									</div>
+								</div>
+
+								<label class=" col-sm-1 col-form-label" for="phone"><i
 										class="fas fa-phone-alt"></i></label>
-								<input type="text" class="col-4 form_control" id="phone" name="phone" required />
+								<div class="col-md-5 col-sm-12 mb-3">
+									<input type="text" class="col-12 form-control" id="phone" name="phone" />
+								</div>
 							</div>
 						</fieldset>
 
-						<fieldset class="border p-3 mb-3">
+						<fieldset class="border p-3 mb-3 custom-shadow">
 							<legend class="float-none w-auto lead bg-white ps-2 pe-2"> Personal Address</legend>
-							<div class="row mb-3 g-3">
+							<div class="row mb-3 ">
 
-								<label class="col-1 mb-4 col-form-label" for="address">
+								<label class="col-sm-1 col-form-label" for="address">
 									<i class="fas fa-map-marker-alt"></i></label>
-								<input type="text" class="col-10 mb-4 col-form_control" id="address"
-									placeholder="address" name="address" required />
+								<div class="col-sm-11 mb-3">
+									<input type="text" class="col-12 mb-4 form-control" id="address"
+										placeholder="address" name="address" />
+								</div>
 							</div>
 							<div class="row mb-3 g-3">
 
-								<label class=" col-1 col-form-label" for="zip">Zip:</label>
-								<input type="number" class=" col-4 form_control" id="zip" name="zip" required />
-								<label class=" col-1 offset-1 col-form-label" for="city">City:</label>
-								<input type="text" class="col-4 form_control" id="city" name="city" required />
+								<label class=" col-md-1 col-form-label" for="zip">Zip:</label>
+								<div class="col-md-5 col-sm-12 mb-3">
+									<input type="number" class=" col-12 form-control" id="zip" name="zip" />
+								</div>
+
+								<label class=" col-md-1 col-form-label" for="city">City:</label>
+								<div class="col-md-5 col-sm-12 mb-3">
+									<input type="text" class="col-12 form-control" id="city" name="city" />
+								</div>
 							</div>
 						</fieldset>
 
-						<fieldset class="border p-3 mb-3 ">
+						<fieldset class="border p-3 mb-3 custom-shadow">
 							<legend class="float-none w-auto lead bg-white ps-2 pe-2"> Personal password</legend>
-							<div class="row mb-3 g-3 justify-content-center align-items-center">
-								<label class="col-1 col-form-label" for="password"><i class="fas fa-lock"></i></label>
-								<input type="password" class="col-5 mb-4 form_control" id="password" name="password"
-									placeholder="password" required />
+							<div class="row mb-3">
+								<label class="col-sm-1 col-form-label" for="password"><i
+										class="fas fa-lock"></i></label>
 
-								<span id="passwordHelpBlock" class="col-6 form-text">
-									Your password must be 8-20 characters long, contain letters and numbers, and
-									must not contain spaces, special characters, or emoji.
-								</span>
+								<div class="col-sm-6  mb-3">
+									<input type="password" class="col-12 mb-1 form-control" id="password"
+										name="password" placeholder="password" th:field="*{password}"
+										th:classappend="${#fields.hasErrors('password')?'is-invalid':''}" required />
+									<!-- An element to toggle between password visibility -->
+									<input type="checkbox" onclick="showPassword()">ShowPassword</input>s
+									
+									<div class="valid-feedback">Valid.</div>
+									<div class="invalid-feedback">
+										<span th:each="error: ${#fields.errors('password')}" th:text="${error}"></span>
+									</div>
 
-
-								<label class="col-1 col-form-label" for="matchingPassword"><i
-										class="fas fa-key"></i></label>
-								<input type="password" class="col-5 form_control" id="matchingPassword"
-									name="matchingPassword" required />
-								<div id="passwordHelpBlock" class="col-6 form-text">
-									Repeat your password to check it.
+									<span id="passwordHelpBlock" class="col-12 form-text">
+										Your password must be 8-20 characters long.
+									</span>
 								</div>
-								<div class="col-12">
-									<span id="message"></span>
+
+								<div class="row mb-3">
+									<label class="col-sm-1 col-form-label" for="matchingPassword"><i
+											class="fas fa-key"></i></label>
+									<div class="col-sm-6">
+										<input type="password" class="col-12 form-control" id="matchingPassword"
+											name="matchingPassword"
+											th:classappend="${#fields.hasErrors('password')?'is-invalid':''}"
+											th:field=*{password} required />
+										<div class="valid-feedback">Valid.</div>
+										<div class="invalid-feedback">
+
+											<span th:each="error: ${#fields.errors('password')}" th:text="${error}">
+											</span>
+
+										</div>
+										<div id="passwordHelpBlock" class="col-12 form-text">
+											<span>Repeat your password to check it.</span>
+										</div>
+
+										<div id="unmatchingPassword"></div>
+									</div>
+
 								</div>
-							</div>
 						</fieldset>
 
-						<div class="row  justify-content-evenly mb-3">
+						<div class="row  justify-content-evenly my-4">
 
-							<input class="col-4 btn btn-outline-success" id="valider" type="submit" value="enregistrer">
+							<input class="col-4 btn btn-success custom-shadow " id="valider" type="submit"
+								value="enregistrer">
 
 						</div>
 					</form>
 					<form class="row justify-content-center" th:action="@{/logout}" method="post">
-						<input class="col-4 btn btn-outline-dark text-center" id="logout" type="submit"
-							value="Annuler" />
+						<input class="col-4 btn btn-outline-dark text-center mb-3 custom-shadow" id="logout"
+							type="submit" value="Annuler" />
 
 					</form>
 				</div>
@@ -120,16 +178,33 @@
 	</div>
 
 </body>
-<script type="text/javascript">
-	$('#registration').submit(function (e) {
-		
-		if ($('#password') != $('matchingPassword')){
-			$('#message').html('passwords are not the same!').css('font-color','red');
-			e.preventDefault(); 
-		}else{
-			$('#message').html('Matching password').css('font-color','red').fadeOut(600);
+<script th:inline="javascript" type="text/javascript">
+
+	// check matching password on keyup 
+	$('#matchingPassword,#password').on('keyup', function (e) {
+
+		if ($('#password').val() !== $('#matchingPassword').val()) {
+
+			e.preventDefault();
+			$('#unmatchingPassword').html('Passwords are not the same!').css('color', 'red');
+
+		} else {
+			var firstPassword = $('#password').val();
+			var secondPassword = $('matchingPassword').val();
+			$('#unmatchingPassword').html('Matching password').css('color', 'green');
 		}
-		
+
 	});
+
+	function showPassword() {
+		var x = document.getElementById("password");
+		if (x.type === "password") {
+			x.type = "text";
+		} else {
+			console.log(x);
+			x.type = "password";
+		}
+	};
 </script>
+
 </html>

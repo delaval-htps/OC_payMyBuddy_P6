@@ -17,6 +17,7 @@
 		<java.version>11</java.version>
 		<sonar.organization>delaval-htps</sonar.organization>
 		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
+		<log4j2.version>2.17.1</log4j2.version>
 	  </properties>
 	<dependencies>
 		<dependency>

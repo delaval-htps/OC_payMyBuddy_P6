@@ -1,13 +1,9 @@
 package com.paymybuddy.dto;
 
-import javax.validation.Constraint;
 import javax.validation.constraints.Email;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import org.hibernate.validator.constraints.ConstraintComposition;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,14 +15,16 @@ import lombok.Setter;
 @NoArgsConstructor
 public class UserDto {
 
-  @NotBlank
-  @Size(max = 20)
+  @NotBlank(message = "The lastname must be not null or empty !")
+  @Size(max = 20, message = "The lastname must contain more than 20 characters !")
   private String lastName;
-  @NotBlank
-  @Size(max= 20)
+  
+  @NotBlank(message = "The firstname must be not null or empty !")
+  @Size(max= 20,message = "The firstname must contain more than 20 characters !")
   private String firstName;
-  @Email
-  @NotNull
+  
+  @Email(message = "The email must contains a correct email with @ !")
+  @NotBlank(message = "The email can't be empty or null !")
   private String email;
 
   private String address;
@@ -34,11 +32,12 @@ public class UserDto {
   private String phone;
   private int zip;
 
-  @NotBlank
-  @Size(min = 8)
+  @NotBlank(message = "The password must be not null or empty !")
+  @Size(min = 8, message = "The password must contains more than 8 characters !")
   private String password;
 
-  @NotBlank
-  @Size(min = 8)
+  @NotBlank(message = "The password must be not null or empty !")
+  @Size(min = 8, message = "The password must be not null or empty !")
   private String matchingPassword;
+
 }
