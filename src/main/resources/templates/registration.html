@@ -19,15 +19,16 @@
 
 				<div class="card-header">
 					<h4 class="card-title">Registration</h4>
-					<h5 class="card-subtitle mb-2 text-muted">You are not registred: Please fill in this form to
+					<h5 class="card-subtitle mb-2 text-muted"  th:if="${!#fields.hasErrors('user.duplicatedUser')}">You are not registred: Please fill in this form to
 						create an account !</h5>
+						<h5 class="card-subtitle mb-2 alert alert-danger text-center" th:if="${#fields.hasErrors('user.duplicatedUser')}"> <i class="fas fa-exclamation-triangle"></i> There is already a user with your email registrated so please chose a another lastname , firstname and email !</h5>
 				</div>
 
 				<div class="card-body">
 
 					<form th:action="@{/registration}" th:object="${user}" method="post" id="registrationForm"
 						novalidate>
-						<fieldset class="border p-3 mb-3 custom-shadow">
+						<fieldset class=" p-3 mb-3 custom-shadow">
 							<legend class="float-none w-auto lead bg-white ps-2 pe-2"> Personal
 								Informations</legend>
 							<div class="row mb-3">
@@ -84,7 +85,7 @@
 							</div>
 						</fieldset>
 
-						<fieldset class="border p-3 mb-3 custom-shadow">
+						<fieldset class=" p-3 mb-3 custom-shadow">
 							<legend class="float-none w-auto lead bg-white ps-2 pe-2"> Personal Address</legend>
 							<div class="row mb-3 ">
 
@@ -109,7 +110,7 @@
 							</div>
 						</fieldset>
 
-						<fieldset class="border p-3 mb-3 custom-shadow">
+						<fieldset class=" p-3 mb-3 custom-shadow">
 							<legend class="float-none w-auto lead bg-white ps-2 pe-2"> Personal password</legend>
 							<div class="row mb-3">
 								<label class="col-sm-1 col-form-label" for="password"><i
@@ -139,7 +140,7 @@
 										<input type="password" class="col-12 form-control" id="matchingPassword"
 											name="matchingPassword"
 											th:classappend="${#fields.hasErrors('password')?'is-invalid':''}"
-											th:field=*{password} required />
+											th:field=*{matchingPassword} required />
 										<div class="valid-feedback">Valid.</div>
 										<div class="invalid-feedback">
 

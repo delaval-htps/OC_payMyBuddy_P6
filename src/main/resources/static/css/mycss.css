@@ -31,15 +31,16 @@ article {
 	
 	background: linear-gradient(to top, #90C652, #198754);
 	
-	border: 1px ;
+	border: 0.2px black;
 	
 	box-shadow: 2px 2px 2px rgb(84, 84, 84);
 }
 
-.custom-shadow{
-	
-	border-radius: 0.5rem;
-	box-shadow: 2px 2px 2px rgb(221, 221, 221);
+
+.custom-shadow , #card-login,fieldset  {
+	border: 1px solid rgba(0, 0, 0, 0.22) !important ;
+	border-radius: 0.8rem;
+	box-shadow: 2px 2px 3px rgba(184, 184, 184, 0.631);
 }
 
 #logo {

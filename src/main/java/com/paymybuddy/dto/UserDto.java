@@ -40,4 +40,5 @@ public class UserDto {
   @Size(min = 8, message = "The password must be not null or empty !")
   private String matchingPassword;
 
+  private boolean duplicatedUser = false;
 }
