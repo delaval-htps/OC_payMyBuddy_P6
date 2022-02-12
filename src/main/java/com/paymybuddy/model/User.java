@@ -14,10 +14,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.validation.constraints.Email;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -44,25 +41,25 @@ public class User {
   private Long id;
 
   @Column
-  @NotBlank
-  @Email
+  @NotBlank(message = "The email must not be null or empty")
+  @Email(message = "The email must not be of type email with @")
   private String email;
 
   @Column
-  @NotBlank
-  @Size(min = 8)
+  @NotBlank(message = "The pasword must not be null or empty")
+  @Size(min = 8, message = "The password must contain more than 8 characters")
   private String password;
 
   @Column
   private Byte enabled;
 
-  @NotBlank
-  @Size(max=20)
+  @NotBlank(message = "The lastname must not be null or empty")
+  @Size(max = 20, message = "the lastname must contain less than 20 charaters")
   @Column(name = "last_name")
   private String lastName;
 
-  @NotBlank
-  @Size(max=20)
+  @NotBlank(message = "The firstname must not be null or empty")
+  @Size(max = 20, message = "the firstname must contain less than 20 charaters")
   @Column(name = "first_name")
   private String firstName;
 
@@ -79,7 +76,8 @@ public class User {
   private String phone;
 
   @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-  @JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
+  @JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"),
+      inverseJoinColumns = @JoinColumn(name = "role_id"))
   private Set<Role> roles;
 
   @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)

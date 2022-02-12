@@ -3,22 +3,21 @@ package com.paymybuddy.controllers;
 import java.util.Optional;
 import javax.validation.Valid;
 import com.paymybuddy.dto.UserDto;
-import com.paymybuddy.exceptions.UserException;
 import com.paymybuddy.model.User;
 import com.paymybuddy.security.oauth2.user.CustomOAuth2User;
+import com.paymybuddy.service.OAuth2ProviderService;
 import com.paymybuddy.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.core.OAuth2AccessToken;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import lombok.extern.log4j.Log4j2;
 
 @Controller
@@ -29,6 +28,9 @@ public class RegistrationController {
   private UserService userService;
 
   @Autowired
+  private OAuth2ProviderService oAuth2ProviderService;
+
+  @Autowired
   PasswordEncoder passwordEncoder;
 
   @GetMapping("/registration")
@@ -37,12 +39,11 @@ public class RegistrationController {
 
     UserDto userDto = new UserDto();
 
-    if (authentication != null) {
+    if (authentication.getPrincipal() instanceof CustomOAuth2User) {
       CustomOAuth2User oAuth2User = (CustomOAuth2User) authentication.getPrincipal();
       userDto.setEmail(oAuth2User.getEmail());
       userDto.setLastName(oAuth2User.getLastName());
       userDto.setFirstName(oAuth2User.getFirstName());
-
     }
     model.addAttribute("user", userDto);
     return "registration";
@@ -59,10 +60,9 @@ public class RegistrationController {
    */
   @PostMapping("/registration")
   public String saveNewUser(Model model, @Valid @ModelAttribute(value = "user") UserDto userDto,
-      BindingResult bindingResult) {
+      BindingResult bindingResult, Authentication authentication) {
 
     if (bindingResult.hasErrors()) {
-
       return "registration";
     }
 
@@ -79,9 +79,15 @@ public class RegistrationController {
       newUser.setEmail(userDto.getEmail());
       newUser.setPassword(passwordEncoder.encode(userDto.getPassword()));
       newUser.setEnabled((byte) 1);
-
-      userService.saveUser(newUser);
+      User saveUser = userService.save(newUser);
       model.addAttribute("user", newUser);
+
+      // case of new user but logged with OAuth2login()
+      if (authentication.getPrincipal() instanceof CustomOAuth2User) {
+        oAuth2ProviderService
+            .saveOAuth2ProviderForUser((CustomOAuth2User) authentication.getPrincipal(), saveUser);
+      }
+      
     } else {
       bindingResult.addError(new FieldError("user", "duplicatedUser",
           "Please chose another names and email because they already use by another user!"));
@@ -90,7 +96,7 @@ public class RegistrationController {
           userDto.getFirstName());
       return "registration";
     }
-
-    return "home";
+    
+    return "redirect:/home";
   }
 }

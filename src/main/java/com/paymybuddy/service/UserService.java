@@ -15,33 +15,12 @@ public class UserService {
   private UserRepository userRepository;
 
   /**
-   * return the user authenticated by Oauth2 with his username and email if he's
-   * registred in
-   * application.
-   *
-   * @param username the username of user authenticated by Oauth2
-   * @param email    the email of this user
-   * @return return user if he's registred in application, null if not.
-   */
-  // public Optional<User> findUserByOauth2Information(String username, String
-  // email) {
-  // String lastname = null;
-  // String firstname = null;
-
-  // if (username != null && !username.trim().equalsIgnoreCase("")) {
-  // firstname = username.trim().split(" ")[0];
-  // lastname = username.trim().split(" ")[1];
-  // }
-  // return userRepository.findbyOauth2Information(firstname, lastname, email);
-  // }
-
-  /**
    * save a user in application.
    *
    * @param user user to save
    * @return the user if he was saved
    */
-  public User saveUser(User user) {
+  public User save(User user) {
 
     return userRepository.save(user);
   }
@@ -55,4 +34,5 @@ public class UserService {
   public Optional<User> findByEmail(String email) {
     return userRepository.findByEmail(email);
   }
+
 }

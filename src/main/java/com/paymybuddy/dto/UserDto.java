@@ -15,16 +15,16 @@ import lombok.Setter;
 @NoArgsConstructor
 public class UserDto {
 
-  @NotBlank(message = "The lastname must be not null or empty !")
-  @Size(max = 20, message = "The lastname must contain more than 20 characters !")
+  @NotBlank(message = "The lastname must be not null or empty")
+  @Size(max = 20, message = "The lastname must contain more than 20 characters")
   private String lastName;
   
   @NotBlank(message = "The firstname must be not null or empty !")
-  @Size(max= 20,message = "The firstname must contain more than 20 characters !")
+  @Size(max= 20,message = "The firstname must contain more than 20 characters")
   private String firstName;
   
-  @Email(message = "The email must contains a correct email with @ !")
-  @NotBlank(message = "The email can't be empty or null !")
+  @Email(message = "The email must contains a correct email with @")
+  @NotBlank(message = "The email can't be empty or null")
   private String email;
 
   private String address;

@@ -1,8 +1,7 @@
 package com.paymybuddy.controllers;
 
-import javax.annotation.security.RolesAllowed;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,18 +10,19 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class ApplicationController {
 
   @GetMapping("/home")
-  @RolesAllowed("USER")
+
   public String getHome(Authentication authentication, Model model) {
 
-    String username =authentication.getName();
-    model.addAttribute("userName", username);   
-    if (!(authentication instanceof OAuth2AuthenticationToken)){ 
+    String username = authentication.getName();
+    model.addAttribute("userName", username);
+    System.out.println("HOME: on va verifier l'authentication !!!!!!'");
+    if (authentication.isAuthenticated() ) {
       return "home";
-    }else{
+    } else {
       authentication.setAuthenticated(false);
       return ("redirect:/logout");
     }
-    
-    
+
+
   }
 }

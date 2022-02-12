@@ -11,8 +11,8 @@ public class AuthController {
 
   // mapping to not be able to return on loginPage if user is authenticated
   @GetMapping("/loginPage")
-  public String showLoginPage() {
-    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+  public String showLoginPage(Authentication authentication) {
+   
     if (authentication == null || authentication instanceof AnonymousAuthenticationToken) {
       return "login";
     } else {
