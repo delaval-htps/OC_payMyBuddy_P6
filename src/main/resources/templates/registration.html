@@ -19,9 +19,13 @@
 
 				<div class="card-header">
 					<h4 class="card-title">Registration</h4>
-					<h5 class="card-subtitle mb-2 text-muted"  th:if="${!#fields.hasErrors('user.duplicatedUser')}">You are not registred: Please fill in this form to
+					<h5 class="card-subtitle mb-2 text-muted" th:if="${!#fields.hasErrors('user.duplicatedUser')}">You
+						are not registred: Please fill in this form to
 						create an account !</h5>
-						<h5 class="card-subtitle mb-2 alert alert-danger text-center" th:if="${#fields.hasErrors('user.duplicatedUser')}"> <i class="fas fa-exclamation-triangle"></i> There is already a user with your email registrated so please chose a another lastname , firstname and email !</h5>
+					<h5 class="card-subtitle mb-2 alert alert-danger text-center"
+						th:if="${#fields.hasErrors('user.duplicatedUser')}"> <i class="fas fa-exclamation-triangle"></i>
+						There is already a user with your email registrated so please chose a another lastname ,
+						firstname and email !</h5>
 				</div>
 
 				<div class="card-body">
@@ -117,30 +121,41 @@
 										class="fas fa-lock"></i></label>
 
 								<div class="col-sm-6  mb-3">
-									<input type="password" class="col-12 mb-1 form-control" id="password"
-										name="password" placeholder="password" th:field="*{password}"
-										th:classappend="${#fields.hasErrors('password')?'is-invalid':''}" required />
-									<!-- An element to toggle between password visibility -->
-									<input type="checkbox" onclick="showPassword()">ShowPassword</input>s
-									
-									<div class="valid-feedback">Valid.</div>
-									<div class="invalid-feedback">
-										<span th:each="error: ${#fields.errors('password')}" th:text="${error}"></span>
+									<div class="input-group">
+										<input type="password" style="border-right: none;border-radius: 5px 0 0 5px;"
+											class=" form-control " id="password" name="password" placeholder="password"
+											th:field="*{password}"
+											th:classappend="${#fields.hasErrors('password')?'is-invalid':''}"
+											required />
+										<span class="input-group-text">
+											<i class="fa fa-eye" aria-hidden="true" onclick="showPassword(this)"></i>
+										</span>
+										<div class="valid-feedback">Valid.</div>
+										<div class="invalid-feedback">
+											<span th:each="error: ${#fields.errors('password')}"
+												th:text="${error}"></span>
+										</div>
 									</div>
+
 
 									<span id="passwordHelpBlock" class="col-12 form-text">
 										Your password must be 8-20 characters long.
 									</span>
 								</div>
+							</div>
 
-								<div class="row mb-3">
-									<label class="col-sm-1 col-form-label" for="matchingPassword"><i
-											class="fas fa-key"></i></label>
-									<div class="col-sm-6">
-										<input type="password" class="col-12 form-control" id="matchingPassword"
-											name="matchingPassword"
+							<div class="row mb-3">
+								<label class="col-sm-1 col-form-label" for="matchingPassword"><i
+										class="fas fa-key"></i></label>
+								<div class="col-sm-6">
+									<div class="input-group">
+										<input type="password" style="border-right: none;border-radius: 5px 0 0 5px;"
+											class="col-12 form-control" id="matchingPassword" name="matchingPassword"
 											th:classappend="${#fields.hasErrors('password')?'is-invalid':''}"
 											th:field=*{matchingPassword} required />
+										<span class="input-group-text">
+											<i class="fa fa-eye" aria-hidden="true" onclick="showPassword(this)"></i>
+										</span>
 										<div class="valid-feedback">Valid.</div>
 										<div class="invalid-feedback">
 
@@ -148,14 +163,16 @@
 											</span>
 
 										</div>
-										<div id="passwordHelpBlock" class="col-12 form-text">
-											<span>Repeat your password to check it.</span>
-										</div>
-
-										<div id="unmatchingPassword"></div>
 									</div>
 
+									<div id="passwordHelpBlock" class="col-12 form-text">
+										<span>Repeat your password to check it.</span>
+									</div>
+
+									<div id="unmatchingPassword"></div>
 								</div>
+
+							</div>
 						</fieldset>
 
 						<div class="row  justify-content-evenly my-4">
@@ -197,13 +214,14 @@
 
 	});
 
-	function showPassword() {
-		var x = document.getElementById("password");
-		if (x.type === "password") {
-			x.type = "text";
+	function showPassword(e) {
+
+		var icon = $(e).parent().prev("input");
+
+		if ($(icon).prop('type') === 'password') {
+			$(icon).attr('type', 'text');
 		} else {
-			console.log(x);
-			x.type = "password";
+			$(icon).attr('type', 'password');
 		}
 	};
 </script>
