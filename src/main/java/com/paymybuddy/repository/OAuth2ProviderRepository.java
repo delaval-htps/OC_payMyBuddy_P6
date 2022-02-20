@@ -1,7 +1,7 @@
 package com.paymybuddy.repository;
 
 import java.util.Optional;
-
+import com.paymybuddy.model.AuthProvider;
 import com.paymybuddy.model.OAuth2Provider;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -13,7 +13,7 @@ public interface OAuth2ProviderRepository extends JpaRepository<OAuth2Provider, 
 
     @Query("select op from OAuth2Provider as op "
             + "join op.user as u "
-            + "where u.email =?1")
-    Optional<OAuth2Provider> findByEmail(String email);
+            + "where u.email =?1 and op.registrationId=?2")
+    Optional<OAuth2Provider> findByEmail(String email,AuthProvider provider);
 
 }

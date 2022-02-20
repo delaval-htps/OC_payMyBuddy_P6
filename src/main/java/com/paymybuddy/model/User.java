@@ -80,7 +80,7 @@ public class User implements Serializable {
   @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
   @JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"),
       inverseJoinColumns = @JoinColumn(name = "role_id"))
-  private Set<Role> roles;
+  private Set<Role> roles = new HashSet<>();
 
   @OneToMany(fetch = FetchType.EAGER, mappedBy = "user", cascade = CascadeType.ALL,
       orphanRemoval = true)
@@ -104,5 +104,10 @@ public class User implements Serializable {
   public void removeOAuth2Identifier(OAuth2Provider identifier) {
     this.oauth2Identifiers.remove(identifier);
     identifier.setUser(null);
+  }
+
+  public void addRole(Role role){
+    this.roles.add(role);
+    
   }
 }
