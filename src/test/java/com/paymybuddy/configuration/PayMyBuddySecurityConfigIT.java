@@ -49,13 +49,14 @@ class PayMyBuddySecurityConfigIT {
         .password("passwordNotValid")).andDo(print()).andExpect(unauthenticated());
   }
 
-  @Test
-  void oauth2Login_whenUserExists_shouldReturnAuthenticated() throws Exception {
+  // @Test
+  // void oauth2Login_whenUserExists_shouldReturnAuthenticated() throws Exception {
 
-    // TODO
-    // mockMvc.perform(get("/loginPage")
-    // .with(oauth2Login().oauth2User(mockOAuth2user)))
-    // .andDo(print()).andExpect(authenticated());
-  }
+
+  // mockMvc.perform(get("/loginPage")
+  // .with(oauth2Login().oauth2User(mockOAuth2user)))
+  // .andDo(print()).andExpect(authenticated());
+
+  // }
 
 }
