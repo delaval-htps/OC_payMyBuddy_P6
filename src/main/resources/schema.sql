@@ -14,89 +14,103 @@ DROP PROCEDURE IF EXISTS user_connection_fk1^;
 DROP PROCEDURE IF EXISTS user_invoice_fk^;
 DROP PROCEDURE IF EXISTS connection_transaction_fk^;
 DROP PROCEDURE IF EXISTS transaction_daily_invoice_fk^;
+DROP PROCEDURE IF EXISTS user_role_fk^;
+DROP PROCEDURE IF EXISTS user_role_fk1^;
 
 -- creation of Tables if not exists -- 
 
 CREATE TABLE IF NOT EXISTS oauth2_identifier (
-                oauth2_identifier_id INT AUTO_INCREMENT NOT NULL,
-               	network_provider_name VARCHAR(50) NOT NULL,
-                provider_user_id INT NOT NULL,
-                user_id INT NOT NULL,
-                PRIMARY KEY (oauth2_identifier_id)
+	oauth2_identifier_id INT AUTO_INCREMENT NOT NULL,
+	network_provider_name VARCHAR(50) NOT NULL,
+	provider_user_id VARCHAR(50) NOT NULL,
+	user_id INT NOT NULL,
+	PRIMARY KEY (oauth2_identifier_id)
 )ENGINE=InnoDB, DEFAULT CHARSET=utf8mb4 ^;
 
+CREATE TABLE IF NOT EXISTS role(
+	id INT NOT NULL AUTO_INCREMENT,
+	name VARCHAR(20),
+	PRIMARY KEY (id)
+)ENGINE= InnoDB, DEFAULT CHARSET= utf8mb4 ^;
+
+CREATE TABLE IF NOT EXISTS user_role(
+	user_id INT NOT NULL,
+	role_id INT NOT NULL,
+	PRIMARY KEY (user_id,role_id)
+)ENGINE= InnoDB, DEFAULT CHARSET=utf8mb4 ^;
 
 CREATE TABLE IF NOT EXISTS card_bank (
-                numberCard INT NOT NULL,
-                card_code INT NOT NULL,
-                date_expiration_card DATE NOT NULL,
-                PRIMARY KEY (numberCard)
+	numberCard INT NOT NULL,
+	card_code INT NOT NULL,
+	date_expiration_card DATE NOT NULL,
+	PRIMARY KEY (numberCard)
 )ENGINE=InnoDB, DEFAULT CHARSET=utf8mb4 ^;
 
 
 CREATE TABLE IF NOT EXISTS application_account (
-                number_account INT AUTO_INCREMENT NOT NULL,
-                balance DECIMAL(8,2) NOT NULL,
-                PRIMARY KEY (number_account)
+	number_account INT AUTO_INCREMENT NOT NULL,
+	balance DECIMAL(8,2) NOT NULL,
+	PRIMARY KEY (number_account)
 )ENGINE=InnoDB, DEFAULT CHARSET=utf8mb4 ^;
 
 
 CREATE TABLE IF NOT EXISTS bank_account (
-                number_account INT NOT NULL,
-                iban VARCHAR(34) NOT NULL,
-                balance DECIMAL(8,2) NOT NULL,
-                numberCard INT NOT NULL,
-                PRIMARY KEY (number_account)
+	number_account INT NOT NULL,
+	iban VARCHAR(34) NOT NULL,
+	balance DECIMAL(8,2) NOT NULL,
+	numberCard INT NOT NULL,
+	PRIMARY KEY (number_account)
 )ENGINE=InnoDB, DEFAULT CHARSET=utf8mb4 ^;
 
 
 CREATE TABLE IF NOT EXISTS user (
-                user_id INT AUTO_INCREMENT NOT NULL,
-                email VARCHAR(30) NOT NULL,
-                password CHAR(68) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
-                enabled TINYINT NOT NULL DEFAULT 1,
-                last_name VARCHAR(30) NOT NULL,
-                first_name VARCHAR(30) NOT NULL,
-                address VARCHAR(100) NOT NULL,
-                zip INT NOT NULL,
-                city VARCHAR(30) NOT NULL,
-                phone VARCHAR(10) NOT NULL,
-                -- number_application_account,number_bank_account,social_network_identifier can be null if it' a new user 
-                number_application_account INT , 
-                number_bank_account INT ,
-                PRIMARY KEY (user_id)
+	id INT AUTO_INCREMENT NOT NULL,
+	email VARCHAR(30) NOT NULL,
+	password CHAR(68) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
+	enabled TINYINT NOT NULL DEFAULT 1,
+	last_name VARCHAR(30) NOT NULL,
+	first_name VARCHAR(30) NOT NULL,
+	address VARCHAR(100) NOT NULL,
+	zip INT NOT NULL,
+	city VARCHAR(30) NOT NULL,
+	phone VARCHAR(10) NOT NULL,
+	-- number_application_account,number_bank_account,oAuth2_identifier can be null if it' a new user 
+	number_application_account INT , 
+	number_bank_account INT ,
+	PRIMARY KEY (id),
+	UNIQUE KEY(email)
 )ENGINE=InnoDB, DEFAULT CHARSET=utf8mb4 ^;
 
 
 CREATE TABLE IF NOT EXISTS connection_user (
-                user_id INT NOT NULL,
-                user_connection_id INT NOT NULL,
-                PRIMARY KEY (user_id, user_connection_id)
+	user_id INT NOT NULL,
+	user_connection_id INT NOT NULL,
+	PRIMARY KEY (user_id, user_connection_id)
 )ENGINE=InnoDB, DEFAULT CHARSET=utf8mb4 ^;
 
 
 CREATE TABLE IF NOT EXISTS transaction (
-                transaction_id INT AUTO_INCREMENT NOT NULL,
-                date_transaction DATETIME NOT NULL,
-                description VARCHAR(100) NOT NULL,
-                amount DECIMAL(8,2) NOT NULL,
-                commision_percent DECIMAL(3,2) NOT NULL,
-                type_transaction VARCHAR(20) NOT NULL,
-                user_id INT NOT NULL,
-                user_connection_id INT NOT NULL,
-                PRIMARY KEY (transaction_id)
+	transaction_id INT AUTO_INCREMENT NOT NULL,
+	date_transaction DATETIME NOT NULL,
+	description VARCHAR(100) NOT NULL,
+	amount DECIMAL(8,2) NOT NULL,
+	commision_percent DECIMAL(3,2) NOT NULL,
+	type_transaction VARCHAR(20) NOT NULL,
+	user_id INT NOT NULL,
+	user_connection_id INT NOT NULL,
+	PRIMARY KEY (transaction_id)
 )ENGINE=InnoDB, DEFAULT CHARSET=utf8mb4 ^;
 
 
 CREATE TABLE IF NOT EXISTS invoice (
-                daily_invoice_id INT AUTO_INCREMENT NOT NULL,
-                date_invoice DATETIME NOT NULL,
-                price_ht DECIMAL(8,2) NOT NULL,
-                price_ttc DECIMAL(8,2) NOT NULL,
-                taxe_percent DECIMAL(3,2) NOT NULL,
-                transaction_id INT NOT NULL,
-                user_id INT NOT NULL,
-                PRIMARY KEY (daily_invoice_id)
+	daily_invoice_id INT AUTO_INCREMENT NOT NULL,
+	date_invoice DATETIME NOT NULL,
+	price_ht DECIMAL(8,2) NOT NULL,
+	price_ttc DECIMAL(8,2) NOT NULL,
+	taxe_percent DECIMAL(3,2) NOT NULL,
+	transaction_id INT NOT NULL,
+	user_id INT NOT NULL,
+	PRIMARY KEY (daily_invoice_id)
 )ENGINE=InnoDB, DEFAULT CHARSET=utf8mb4 ^;
 
 
@@ -115,8 +129,40 @@ BEGIN
 	THEN
 		ALTER TABLE oauth2_identifier ADD CONSTRAINT user_oauth2_identifier_fk
 		FOREIGN KEY (user_id)
-		REFERENCES user (user_id)
+		REFERENCES user(id)
 		ON DELETE NO ACTION
+		ON UPDATE NO ACTION;
+	END IF;
+END ^;
+
+CREATE PROCEDURE user_role_fk()
+BEGIN
+	IF NOT EXISTS(SELECT NULL
+				FROM information_schema.TABLE_CONSTRAINTS
+				WHERE TABLE_SCHEMA ='paymybuddy'
+				AND CONSTRAINT_NAME = 'user_role_fk'
+				AND CONSTRAINT_TYPE = 'FOREIGN KEY')
+	THEN
+		ALTER TABLE user_role ADD CONSTRAINT user_role_fk
+		FOREIGN KEY (user_id)
+		REFERENCES user(id)
+		ON DELETE  NO ACTION
+		ON UPDATE NO ACTION;
+	END IF;
+END ^;
+
+CREATE PROCEDURE user_role_fk1()
+BEGIN
+	IF NOT EXISTS(SELECT NULL
+				FROM information_schema.TABLE_CONSTRAINTS
+				WHERE TABLE_SCHEMA ='paymybuddy'
+				AND CONSTRAINT_NAME = 'user_role_fk1'
+				AND CONSTRAINT_TYPE = 'FOREIGN KEY')
+	THEN
+		ALTER TABLE user_role ADD CONSTRAINT user_role_fk1
+		FOREIGN KEY (role_id)
+		REFERENCES role (id)
+		ON DELETE  NO ACTION
 		ON UPDATE NO ACTION;
 	END IF;
 END ^;
@@ -179,7 +225,7 @@ BEGIN
 	THEN
 		ALTER TABLE connection_user ADD CONSTRAINT user_connection_fk
 		FOREIGN KEY (user_id)
-		REFERENCES user (user_id)
+		REFERENCES user (id)
 		ON DELETE NO ACTION
 		ON UPDATE NO ACTION;
 	END IF;
@@ -195,7 +241,7 @@ BEGIN
 	THEN
 		ALTER TABLE connection_user ADD CONSTRAINT user_connection_fk1
 		FOREIGN KEY (user_connection_id)
-		REFERENCES user (user_id)
+		REFERENCES user (id)
 		ON DELETE NO ACTION
 		ON UPDATE NO ACTION;
 
@@ -212,7 +258,7 @@ BEGIN
 	THEN
 		ALTER TABLE invoice ADD CONSTRAINT user_invoice_fk
 		FOREIGN KEY (user_id)
-		REFERENCES user (user_id)
+		REFERENCES user (id)
 		ON DELETE NO ACTION
 		ON UPDATE NO ACTION;
 	END IF;
@@ -260,6 +306,8 @@ CALL user_connection_fk1()^;
 CALL user_invoice_fk()^;
 CALL connection_transaction_fk()^;
 CALL transaction_daily_invoice_fk()^;
+CALL user_role_fk()^;
+CALL user_role_fk1()^;
 
 
 

@@ -1,78 +1,231 @@
 <!DOCTYPE html>
-<html lang="fr"
-	xmlns:th="http://www.thymeleaf.org">
-	
-	<head th:replace="~{/fragments/my-template::html-head('Registration Page')}">
-	
-	</head>
-	<body>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+
+<head th:replace="~{/fragments/my-template::html-head('Registration')}">
+
+</head>
+
+<body>
 	<div class="container-fluid">
-		
+
 		<header th:replace="~{/fragments/my-template::header}"> </header>
-		
-		<nav th:replace="~{/fragments/my-template::nav-breadcrumb('Home,Registration')}"></nav>
-	
-		<article class="col-12">
-		 <section class="row justify-content-center">
-			 <div class="card p-0 col-4" >
-			 	<div class="card-header">
-				    <h4 class="card-title">Registration</h4>
-				    <h5 class="card-subtitle mb-2 text-muted">Please fill in this form to create an account</h5>
-	    		</div>
-   				<div class="card-body">
-    			  <form th:action ="@{/registration}" method ="post">
-    			  <div class="row g-3  align-items-center">
-				 		<div class="col-auto mb-3">
-				 			<label class="col-form-label" for="user"><i class="fas fa-user"></i></label>
-				 			<div th:if="${oauth2User == null}">
-				 			<input type="text" class="form_control" id="user"  placeholder="lastname" name="lastName"/>
-				 			<input type="text" class="form_control" id="user"   placeholder="firstname" name="firstName"/>
-				 			</div>
-				 			<div th:if="${oauth2User != null}">
-				 			<input type="text" class="form_control" id="user" th:value="${oauth2User.name != null ? oauth2User.name:''}" placeholder="lastname" name="lastName"/>
-				 			<input type="text" class="form_control" id="user"   placeholder="firstname" name="firstName"/>
-				 			</div>
-				 		</div>	
-				 		<div class="col-auto mb-3">
-				 			<label class="col-form-label" for="email"><i class="far fa-envelope"></i></label>
-				 			<input type="email" class="form_control" id="email"placeholder="email" name="email"/>
-				 		</div>	
-				 		<div class="col-auto mb-3">
-				 			<label class="col-form-label" for="address"><i class="fas fa-map-marker-alt"></i></label>
-				 			<input type="text" class="form_control" id="address"placeholder="address" name="address"/>
-				 		</div>	
-				 		<div class="col-auto mb-3">
-				 			<label class="col-form-label" for="zip">Zip:</label>
-				 			<input type="number" class="form_control" id="zip"  name="zip"/>
-				 		</div>	
-				 		<div class="col-auto mb-3">
-				 			<label class="col-form-label" for="city">City:</label>
-				 			<input type="text" class="form_control" id="city" name="city"/>
-				 		</div>	
-						<div class="col-auto mb-3">
-				 			<label class="col-form-label" for="password"><i class="fas fa-lock"></i></label>
-				 			<input type="password" class="form_control" id="password" name="password"/>
-				 		
-					 		<div id="passwordHelpBlock" class="form-text">
-							  Your password must be 8-20 characters long, contain letters and numbers, and must not contain spaces, special characters, or emoji.
+
+		<nav th:replace="~{/fragments/my-template::nav-breadcrumb('Registration')}"></nav>
+
+
+		<article class="row justify-content-center align-items-center">
+			<div class="card p-0  col-6 m-auto custom-shadow ">
+
+				<div class="card-header">
+					<h4 class="card-title">Registration</h4>
+					<h5 class="card-subtitle mb-2 text-muted" th:if="${!#fields.hasErrors('user.duplicatedUser')}">You
+						are not registred: Please fill in this form to
+						create an account !</h5>
+					<h5 class="card-subtitle mb-2 alert alert-danger text-center"
+						th:if="${#fields.hasErrors('user.duplicatedUser')}"> <i class="fas fa-exclamation-triangle"></i>
+						There is already a user with your email registrated so please chose a another lastname ,
+						firstname and email !</h5>
+				</div>
+
+				<div class="card-body">
+
+					<form th:action="@{/registration}" th:object="${user}" method="post" id="registrationForm"
+						novalidate>
+						<fieldset class=" p-3 mb-3 custom-shadow">
+							<legend class="float-none w-auto lead bg-white ps-2 pe-2"> Personal
+								Informations</legend>
+							<div class="row mb-3">
+
+								<label class="col-form-label col-sm-1 " for="LastName"><i
+										class="fas fa-user"></i></label>
+								<div class="col-md-5 col-sm-12 mb-3">
+									<input type="text" class=" col-12 form-control " id="LastName"
+										th:field="*{lastName}" placeholder="lastname" name="lastName"
+										th:classappend="${#fields.hasErrors('lastName')? 'is-invalid':''}" required />
+
+									<div class="valid-feedback">Valid.</div>
+									<div class="invalid-feedback">
+										<span th:each="error:${#fields.errors('lastName')}" th:text="${error}">
+										</span>
+									</div>
+
+
+
+								</div>
+								<div class=" col-sm-12 col-md-5 offset-md-1 mb-3">
+									<input type="text" class="col-12 form-control" id="user_firstname"
+										th:value="*{firstName}" placeholder="firstname" name="firstName"
+										th:classappend="${#fields.hasErrors('firstName')? 'is-invalid':''}" required />
+
+									<div class="invalid-feedback">
+										<span th:each="error:${#fields.errors('firstName')}" th:text="${error}">
+										</span>
+									</div>
+								</div>
+
 							</div>
-						</div>
-			 			<div class="col-auto mb-3">
-				 			<label class="col-form-label" for="matchingPassword"><i class="fas fa-key"></i></label>
-				 			<input type="password" class="form_control" id="matchingPassword" name="matchingPassword"/>
-				 			<div id="passwordHelpBlock" class="form-text">
-							  Repeat your password to check it.
+
+							<div class="row  mb-3">
+
+								<label class="col-sm-1 col-form-label" for="email">
+									<i class="far fa-envelope"></i></label>
+								<div class="col-md-5 col-sm-12 mb-3">
+									<input type="email" class=" col-12 form-control" id="email" placeholder="email"
+										th:field="*{email}" name="email"
+										th:classappend="${#fields.hasErrors('email')?'is-invalid':''}" required />
+
+									<div class="valid-feedback">Valid.</div>
+									<div class="invalid-feedback">
+										<span th:each="error:${#fields.errors('email')}" th:text="${error}"></span>
+									</div>
+								</div>
+
+								<label class=" col-sm-1 col-form-label" for="phone"><i
+										class="fas fa-phone-alt"></i></label>
+								<div class="col-md-5 col-sm-12 mb-3">
+									<input type="text" class="col-12 form-control" id="phone" name="phone" />
+								</div>
 							</div>
+						</fieldset>
+
+						<fieldset class=" p-3 mb-3 custom-shadow">
+							<legend class="float-none w-auto lead bg-white ps-2 pe-2"> Personal Address</legend>
+							<div class="row mb-3 ">
+
+								<label class="col-sm-1 col-form-label" for="address">
+									<i class="fas fa-map-marker-alt"></i></label>
+								<div class="col-sm-11 mb-3">
+									<input type="text" class="col-12 mb-4 form-control" id="address"
+										placeholder="address" name="address" />
+								</div>
+							</div>
+							<div class="row mb-3 g-3">
+
+								<label class=" col-md-1 col-form-label" for="zip">Zip:</label>
+								<div class="col-md-5 col-sm-12 mb-3">
+									<input type="number"  value="0" class=" col-12 form-control" id="zip" name="zip" />
+								</div>
+
+								<label class=" col-md-1 col-form-label" for="city">City:</label>
+								<div class="col-md-5 col-sm-12 mb-3">
+									<input type="text" class="col-12 form-control" id="city" name="city" />
+								</div>
+							</div>
+						</fieldset>
+
+						<fieldset class=" p-3 mb-3 custom-shadow">
+							<legend class="float-none w-auto lead bg-white ps-2 pe-2"> Personal password</legend>
+							<div class="row mb-3">
+								<label class="col-sm-1 col-form-label" for="password"><i
+										class="fas fa-lock"></i></label>
+
+								<div class="col-sm-6  mb-3">
+									<div class="input-group">
+										<input type="password" style="border-right: none;border-radius: 5px 0 0 5px;"
+											class=" form-control " id="password" name="password" placeholder="password"
+											th:field="*{password}"
+											th:classappend="${#fields.hasErrors('password')?'is-invalid':''}"
+											required />
+										<span class="input-group-text">
+											<i class="fa fa-eye" aria-hidden="true" onclick="showPassword(this)"></i>
+										</span>
+										<div class="valid-feedback">Valid.</div>
+										<div class="invalid-feedback">
+											<span th:each="error: ${#fields.errors('password')}"
+												th:text="${error}"></span>
+										</div>
+									</div>
+
+
+									<span id="passwordHelpBlock" class="col-12 form-text">
+										Your password must be 8-20 characters long.
+									</span>
+								</div>
+							</div>
+
+							<div class="row mb-3">
+								<label class="col-sm-1 col-form-label" for="matchingPassword"><i
+										class="fas fa-key"></i></label>
+								<div class="col-sm-6">
+									<div class="input-group">
+										<input type="password" style="border-right: none;border-radius: 5px 0 0 5px;"
+											class="col-12 form-control" id="matchingPassword" name="matchingPassword"
+											th:classappend="${#fields.hasErrors('password')?'is-invalid':''}"
+											th:field=*{matchingPassword} required />
+										<span class="input-group-text">
+											<i class="fa fa-eye" aria-hidden="true" onclick="showPassword(this)"></i>
+										</span>
+										<div class="valid-feedback">Valid.</div>
+										<div class="invalid-feedback">
+
+											<span th:each="error: ${#fields.errors('password')}" th:text="${error}">
+											</span>
+
+										</div>
+									</div>
+
+									<div id="passwordHelpBlock" class="col-12 form-text">
+										<span>Repeat your password to check it.</span>
+									</div>
+
+									<div id="unmatchingPassword"></div>
+								</div>
+
+							</div>
+						</fieldset>
+
+						<div class="row  justify-content-evenly my-4">
+
+							<input class="col-4 btn btn-success custom-shadow " id="valider" type="submit"
+								value="enregistrer">
+
 						</div>
-				 	</div>	
-			 		</form>	
- 			 	</div>
+					</form>
+					<form class="row justify-content-center" th:action="@{/logout}" method="post">
+						<input class="col-4 btn btn-outline-dark text-center mb-3 custom-shadow" id="logout"
+							type="submit" value="Annuler" />
+
+					</form>
+				</div>
+
 			</div>
-		 </section>
-		</article>		
+
+		</article>
 		<footer th:replace="~{/fragments/my-template::footer}"></footer>
 	</div>
-	
-	</body>
-	
+
+</body>
+<script th:inline="javascript" type="text/javascript">
+
+	// check matching password on keyup 
+	$('#matchingPassword,#password').on('keyup', function (e) {
+
+		if ($('#password').val() !== $('#matchingPassword').val()) {
+
+			e.preventDefault();
+			$('#unmatchingPassword').html('Passwords are not the same!').css('color', 'red');
+
+		} else {
+			var firstPassword = $('#password').val();
+			var secondPassword = $('matchingPassword').val();
+			$('#unmatchingPassword').html('Matching password').css('color', 'green');
+		}
+
+	});
+
+	function showPassword(e) {
+
+		var icon = $(e).parent().prev("input");
+
+		if ($(icon).prop('type') === 'password') {
+			$(icon).attr('type', 'text');
+		} else {
+			$(icon).attr('type', 'password');
+		}
+	};
+
+
+</script>
+
 </html>

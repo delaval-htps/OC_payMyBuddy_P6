@@ -1,0 +1,583 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+    <head>
+        <META http-equiv="Content-Type" content="text/html; charset=iso-8859-15">
+        <style>
+      .table {
+        background-color:#F5F5FF;
+        border-left:4px solid gray;
+        border-bottom:4px solid gray;
+        border-top:4px solid gray;
+        border-right:4px solid gray;
+        margin-bottom:3em;
+        margin-left:2em;
+        margin-right:2em;
+        padding:1em;
+      }
+      .tableNameHeading h1 {
+          display: inline;
+        font-family: Segoe UI, Arial, sans-serif;
+        font-size:125%;
+        font-weight:bold;
+      }
+        
+      .tableNameHeading h2 {
+        display: inline;
+        font-family: Segoe UI, Arial, sans-serif;
+        font-size:115%;
+        font-weight:normal;
+      }
+      
+      .tableComment { 
+        background-color:#e4efff; margin-bottom:20px;
+      }
+      
+      .tableDefinition { 
+        padding:2px;
+        border-collapse:collapse;
+        margin-top:1em;
+      }
+
+      .tdTableDefinition {
+        padding-right:10px;
+        vertical-align:top;
+        border-top:1px solid #C0C0C0;
+      }
+
+      .tdLogicalColName {
+        width:20em;
+      }
+      
+      .tdPhysicalColName {
+        width:20em;
+      }
+      
+      .tdDataType {
+        width:10em;
+      }
+
+      .tdPkFlag {
+        width:4em;
+      }
+
+      .tdNullFlag {
+        width:9em;
+      }
+
+      .tdTableHeading {
+        padding:2px;
+        font-family: Segoe UI, Arial, sans-serif;
+        font-weight: bold;
+        vertical-align:top;
+        border-bottom: 1px solid #C0C0C0;
+        background-color: rgb(240,240,240);
+      }
+      
+      .subTitle {
+        font-family: Segoe UI, Arial, sans-serif;
+        font-weight: bold;
+      }
+
+      .references {
+      }
+      .comment {
+        color:#666666;
+        margin-left:3em;
+        padding:0.25em;
+      }
+    </style>
+        <title>paymybuddy</title>
+    </head>
+    <body>
+        <center>
+            <h2>paymybuddy</h2>
+        </center>
+        <h3>List of tables</h3>
+        <ul>
+            <li>
+                <a href="#application_account">application_account</a>
+            </li>
+            <li>
+                <a href="#bank_account">bank_account</a>
+            </li>
+            <li>
+                <a href="#card_bank">card_bank</a>
+            </li>
+            <li>
+                <a href="#connection_user">connection_user</a>
+            </li>
+            <li>
+                <a href="#invoice">invoice</a>
+            </li>
+            <li>
+                <a href="#oauth2_identifier">oauth2_identifier</a>
+            </li>
+            <li>
+                <a href="#role">role</a>
+            </li>
+            <li>
+                <a href="#transaction">transaction</a>
+            </li>
+            <li>
+                <a href="#user">user</a>
+            </li>
+            <li>
+                <a href="#user_role">user_role</a>
+            </li>
+        </ul>
+        <div class="tableNameHeading">
+            <h1>
+                application_account<a name="application_account"></a>
+            </h1>
+            <h2>
+      (Physical Name: application_account)
+      </h2>
+        </div>
+        <div class="table">
+            <table class="tableDefinition" width="100%">
+                <tr>
+                    <td class="tdTableHeading tdLogicalColName">Logical Column Name</td><td class="tdTableHeading tdPhysicalColName">Physical Column Name</td><td class="tdTableHeading tdDataType">Type</td><td class="tdTableHeading tdPkFlag">PK</td><td class="tdTableHeading tdNullFlag">Nullable</td>
+                </tr>
+                <tr valign="top">
+                    <td class="tdTableDefinition">number_account (PK)</td><td class="tdTableDefinition">number_account</td><td class="tdTableDefinition">INTEGER</td><td class="tdTableDefinition" nowrap>PK</td><td class="tdTableDefinition" nowrap>NOT NULL</td>
+                </tr>
+                <tr valign="top">
+                    <td class="tdTableDefinition">balance</td><td class="tdTableDefinition">balance</td><td class="tdTableDefinition">DECIMAL(8,2)</td><td class="tdTableDefinition" nowrap></td><td class="tdTableDefinition" nowrap>NOT NULL</td>
+                </tr>
+            </table>
+            <div class="references">
+                <p class="subTitle">Referenced By</p>
+                <ul>
+                    <li>
+                        <a href="#user">user</a> referencing (number_account)
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="tableNameHeading">
+            <h1>
+                bank_account<a name="bank_account"></a>
+            </h1>
+            <h2>
+      (Physical Name: bank_account)
+      </h2>
+        </div>
+        <div class="table">
+            <table class="tableDefinition" width="100%">
+                <tr>
+                    <td class="tdTableHeading tdLogicalColName">Logical Column Name</td><td class="tdTableHeading tdPhysicalColName">Physical Column Name</td><td class="tdTableHeading tdDataType">Type</td><td class="tdTableHeading tdPkFlag">PK</td><td class="tdTableHeading tdNullFlag">Nullable</td>
+                </tr>
+                <tr valign="top">
+                    <td class="tdTableDefinition">number_account (PK)</td><td class="tdTableDefinition">number_account</td><td class="tdTableDefinition">INTEGER</td><td class="tdTableDefinition" nowrap>PK</td><td class="tdTableDefinition" nowrap>NOT NULL</td>
+                </tr>
+                <tr valign="top">
+                    <td class="tdTableDefinition">iban</td><td class="tdTableDefinition">iban</td><td class="tdTableDefinition">VARCHAR(34)</td><td class="tdTableDefinition" nowrap></td><td class="tdTableDefinition" nowrap>NOT NULL</td>
+                </tr>
+                <tr valign="top">
+                    <td class="tdTableDefinition">balance</td><td class="tdTableDefinition">balance</td><td class="tdTableDefinition">DECIMAL(8,2)</td><td class="tdTableDefinition" nowrap></td><td class="tdTableDefinition" nowrap>NOT NULL</td>
+                </tr>
+                <tr valign="top">
+                    <td class="tdTableDefinition">numberCard
+                &nbsp;(<a href="#card_bank">FK</a>)
+              </td><td class="tdTableDefinition">numberCard</td><td class="tdTableDefinition">INTEGER</td><td class="tdTableDefinition" nowrap></td><td class="tdTableDefinition" nowrap>NOT NULL</td>
+                </tr>
+            </table>
+            <div class="references">
+                <p class="subTitle">References</p>
+                <ul>
+                    <li>
+                        <a href="#card_bank">card_bank</a> through (numberCard)
+                    </li>
+                </ul>
+                <p class="subTitle">Referenced By</p>
+                <ul>
+                    <li>
+                        <a href="#user">user</a> referencing (number_account)
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="tableNameHeading">
+            <h1>
+                card_bank<a name="card_bank"></a>
+            </h1>
+            <h2>
+      (Physical Name: card_bank)
+      </h2>
+        </div>
+        <div class="table">
+            <table class="tableDefinition" width="100%">
+                <tr>
+                    <td class="tdTableHeading tdLogicalColName">Logical Column Name</td><td class="tdTableHeading tdPhysicalColName">Physical Column Name</td><td class="tdTableHeading tdDataType">Type</td><td class="tdTableHeading tdPkFlag">PK</td><td class="tdTableHeading tdNullFlag">Nullable</td>
+                </tr>
+                <tr valign="top">
+                    <td class="tdTableDefinition">numberCard (PK)</td><td class="tdTableDefinition">numberCard</td><td class="tdTableDefinition">INTEGER</td><td class="tdTableDefinition" nowrap>PK</td><td class="tdTableDefinition" nowrap>NOT NULL</td>
+                </tr>
+                <tr valign="top">
+                    <td class="tdTableDefinition">card_code</td><td class="tdTableDefinition">card_code</td><td class="tdTableDefinition">INTEGER</td><td class="tdTableDefinition" nowrap></td><td class="tdTableDefinition" nowrap>NOT NULL</td>
+                </tr>
+                <tr valign="top">
+                    <td class="tdTableDefinition">date_expiration_card</td><td class="tdTableDefinition">date_expiration_card</td><td class="tdTableDefinition">DATE</td><td class="tdTableDefinition" nowrap></td><td class="tdTableDefinition" nowrap>NOT NULL</td>
+                </tr>
+            </table>
+            <div class="references">
+                <p class="subTitle">Referenced By</p>
+                <ul>
+                    <li>
+                        <a href="#bank_account">bank_account</a> referencing (numberCard)
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="tableNameHeading">
+            <h1>
+                connection_user<a name="connection_user"></a>
+            </h1>
+            <h2>
+      (Physical Name: connection_user)
+      </h2>
+        </div>
+        <div class="table">
+            <table class="tableDefinition" width="100%">
+                <tr>
+                    <td class="tdTableHeading tdLogicalColName">Logical Column Name</td><td class="tdTableHeading tdPhysicalColName">Physical Column Name</td><td class="tdTableHeading tdDataType">Type</td><td class="tdTableHeading tdPkFlag">PK</td><td class="tdTableHeading tdNullFlag">Nullable</td>
+                </tr>
+                <tr valign="top">
+                    <td class="tdTableDefinition">user_id (PK)
+                &nbsp;(<a href="#user">FK</a>)
+              </td><td class="tdTableDefinition">user_id</td><td class="tdTableDefinition">INTEGER</td><td class="tdTableDefinition" nowrap>PK</td><td class="tdTableDefinition" nowrap>NOT NULL</td>
+                </tr>
+                <tr valign="top">
+                    <td class="tdTableDefinition">user_connection_id (PK)
+                &nbsp;(<a href="#user">FK</a>)
+              </td><td class="tdTableDefinition">user_connection_id</td><td class="tdTableDefinition">INTEGER</td><td class="tdTableDefinition" nowrap>PK</td><td class="tdTableDefinition" nowrap>NOT NULL</td>
+                </tr>
+            </table>
+            <div class="references">
+                <p class="subTitle">References</p>
+                <ul>
+                    <li>
+                        <a href="#user">user</a> through (user_id)
+                    </li>
+                    <li>
+                        <a href="#user">user</a> through (user_connection_id)
+                    </li>
+                </ul>
+                <p class="subTitle">Referenced By</p>
+                <ul>
+                    <li>
+                        <a href="#transaction">transaction</a> referencing (user_id, user_connection_id)
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="tableNameHeading">
+            <h1>
+                invoice<a name="invoice"></a>
+            </h1>
+            <h2>
+      (Physical Name: invoice)
+      </h2>
+        </div>
+        <div class="table">
+            <table class="tableDefinition" width="100%">
+                <tr>
+                    <td class="tdTableHeading tdLogicalColName">Logical Column Name</td><td class="tdTableHeading tdPhysicalColName">Physical Column Name</td><td class="tdTableHeading tdDataType">Type</td><td class="tdTableHeading tdPkFlag">PK</td><td class="tdTableHeading tdNullFlag">Nullable</td>
+                </tr>
+                <tr valign="top">
+                    <td class="tdTableDefinition">daily_invoice_id (PK)</td><td class="tdTableDefinition">daily_invoice_id</td><td class="tdTableDefinition">INTEGER</td><td class="tdTableDefinition" nowrap>PK</td><td class="tdTableDefinition" nowrap>NOT NULL</td>
+                </tr>
+                <tr valign="top">
+                    <td class="tdTableDefinition">date_invoice</td><td class="tdTableDefinition">date_invoice</td><td class="tdTableDefinition">TIMESTAMP</td><td class="tdTableDefinition" nowrap></td><td class="tdTableDefinition" nowrap>NOT NULL</td>
+                </tr>
+                <tr valign="top">
+                    <td class="tdTableDefinition">price_ht</td><td class="tdTableDefinition">price_ht</td><td class="tdTableDefinition">DECIMAL(8,2)</td><td class="tdTableDefinition" nowrap></td><td class="tdTableDefinition" nowrap>NOT NULL</td>
+                </tr>
+                <tr valign="top">
+                    <td class="tdTableDefinition">price_ttc</td><td class="tdTableDefinition">price_ttc</td><td class="tdTableDefinition">DECIMAL(8,2)</td><td class="tdTableDefinition" nowrap></td><td class="tdTableDefinition" nowrap>NOT NULL</td>
+                </tr>
+                <tr valign="top">
+                    <td class="tdTableDefinition">taxe_percent</td><td class="tdTableDefinition">taxe_percent</td><td class="tdTableDefinition">DECIMAL(3,2)</td><td class="tdTableDefinition" nowrap></td><td class="tdTableDefinition" nowrap>NOT NULL</td>
+                </tr>
+                <tr valign="top">
+                    <td class="tdTableDefinition">transaction_id
+                &nbsp;(<a href="#transaction">FK</a>)
+              </td><td class="tdTableDefinition">transaction_id</td><td class="tdTableDefinition">INTEGER</td><td class="tdTableDefinition" nowrap></td><td class="tdTableDefinition" nowrap>NOT NULL</td>
+                </tr>
+                <tr valign="top">
+                    <td class="tdTableDefinition">user_id
+                &nbsp;(<a href="#user">FK</a>)
+              </td><td class="tdTableDefinition">user_id</td><td class="tdTableDefinition">INTEGER</td><td class="tdTableDefinition" nowrap></td><td class="tdTableDefinition" nowrap>NOT NULL</td>
+                </tr>
+            </table>
+            <div class="references">
+                <p class="subTitle">References</p>
+                <ul>
+                    <li>
+                        <a href="#user">user</a> through (user_id)
+                    </li>
+                    <li>
+                        <a href="#transaction">transaction</a> through (transaction_id)
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="tableNameHeading">
+            <h1>
+                oauth2_identifier<a name="oauth2_identifier"></a>
+            </h1>
+            <h2>
+      (Physical Name: oauth2_identifier)
+      </h2>
+        </div>
+        <div class="table">
+            <table class="tableDefinition" width="100%">
+                <tr>
+                    <td class="tdTableHeading tdLogicalColName">Logical Column Name</td><td class="tdTableHeading tdPhysicalColName">Physical Column Name</td><td class="tdTableHeading tdDataType">Type</td><td class="tdTableHeading tdPkFlag">PK</td><td class="tdTableHeading tdNullFlag">Nullable</td>
+                </tr>
+                <tr valign="top">
+                    <td class="tdTableDefinition">oauht2_identifier_id (PK)</td><td class="tdTableDefinition">oauht2_identifier_id</td><td class="tdTableDefinition">INTEGER</td><td class="tdTableDefinition" nowrap>PK</td><td class="tdTableDefinition" nowrap>NOT NULL</td>
+                </tr>
+                <tr valign="top">
+                    <td class="tdTableDefinition">network_provider_name</td><td class="tdTableDefinition">network_provider_name</td><td class="tdTableDefinition">VARCHAR(50)</td><td class="tdTableDefinition" nowrap></td><td class="tdTableDefinition" nowrap>NOT NULL</td>
+                </tr>
+                <tr valign="top">
+                    <td class="tdTableDefinition">provider_user_id</td><td class="tdTableDefinition">provider_user_id</td><td class="tdTableDefinition">INTEGER</td><td class="tdTableDefinition" nowrap></td><td class="tdTableDefinition" nowrap>NOT NULL</td>
+                </tr>
+                <tr valign="top">
+                    <td class="tdTableDefinition">user_id
+                &nbsp;(<a href="#user">FK</a>)
+              </td><td class="tdTableDefinition">user_id</td><td class="tdTableDefinition">INTEGER</td><td class="tdTableDefinition" nowrap></td><td class="tdTableDefinition" nowrap>NOT NULL</td>
+                </tr>
+            </table>
+            <div class="references">
+                <p class="subTitle">References</p>
+                <ul>
+                    <li>
+                        <a href="#user">user</a> through (user_id)
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="tableNameHeading">
+            <h1>
+                role<a name="role"></a>
+            </h1>
+            <h2>
+      (Physical Name: role)
+      </h2>
+        </div>
+        <div class="table">
+            <table class="tableDefinition" width="100%">
+                <tr>
+                    <td class="tdTableHeading tdLogicalColName">Logical Column Name</td><td class="tdTableHeading tdPhysicalColName">Physical Column Name</td><td class="tdTableHeading tdDataType">Type</td><td class="tdTableHeading tdPkFlag">PK</td><td class="tdTableHeading tdNullFlag">Nullable</td>
+                </tr>
+                <tr valign="top">
+                    <td class="tdTableDefinition">id (PK)</td><td class="tdTableDefinition">id</td><td class="tdTableDefinition">INTEGER</td><td class="tdTableDefinition" nowrap>PK</td><td class="tdTableDefinition" nowrap>NOT NULL</td>
+                </tr>
+                <tr valign="top">
+                    <td class="tdTableDefinition">name</td><td class="tdTableDefinition">name</td><td class="tdTableDefinition">VARCHAR(20)</td><td class="tdTableDefinition" nowrap></td><td class="tdTableDefinition" nowrap>NOT NULL</td>
+                </tr>
+                <tr valign="top">
+                    <td class="tdTableDefinition">user_id
+                &nbsp;(<a href="#user">FK</a>)
+              </td><td class="tdTableDefinition">user_id</td><td class="tdTableDefinition">INTEGER</td><td class="tdTableDefinition" nowrap></td><td class="tdTableDefinition" nowrap>NOT NULL</td>
+                </tr>
+            </table>
+            <div class="references">
+                <p class="subTitle">References</p>
+                <ul>
+                    <li>
+                        <a href="#user">user</a> through (user_id)
+                    </li>
+                </ul>
+                <p class="subTitle">Referenced By</p>
+                <ul>
+                    <li>
+                        <a href="#user_role">user_role</a> referencing (id)
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="tableNameHeading">
+            <h1>
+                transaction<a name="transaction"></a>
+            </h1>
+            <h2>
+      (Physical Name: transaction)
+      </h2>
+        </div>
+        <div class="table">
+            <table class="tableDefinition" width="100%">
+                <tr>
+                    <td class="tdTableHeading tdLogicalColName">Logical Column Name</td><td class="tdTableHeading tdPhysicalColName">Physical Column Name</td><td class="tdTableHeading tdDataType">Type</td><td class="tdTableHeading tdPkFlag">PK</td><td class="tdTableHeading tdNullFlag">Nullable</td>
+                </tr>
+                <tr valign="top">
+                    <td class="tdTableDefinition">transaction_id (PK)</td><td class="tdTableDefinition">transaction_id</td><td class="tdTableDefinition">INTEGER</td><td class="tdTableDefinition" nowrap>PK</td><td class="tdTableDefinition" nowrap>NOT NULL</td>
+                </tr>
+                <tr valign="top">
+                    <td class="tdTableDefinition">date_transaction</td><td class="tdTableDefinition">date_transaction</td><td class="tdTableDefinition">TIMESTAMP</td><td class="tdTableDefinition" nowrap></td><td class="tdTableDefinition" nowrap>NOT NULL</td>
+                </tr>
+                <tr valign="top">
+                    <td class="tdTableDefinition">description</td><td class="tdTableDefinition">description</td><td class="tdTableDefinition">VARCHAR(100)</td><td class="tdTableDefinition" nowrap></td><td class="tdTableDefinition" nowrap>NOT NULL</td>
+                </tr>
+                <tr valign="top">
+                    <td class="tdTableDefinition">amount</td><td class="tdTableDefinition">amount</td><td class="tdTableDefinition">DECIMAL(8,2)</td><td class="tdTableDefinition" nowrap></td><td class="tdTableDefinition" nowrap>NOT NULL</td>
+                </tr>
+                <tr valign="top">
+                    <td class="tdTableDefinition">commision_percent</td><td class="tdTableDefinition">commision_percent</td><td class="tdTableDefinition">DECIMAL(3,2)</td><td class="tdTableDefinition" nowrap></td><td class="tdTableDefinition" nowrap>NOT NULL</td>
+                </tr>
+                <tr valign="top">
+                    <td class="tdTableDefinition">type_transaction</td><td class="tdTableDefinition">type_transaction</td><td class="tdTableDefinition">VARCHAR(20)</td><td class="tdTableDefinition" nowrap></td><td class="tdTableDefinition" nowrap>NOT NULL</td>
+                </tr>
+                <tr valign="top">
+                    <td class="tdTableDefinition">user_id
+                &nbsp;(<a href="#connection_user">FK</a>)
+              </td><td class="tdTableDefinition">user_id</td><td class="tdTableDefinition">INTEGER</td><td class="tdTableDefinition" nowrap></td><td class="tdTableDefinition" nowrap>NOT NULL</td>
+                </tr>
+                <tr valign="top">
+                    <td class="tdTableDefinition">user_connection_id
+                &nbsp;(<a href="#connection_user">FK</a>)
+              </td><td class="tdTableDefinition">user_connection_id</td><td class="tdTableDefinition">INTEGER</td><td class="tdTableDefinition" nowrap></td><td class="tdTableDefinition" nowrap>NOT NULL</td>
+                </tr>
+            </table>
+            <div class="references">
+                <p class="subTitle">References</p>
+                <ul>
+                    <li>
+                        <a href="#connection_user">connection_user</a> through (user_id, user_connection_id)
+                    </li>
+                </ul>
+                <p class="subTitle">Referenced By</p>
+                <ul>
+                    <li>
+                        <a href="#invoice">invoice</a> referencing (transaction_id)
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="tableNameHeading">
+            <h1>
+                user<a name="user"></a>
+            </h1>
+            <h2>
+      (Physical Name: user)
+      </h2>
+        </div>
+        <div class="table">
+            <table class="tableDefinition" width="100%">
+                <tr>
+                    <td class="tdTableHeading tdLogicalColName">Logical Column Name</td><td class="tdTableHeading tdPhysicalColName">Physical Column Name</td><td class="tdTableHeading tdDataType">Type</td><td class="tdTableHeading tdPkFlag">PK</td><td class="tdTableHeading tdNullFlag">Nullable</td>
+                </tr>
+                <tr valign="top">
+                    <td class="tdTableDefinition">user_id (PK)</td><td class="tdTableDefinition">user_id</td><td class="tdTableDefinition">INTEGER</td><td class="tdTableDefinition" nowrap>PK</td><td class="tdTableDefinition" nowrap>NOT NULL</td>
+                </tr>
+                <tr valign="top">
+                    <td class="tdTableDefinition">lastName</td><td class="tdTableDefinition">lastName</td><td class="tdTableDefinition">VARCHAR(30)</td><td class="tdTableDefinition" nowrap></td><td class="tdTableDefinition" nowrap>NOT NULL</td>
+                </tr>
+                <tr valign="top">
+                    <td class="tdTableDefinition">firstName</td><td class="tdTableDefinition">firstName</td><td class="tdTableDefinition">VARCHAR(30)</td><td class="tdTableDefinition" nowrap></td><td class="tdTableDefinition" nowrap>NOT NULL</td>
+                </tr>
+                <tr valign="top">
+                    <td class="tdTableDefinition">email</td><td class="tdTableDefinition">email</td><td class="tdTableDefinition">VARCHAR(30)</td><td class="tdTableDefinition" nowrap></td><td class="tdTableDefinition" nowrap>NOT NULL</td>
+                </tr>
+                <tr valign="top">
+                    <td class="tdTableDefinition">password</td><td class="tdTableDefinition">password</td><td class="tdTableDefinition">CHAR</td><td class="tdTableDefinition" nowrap></td><td class="tdTableDefinition" nowrap>NOT NULL</td>
+                </tr>
+                <tr valign="top">
+                    <td class="tdTableDefinition">enabled</td><td class="tdTableDefinition">enabled</td><td class="tdTableDefinition">TINYINT</td><td class="tdTableDefinition" nowrap></td><td class="tdTableDefinition" nowrap>NOT NULL</td>
+                </tr>
+                <tr valign="top">
+                    <td class="tdTableDefinition">address</td><td class="tdTableDefinition">address</td><td class="tdTableDefinition">VARCHAR(100)</td><td class="tdTableDefinition" nowrap></td><td class="tdTableDefinition" nowrap>NOT NULL</td>
+                </tr>
+                <tr valign="top">
+                    <td class="tdTableDefinition">zip</td><td class="tdTableDefinition">zip</td><td class="tdTableDefinition">INTEGER</td><td class="tdTableDefinition" nowrap></td><td class="tdTableDefinition" nowrap>NOT NULL</td>
+                </tr>
+                <tr valign="top">
+                    <td class="tdTableDefinition">city</td><td class="tdTableDefinition">city</td><td class="tdTableDefinition">VARCHAR(30)</td><td class="tdTableDefinition" nowrap></td><td class="tdTableDefinition" nowrap>NOT NULL</td>
+                </tr>
+                <tr valign="top">
+                    <td class="tdTableDefinition">phone</td><td class="tdTableDefinition">phone</td><td class="tdTableDefinition">INTEGER</td><td class="tdTableDefinition" nowrap></td><td class="tdTableDefinition" nowrap>NOT NULL</td>
+                </tr>
+                <tr valign="top">
+                    <td class="tdTableDefinition">number_application_account
+                &nbsp;(<a href="#application_account">FK</a>)
+              </td><td class="tdTableDefinition">number_application_account</td><td class="tdTableDefinition">INTEGER</td><td class="tdTableDefinition" nowrap></td><td class="tdTableDefinition" nowrap>NOT NULL</td>
+                </tr>
+                <tr valign="top">
+                    <td class="tdTableDefinition">number_bank_account
+                &nbsp;(<a href="#bank_account">FK</a>)
+              </td><td class="tdTableDefinition">number_bank_account</td><td class="tdTableDefinition">INTEGER</td><td class="tdTableDefinition" nowrap></td><td class="tdTableDefinition" nowrap>NOT NULL</td>
+                </tr>
+            </table>
+            <div class="references">
+                <p class="subTitle">References</p>
+                <ul>
+                    <li>
+                        <a href="#bank_account">bank_account</a> through (number_bank_account)
+                    </li>
+                    <li>
+                        <a href="#application_account">application_account</a> through (number_application_account)
+                    </li>
+                </ul>
+                <p class="subTitle">Referenced By</p>
+                <ul>
+                    <li>
+                        <a href="#connection_user">connection_user</a> referencing (user_id)
+                    </li>
+                    <li>
+                        <a href="#connection_user">connection_user</a> referencing (user_id)
+                    </li>
+                    <li>
+                        <a href="#invoice">invoice</a> referencing (user_id)
+                    </li>
+                    <li>
+                        <a href="#oauth2_identifier">oauth2_identifier</a> referencing (user_id)
+                    </li>
+                    <li>
+                        <a href="#role">role</a> referencing (user_id)
+                    </li>
+                    <li>
+                        <a href="#user_role">user_role</a> referencing (user_id)
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="tableNameHeading">
+            <h1>
+                user_role<a name="user_role"></a>
+            </h1>
+            <h2>
+      (Physical Name: user_role)
+      </h2>
+        </div>
+        <div class="table">
+            <table class="tableDefinition" width="100%">
+                <tr>
+                    <td class="tdTableHeading tdLogicalColName">Logical Column Name</td><td class="tdTableHeading tdPhysicalColName">Physical Column Name</td><td class="tdTableHeading tdDataType">Type</td><td class="tdTableHeading tdPkFlag">PK</td><td class="tdTableHeading tdNullFlag">Nullable</td>
+                </tr>
+                <tr valign="top">
+                    <td class="tdTableDefinition">user_id (PK)
+                &nbsp;(<a href="#user">FK</a>)
+              </td><td class="tdTableDefinition">user_id</td><td class="tdTableDefinition">INTEGER</td><td class="tdTableDefinition" nowrap>PK</td><td class="tdTableDefinition" nowrap>NOT NULL</td>
+                </tr>
+                <tr valign="top">
+                    <td class="tdTableDefinition">role_id (PK)
+                &nbsp;(<a href="#role">FK</a>)
+              </td><td class="tdTableDefinition">role_id</td><td class="tdTableDefinition">INTEGER</td><td class="tdTableDefinition" nowrap>PK</td><td class="tdTableDefinition" nowrap>NOT NULL</td>
+                </tr>
+            </table>
+            <div class="references">
+                <p class="subTitle">References</p>
+                <ul>
+                    <li>
+                        <a href="#user">user</a> through (user_id)
+                    </li>
+                    <li>
+                        <a href="#role">role</a> through (role_id)
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </body>
+</html>

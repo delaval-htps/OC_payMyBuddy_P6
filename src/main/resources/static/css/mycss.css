@@ -1,60 +1,102 @@
+body {
+	height: 100vh;
+}
+
 .container-fluid {
 	height: 100vh;
-	
 }
-#card-login{
+
+article {
+	min-height: 80%;
+}
+
+#card-login {
 	border-radius: .8rem;
 }
 
-.error{
-	color:red;
+.error {
+	color: red;
 	text-align: center;
 }
 
-.logout{
+.logout {
 	color: blue;
 	text-align: center;
 }
 
-.btn-gradient{
-	background:#198754;  /* fallback for old browsers */
-    background: -webkit-linear-gradient(to top, #90C652, #198754);  /* Chrome 10-25, Safari 5.1-6 */
-    background: linear-gradient(to top, #90C652, #198754); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
-	border-width: 1px;
-	box-shadow: 2px 2px 5px  grey;
+.btn-gradient {
+	background: #198754;
+	
+	background: -webkit-linear-gradient(to top, #90C652, #198754);
+	
+	background: linear-gradient(to top, #90C652, #198754);
+	
+	border: 0.2px black;
+	
+	box-shadow: 2px 2px 2px rgb(84, 84, 84);
 }
 
-#logo{
+
+.custom-shadow , #card-login,fieldset  {
+	border: 1px solid rgba(0, 0, 0, 0.22) !important ;
+	border-radius: 0.8rem;
+	box-shadow: 2px 2px 3px rgba(184, 184, 184, 0.631);
+}
+
+#logo {
 	font-size: 1em;
 	border-radius: 0.5rem;
 }
-#login{
-	font-size :1.1em;
+
+#login {
+	font-size: 1.1em;
 	padding: 2px 10px 2px 10px;
 	border-radius: 0.5rem;
 	border-width: 1px;
-	box-shadow: 2px 2px 5px  grey;
-	
-}
-#logout{
-	border-radius: 0.5rem;
-	border-width: 0.2px;
-	box-shadow: 2px 2px 5px  grey;
+	box-shadow: 2px 2px 5px grey;
+
 }
 
-#rememberMe{
-	float:none;
+ .btn #valider,.btn #logout{
+	border-radius: 0.5rem;
+	border-width: 0.2px;
+	box-shadow: 2px 2px 5px grey;
+}
+
+#rememberMe {
+	float: none;
 	font-style: normal;
 }
-#email, #password{
-	border: 1.5px solid rgba(0,0,0,.125);
+
+#email, #password {
+	border: 1.5px solid rgba(0, 0, 0, .125);
 	border-radius: .5rem;
-	font-size:1em;
-	
+	font-size: 1em;
+
 }
-#breadcrumb{
-	background-color:#f5f5f5;
+
+#breadcrumb {
+	background-color: #f5f5f5;
 }
-.main-content{
-	height:90vh;
+
+.main-content {
+	height: 90vh;
+}
+
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+	-webkit-appearance: none;
+	-moz-appearance: none;
+	appearance: none;
+	margin: 0;
+}
+
+fieldset {
+	box-shadow: 0px 0px 1px rgb(194, 194, 194);
+	border-radius: 5px;
+}
+
+.is-invalid{
+	border: 1px solid #dc3545 !important;
+	border-radius: 0.25	rem! important;
 }

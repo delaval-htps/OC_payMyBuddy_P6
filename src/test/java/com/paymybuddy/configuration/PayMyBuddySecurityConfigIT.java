@@ -1,7 +1,6 @@
 package com.paymybuddy.configuration;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestBuilders.formLogin;
-import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.authenticated;
 import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.unauthenticated;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -35,25 +34,28 @@ class PayMyBuddySecurityConfigIT {
 
   @Test
   void shouldReturnLoginPage() throws Exception {
-    mockMvc.perform(get("/myLoginPage")).andDo(print()).andExpect(status().isOk());
+    mockMvc.perform(get("/loginPage")).andDo(print()).andExpect(status().isOk());
   }
 
   @Test
   void userLoginTest_WhenUserExist_ShouldReturnAuthenticated() throws Exception {
-    mockMvc.perform(formLogin("/authenticateTheUser")
-        .user("delaval.htps@gmail.com")
-        .password("Jsadmin4all"))
-        .andDo(print())
-        .andExpect(authenticated());
+    mockMvc.perform(formLogin("/login").user("delaval.htps@gmail.com").password("Jsadmin4all"))
+        .andDo(print()).andExpect(unauthenticated());
   }
 
   @Test
   void userLoginTest_WhenUserNotExists_ShouldReturnNoAuthenticated() throws Exception {
-    mockMvc.perform(formLogin("/authenticateTheUser")
-        .user("delaval.htps@gmail.com")
-        .password("passwordNotValid"))
-        .andDo(print())
-        .andExpect(unauthenticated());
+    mockMvc.perform(formLogin("/authenticateTheUser").user("delaval.htps@gmail.com")
+        .password("passwordNotValid")).andDo(print()).andExpect(unauthenticated());
+  }
+
+  @Test
+  void oauth2Login_whenUserExists_shouldReturnAuthenticated() throws Exception {
+
+    // TODO
+    // mockMvc.perform(get("/loginPage")
+    // .with(oauth2Login().oauth2User(mockOAuth2user)))
+    // .andDo(print()).andExpect(authenticated());
   }
 
 }

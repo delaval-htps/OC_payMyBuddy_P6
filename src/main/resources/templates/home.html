@@ -1,25 +1,32 @@
 <!DOCTYPE html>
-<html  lang="fr"
- xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<html lang="fr" xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 
-	<head th:replace="~{/fragments/my-template::html-head('Registration Page')}"></head>
-	
-	<body>
-		<div class="container-fluid">
-		
-			<header th:replace="~{/fragments/my-template::header}"></header> 
-			
-			<nav th:replace="~{/fragments/my-template::nav-breadcrumb('Home')}"></nav>
-			
-			<div class="container mt-3">
+<head th:replace="~{/fragments/my-template::html-head('Home')}"></head>
+
+<body>
+	<div class="container-fluid">
+
+		<header th:replace="~{/fragments/my-template::header}"></header>
+
+		<nav th:replace="~{/fragments/my-template::nav-breadcrumb('Home')}"></nav>
+
+		<div class="container mt-3">
 			<div class="d-flex flex-column align-items-between main-content">
+
+				<h1 th:if="${user != null}">Welcome
+					<span th:text="${user.lastName}"></span>
+					<span th:each="role : ${user.roles}">
+						<span th:text="${role.name}"></span>
+					</span>
+				</h1>
 				
-						<h1 th:if="${user != null}">Welcome <span th:text="${user.lastName}"></span></h1>	
-				
-			
+				<article th:replace="~{/fragments/my-template:: article}"></article>
+
 				<footer th:replace="~{/fragments/my-template::footer}"></footer>
 			</div>
-			</div>
 		</div>
-	</body>
+	</div>
+</body>
+
 </html>

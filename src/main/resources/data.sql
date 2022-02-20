@@ -11,10 +11,10 @@ ON DUPLICATE KEY UPDATE number_account = nid ^;
 	
 --	insert datas in table use
   
-INSERT INTO user (user_id,email,password,enabled,last_name, first_name,address,zip,city,phone,number_application_account)
+INSERT INTO user (id,email,password,enabled,last_name, first_name,address,zip,city,phone,number_application_account)
 VALUES
-	(1,'delaval.htps@gmail.com','$2a$10$a7gjURC2zg97BnIJw61WOOdG.Fz7sDbU6tSmUuN.bqtvxrh89BOF2',1,'Delaval','Dorian','26 av Maréchal Foch',13260,'Cassis','0618460160',
-		(SELECT number_account FROM application_account WHERE balance = 1000)),
+	-- (1,'delaval.htps@gmail.com','$2a$10$a7gjURC2zg97BnIJw61WOOdG.Fz7sDbU6tSmUuN.bqtvxrh89BOF2',1,'Delaval','Dorian','26 av Maréchal Foch',13260,'Cassis','0618460160',
+	-- 	(SELECT number_account FROM application_account WHERE balance = 1000)),
 	(2,'emilie.baudouin@gmail.com','$2a$10$a7gjURC2zg97BnIJw61WOOdG.Fz7sDbU6tSmUuN.bqtvxrh89BOF2',1,'Baudouin','Emilie','26 av Maréchal Foch',13260,'Cassis','0622296638',
 		(SELECT number_account FROM application_account WHERE balance = 500.50)),
 	(3,'monique.baudouin@gmail.com','$2a$10$a7gjURC2zg97BnIJw61WOOdG.Fz7sDbU6tSmUuN.bqtvxrh89BOF2',1,'Baudouin','Monique','8 rue de la Tour',68300,'Mulbach Sur Munter','0718460250',
@@ -26,5 +26,18 @@ VALUES
 	(6,'manon.rollin@gmail.com','$2a$10$a7gjURC2zg97BnIJw61WOOdG.Fz7sDbU6tSmUuN.bqtvxrh89BOF2',1,'Rollin','Manon','10 place de la Piscine',68350,'Colmar','0645467033', 
 		(SELECT number_account FROM application_account WHERE balance = 100))
 	as new(uid,m,pa,e,l,f,a,z,c,ph,n)
-ON DUPLICATE KEY UPDATE user_id= uid ^;
+ON DUPLICATE KEY UPDATE id= uid ^;
 
+INSERT INTO role (id,name)
+VALUES
+	(1,"ROLE_ADMIN"),
+	(2,"ROLE_USER")
+as new (uid,name)
+ON DUPLICATE KEY UPDATE id= uid ^;
+
+INSERT INTO user_role (user_id,role_id)
+VALUES
+	-- (1,2),
+	(2,1)
+as new (uid,rid)
+ON DUPLICATE KEY UPDATE user_id=uid ^;

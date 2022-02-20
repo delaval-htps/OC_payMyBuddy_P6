@@ -1,6 +1,9 @@
-package com.paymybuddy.configuration;
+package com.paymybuddy.security.configuration;
 
-import javax.sql.DataSource;
+import com.paymybuddy.security.oauth2.components.CustomOAuth2SuccessHandler;
+import com.paymybuddy.security.oauth2.services.CustomOAuth2UserService;
+import com.paymybuddy.security.services.CustomUserDetailsService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,41 +18,48 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @EnableWebSecurity
 public class PayMyBuddySecurityConfig extends WebSecurityConfigurerAdapter {
 
-  @Autowired private DataSource datasource;
+  @Autowired
+  private CustomUserDetailsService customUserDetailsService;
+
+  @Autowired
+  private CustomOAuth2UserService customOAuth2UserService;
+
+  @Autowired
+  private CustomOAuth2SuccessHandler customOAuth2SuccessHandler;
 
   @Override
   protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-
-    auth.jdbcAuthentication()
-        .dataSource(datasource)
-        .usersByUsernameQuery("SELECT email,password,enabled FROM user WHERE email =?")
-        .authoritiesByUsernameQuery("SELECT email,'ROLE_USER' FROM user WHERE email=?")
-        .passwordEncoder(passwordEncoder());
+    auth.userDetailsService(customUserDetailsService).passwordEncoder(passwordEncoder());
   }
 
   @Override
   protected void configure(HttpSecurity http) throws Exception {
 
     http.authorizeRequests()
-        .antMatchers("/css/**")
-        .permitAll() // allowed to access to mycss.css
-        .antMatchers("/home")
-        .hasRole("USER")
-        .antMatchers("/registration")
-        .permitAll()
-        .anyRequest()
-        .authenticated()
+        .antMatchers("/css/**").permitAll()
+        .antMatchers("/oauth2/**").permitAll()
+        .antMatchers("/login*").permitAll()
+        .antMatchers("/logout").permitAll()
+        .antMatchers("/home").hasRole("USER")
+        .antMatchers("/registration").permitAll()
+        .anyRequest().authenticated()
         .and()
         .formLogin()
-        .loginPage("/myLoginPage")
-        .loginProcessingUrl("/authenticateTheUser")
+        .loginPage("/loginPage")
+        .loginProcessingUrl("/login")
+        .defaultSuccessUrl("/home") 
         .permitAll()
         .and()
         .oauth2Login()
-        .loginPage("/myLoginPage")
-        .defaultSuccessUrl("/")
+        .loginPage("/loginPage")
+        .defaultSuccessUrl("/home")
+        .userInfoEndpoint().userService(customOAuth2UserService).and()
+        .successHandler(customOAuth2SuccessHandler)
         .and()
         .logout()
+        .logoutSuccessUrl("/loginPage?logout")
+        .invalidateHttpSession(true)
+        .clearAuthentication(true)
         .deleteCookies("JSESSIONID")
         .permitAll()
         .and()
@@ -61,4 +71,5 @@ public class PayMyBuddySecurityConfig extends WebSecurityConfigurerAdapter {
   public PasswordEncoder passwordEncoder() {
     return new BCryptPasswordEncoder();
   }
+
 }
