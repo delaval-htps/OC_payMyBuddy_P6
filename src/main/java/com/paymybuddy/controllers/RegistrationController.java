@@ -32,19 +32,26 @@ public class RegistrationController {
   @Autowired
   PasswordEncoder passwordEncoder;
 
+  /**
+   * display a registration page to register a new user or a Oauth2Login not yet registred.
+   * 
+   * @param model the model to give to view registration
+   * @param authentication authentication of user in the page registration
+   * @return return the view without any restriction.
+   */
   @GetMapping("/registration")
   public String registerNewUser(Model model,
       org.springframework.security.core.Authentication authentication) {
 
     UserDto userDto = new UserDto();
 
-    if (authentication.getPrincipal() instanceof CustomOAuth2User) {
+    if (authentication != null && authentication.getPrincipal() instanceof CustomOAuth2User) {
       CustomOAuth2User oAuth2User = (CustomOAuth2User) authentication.getPrincipal();
       userDto.setEmail(oAuth2User.getEmail());
       userDto.setLastName(oAuth2User.getLastName());
       userDto.setFirstName(oAuth2User.getFirstName());
     }
-    
+
     model.addAttribute("user", userDto);
     return "registration";
   }
@@ -87,7 +94,7 @@ public class RegistrationController {
         oAuth2ProviderService
             .saveOAuth2ProviderForUser((CustomOAuth2User) authentication.getPrincipal(), saveUser);
       }
-      
+
     } else {
       bindingResult.addError(new FieldError("user", "duplicatedUser",
           "Please chose another names and email because they already use by another user!"));
@@ -96,7 +103,7 @@ public class RegistrationController {
           userDto.getFirstName());
       return "registration";
     }
-    
+
     return "redirect:/home";
   }
 }

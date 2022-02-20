@@ -86,6 +86,11 @@ public class User implements Serializable {
       orphanRemoval = true)
   private Set<OAuth2Provider> oauth2Identifiers = new HashSet<>();
 
+  @ManyToMany(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH})
+  @JoinTable(name = "connection_user", joinColumns = @JoinColumn(name = "user_id", table = "user"),
+      inverseJoinColumns = @JoinColumn(name = "user_connection_id", table = "connection_user"))
+  private Set<User> connectionUsers = new HashSet<>();
+
   /**
    * method to link a OAuth2Identier to a user.
    *
@@ -104,5 +109,23 @@ public class User implements Serializable {
   public void removeOAuth2Identifier(OAuth2Provider identifier) {
     this.oauth2Identifiers.remove(identifier);
     identifier.setUser(null);
+  }
+
+  /**
+   * method to add a user to the list of connectionUsers.
+   */
+  public void addConnectionUser(User user) {
+    if (user != null) {
+      connectionUsers.add(user);
+    }
+  }
+
+  /**
+   * method to remove a user to the list of connectionUsers.
+   */
+  public void removeConnectionUser(User user) {
+    if (user != null && this.connectionUsers.contains(user)) {
+      connectionUsers.remove(user);
+    }
   }
 }

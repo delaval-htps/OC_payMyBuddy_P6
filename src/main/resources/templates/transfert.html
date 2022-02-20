@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org"
+    xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+
+<head th:replace="~{/fragments/my-template::html-head('Transfert')}"></head>
+
+<body>
+    <header th:replace="~{/fragments/my-template::header}"></header>
+    <nav th:replace="~{/fragments/my-template::nav-breadcrumb('Home,Transfert')}"></nav>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Button trigger modal -->
+            <button type="button" class="btn btn-primary col-4 m-auto" data-bs-toggle="modal"
+                data-bs-target="#staticBackdrop">
+                Add Connection
+            </button>
+
+            <!-- Modal -->
+            <div class="modal fade " id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false"
+                tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                <div class="modal-dialog  modal-lg modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h3 class="modal-title" id="staticBackdropLabel">Add a friend to your network...</h3>
+
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <h4 class="text-justify ">You can add a friend to your network to be able to transfert him
+                                money... Just by giving us his email:</h4>
+                            <fieldset class=" p-3 mb-3 custom-shadow">
+                                <legend class="float-none w-auto lead bg-white ps-2 pe-2"> friend
+                                    Informations</legend>
+                                <form th:object="${connectionUser}">
+                                    <div class="row m-auto mb-3">
+
+                                        <label class="col-sm-1 col-form-label" for="email">
+                                            <i class="far fa-envelope"></i></label>
+                                        <div class="col-md-5 col-sm-10 mb-3">
+                                            <input type="email" class=" col-12 form-control" id="email"
+                                                placeholder="email" th:field="*{email}" name="email"
+                                                th:classappend="${#fields.hasErrors('email')?'is-invalid':''}"
+                                                required />
+
+                                            <div class="valid-feedback">Valid.</div>
+                                            <div class="invalid-feedback">
+                                                <span th:each="error:${#fields.errors('email')}"
+                                                    th:text="${error}"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </fieldset>
+
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-primary">Understood</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+</body>
+
+</html>

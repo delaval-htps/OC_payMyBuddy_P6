@@ -35,4 +35,7 @@ public class UserService {
     return userRepository.findByEmail(email);
   }
 
+  public User addUserToConnectionUsers(String email){
+  return addUserToConnectionUsers(email);
+  }
 }
