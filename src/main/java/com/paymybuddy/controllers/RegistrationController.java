@@ -3,9 +3,11 @@ package com.paymybuddy.controllers;
 import java.util.Optional;
 import javax.validation.Valid;
 import com.paymybuddy.dto.UserDto;
+import com.paymybuddy.model.Role;
 import com.paymybuddy.model.User;
 import com.paymybuddy.security.oauth2.user.CustomOAuth2User;
 import com.paymybuddy.service.OAuth2ProviderService;
+import com.paymybuddy.service.RoleService;
 import com.paymybuddy.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -28,7 +30,10 @@ public class RegistrationController {
 
   @Autowired
   private OAuth2ProviderService oAuth2ProviderService;
-
+  
+  @Autowired
+  private RoleService roleService;
+  
   @Autowired
   PasswordEncoder passwordEncoder;
 
@@ -86,6 +91,8 @@ public class RegistrationController {
       newUser.setEmail(userDto.getEmail());
       newUser.setPassword(passwordEncoder.encode(userDto.getPassword()));
       newUser.setEnabled((byte) 1);
+      Role userRole = roleService.findByName("ROLE_USER");
+      newUser.addRole(userRole);
       User saveUser = userService.save(newUser);
       model.addAttribute("user", newUser);
 
