@@ -105,7 +105,7 @@ public class RegistrationController {
       User saveUser = userService.save(newUser);
 
       // case of new user but logged with OAuth2login()
-      if (authentication !=null & authentication.getPrincipal() instanceof CustomOAuth2User) {
+      if (authentication !=null && authentication.getPrincipal() instanceof CustomOAuth2User) {
 
         oAuth2ProviderService.saveOAuth2ProviderForUser((CustomOAuth2User) authentication.getPrincipal(), saveUser);
       }

@@ -23,7 +23,6 @@ public class ApplicationController {
 
   @GetMapping("/home")
   public String getHome(Authentication authentication, Model model) {
-    String name = authentication.getName();
     Optional<User> user= userService.findByEmail(authentication.getName());
    
     if (user.isPresent() && authentication.isAuthenticated()) {
