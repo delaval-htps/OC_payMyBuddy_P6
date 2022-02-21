@@ -127,8 +127,12 @@ public class User implements Serializable {
     if (user != null && this.connectionUsers.contains(user)) {
       connectionUsers.remove(user);
     }
-  public void addRole(Role role){
+  }
+/**
+ * method to add Role to user.
+ */
+  public void addRole(Role role) {
     this.roles.add(role);
-    
+
   }
 }

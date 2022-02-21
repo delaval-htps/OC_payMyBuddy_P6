@@ -13,6 +13,7 @@ import com.paymybuddy.model.OAuth2Provider;
 import com.paymybuddy.model.User;
 import com.paymybuddy.repository.UserRepository;
 import com.paymybuddy.security.oauth2.user.CustomOAuth2User;
+import com.paymybuddy.security.services.CustomUserDetailsService;
 import com.paymybuddy.service.OAuth2ProviderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -21,6 +22,8 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 
@@ -32,6 +35,9 @@ public class CustomOAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHa
 
   @Autowired
   private OAuth2ProviderService oAuth2ProviderService;
+  
+  @Autowired
+  private CustomUserDetailsService customUserDetailsService;
 
   @Override
   @Transactional
@@ -56,12 +62,12 @@ public class CustomOAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHa
       }
         // change Oauth2authenticationToken in UsernamePasswordAuthenticationToken
       SecurityContext context = SecurityContextHolder.getContext();
-      SimpleGrantedAuthority simpleGrantedAuthority = new SimpleGrantedAuthority("ROLE_USER");
-      List<GrantedAuthority> authorities = new ArrayList<>();
-      authorities.add(simpleGrantedAuthority);
-      UsernamePasswordAuthenticationToken newUser = new UsernamePasswordAuthenticationToken(
-          currentUser, currentUser.getPassword(), authorities);
-      context.setAuthentication(newUser);
+      
+      UserDetails newUser = customUserDetailsService.loadUserByUsername(currentUser.getEmail());
+
+      UsernamePasswordAuthenticationToken userToken = new UsernamePasswordAuthenticationToken(
+          newUser, newUser.getPassword(), newUser.getAuthorities());
+      context.setAuthentication(userToken);
 
       response.sendRedirect("/home");
 
@@ -70,6 +76,5 @@ public class CustomOAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHa
       response.sendRedirect("/registration");
     }
   }
-
 
 }

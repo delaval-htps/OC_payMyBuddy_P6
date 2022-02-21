@@ -6,11 +6,16 @@ import com.paymybuddy.dto.UserDto;
 import com.paymybuddy.model.Role;
 import com.paymybuddy.model.User;
 import com.paymybuddy.security.oauth2.user.CustomOAuth2User;
+import com.paymybuddy.security.services.CustomUserDetailsService;
 import com.paymybuddy.service.OAuth2ProviderService;
 import com.paymybuddy.service.RoleService;
 import com.paymybuddy.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -30,10 +35,13 @@ public class RegistrationController {
 
   @Autowired
   private OAuth2ProviderService oAuth2ProviderService;
-  
+
   @Autowired
   private RoleService roleService;
-  
+
+  @Autowired
+  private CustomUserDetailsService customUserDetailsService;
+
   @Autowired
   PasswordEncoder passwordEncoder;
 
@@ -93,14 +101,24 @@ public class RegistrationController {
       newUser.setEnabled((byte) 1);
       Role userRole = roleService.findByName("ROLE_USER");
       newUser.addRole(userRole);
+
       User saveUser = userService.save(newUser);
-      model.addAttribute("user", newUser);
 
       // case of new user but logged with OAuth2login()
-      if (authentication.getPrincipal() instanceof CustomOAuth2User) {
-        oAuth2ProviderService
-            .saveOAuth2ProviderForUser((CustomOAuth2User) authentication.getPrincipal(), saveUser);
+      if (authentication !=null & authentication.getPrincipal() instanceof CustomOAuth2User) {
+
+        oAuth2ProviderService.saveOAuth2ProviderForUser((CustomOAuth2User) authentication.getPrincipal(), saveUser);
       }
+        // convertion of Oauth2Token to UsernamePasswordToken
+        SecurityContext context = SecurityContextHolder.getContext();
+
+        UserDetails userDetails = customUserDetailsService.loadUserByUsername(saveUser.getEmail());
+        
+        UsernamePasswordAuthenticationToken userToken =
+            new UsernamePasswordAuthenticationToken(userDetails, userDetails.getPassword(), userDetails.getAuthorities());
+
+        context.setAuthentication(userToken);
+      
 
     } else {
       bindingResult.addError(new FieldError("user", "duplicatedUser",
