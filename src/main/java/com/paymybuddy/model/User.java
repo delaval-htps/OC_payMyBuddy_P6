@@ -74,6 +74,7 @@ public class User implements Serializable {
   @Column
   private String city;
 
+  @Size(max = 10, message = "the number of phone must contain less than 10 numbers")
   @Column
   private String phone;
 
@@ -128,9 +129,10 @@ public class User implements Serializable {
       connectionUsers.remove(user);
     }
   }
-/**
- * method to add Role to user.
- */
+
+  /**
+   * method to add Role to user.
+   */
   public void addRole(Role role) {
     this.roles.add(role);
 
