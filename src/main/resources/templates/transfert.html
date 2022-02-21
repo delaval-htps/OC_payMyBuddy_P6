@@ -14,7 +14,8 @@
                 data-bs-target="#staticBackdrop">
                 Add Connection
             </button>
-
+            <div class="alert alert-primary" role="alert" th:text="${success}" th:if="${success}"></div>
+            <div class="alert alert-danger" role="alert" th:text="${error}" th:if="${error}"></div>
             <!-- Modal -->
             <div class="modal fade " id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false"
                 tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
@@ -26,37 +27,37 @@
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
-                            <h4 class="text-justify ">You can add a friend to your network to be able to transfert him
-                                money... Just by giving us his email:</h4>
-                            <fieldset class=" p-3 mb-3 custom-shadow">
+                            <h5 class="text-justify ">You can add a friend to your network to be able to transfert him
+                                money... </h5>
+                            <h5 class="mt-3">Just by giving us his email:</h5>
+                         
+                            <fieldset class=" p-3 my-5 custom-shadow">
                                 <legend class="float-none w-auto lead bg-white ps-2 pe-2"> friend
                                     Informations</legend>
-                                <form th:object="${connectionUser}">
-                                    <div class="row m-auto mb-3">
-
-                                        <label class="col-sm-1 col-form-label" for="email">
-                                            <i class="far fa-envelope"></i></label>
-                                        <div class="col-md-5 col-sm-10 mb-3">
-                                            <input type="email" class=" col-12 form-control" id="email"
-                                                placeholder="email" th:field="*{email}" name="email"
-                                                th:classappend="${#fields.hasErrors('email')?'is-invalid':''}"
-                                                required />
-
-                                            <div class="valid-feedback">Valid.</div>
-                                            <div class="invalid-feedback">
-                                                <span th:each="error:${#fields.errors('email')}"
-                                                    th:text="${error}"></span>
+                                
+                                    <form th:action="@{/connection}" method="post">
+                                    <div class="row mb-3">
+                                        <div class="col-10 m-auto ">
+                                            <div class="row">
+                                                <label class="col-sm-1 col-form-label" for="email">
+                                                    <i class="far fa-envelope"></i></label>
+                                                <div class="col-sm-10 ">
+                                                    <input type="email" class="  form-control" id="email"
+                                                        placeholder="friend's email" th:value="email" name="email"
+                                                        required />
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                </form>
-                            </fieldset>
 
+                            </fieldset>
+                            
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="button" class="btn btn-primary">Understood</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                            <button type="submit" class="btn btn-primary">Submit</button>
                         </div>
+                        </form>
                     </div>
                 </div>
             </div>
