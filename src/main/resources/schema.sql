@@ -4,9 +4,8 @@ CREATE DATABASE IF NOT EXISTS paymybuddy DEFAULT CHARACTER SET utf8mb4 ^;
 USE paymybuddy ^;
 
 -- drop procedures to be able to recreate them when restart app
-DROP PROCEDURE IF EXISTS user_oauth2_identifier_fk^;
-DROP PROCEDURE IF EXISTS oauth2_identifer_user_fk^;
-DROP PROCEDURE IF EXISTS card_bank_bank_account_fk^;
+DROP PROCEDURE IF EXISTS user_oauth2_provider_fk^;
+DROP PROCEDURE IF EXISTS bank_card_bank_account_fk^;
 DROP PROCEDURE IF EXISTS application_account_user_fk^;
 DROP PROCEDURE IF EXISTS bank_account_user_fk^;
 DROP PROCEDURE IF EXISTS user_connection_fk^;
@@ -19,12 +18,12 @@ DROP PROCEDURE IF EXISTS user_role_fk1^;
 
 -- creation of Tables if not exists -- 
 
-CREATE TABLE IF NOT EXISTS oauth2_identifier (
-	oauth2_identifier_id INT AUTO_INCREMENT NOT NULL,
-	network_provider_name VARCHAR(50) NOT NULL,
+CREATE TABLE IF NOT EXISTS oauth2_provider (
+	id INT AUTO_INCREMENT NOT NULL,
+	registration_client VARCHAR(50) NOT NULL,
 	provider_user_id VARCHAR(50) NOT NULL,
 	user_id INT NOT NULL,
-	PRIMARY KEY (oauth2_identifier_id)
+	PRIMARY KEY (id)
 )ENGINE=InnoDB, DEFAULT CHARSET=utf8mb4 ^;
 
 CREATE TABLE IF NOT EXISTS role(
@@ -39,27 +38,30 @@ CREATE TABLE IF NOT EXISTS user_role(
 	PRIMARY KEY (user_id,role_id)
 )ENGINE= InnoDB, DEFAULT CHARSET=utf8mb4 ^;
 
-CREATE TABLE IF NOT EXISTS card_bank (
-	numberCard INT NOT NULL,
+CREATE TABLE IF NOT EXISTS bank_card (
+	id INT NOT NULL AUTO_INCREMENT,
+	card_number VARCHAR(16),
 	card_code INT NOT NULL,
-	date_expiration_card DATE NOT NULL,
-	PRIMARY KEY (numberCard)
+	expiration_card DATE NOT NULL,
+	PRIMARY KEY (id)
 )ENGINE=InnoDB, DEFAULT CHARSET=utf8mb4 ^;
 
 
 CREATE TABLE IF NOT EXISTS application_account (
-	number_account INT AUTO_INCREMENT NOT NULL,
+	id INT NOT NULL AUTO_INCREMENT,
+	account_number VARCHAR(14),
 	balance DECIMAL(8,2) NOT NULL,
-	PRIMARY KEY (number_account)
+	PRIMARY KEY (id)
 )ENGINE=InnoDB, DEFAULT CHARSET=utf8mb4 ^;
 
 
 CREATE TABLE IF NOT EXISTS bank_account (
-	number_account INT NOT NULL,
+	id INT NOT NULL AUTO_INCREMENT,
+	account_number VARCHAR(14),
 	iban VARCHAR(34) NOT NULL,
 	balance DECIMAL(8,2) NOT NULL,
-	numberCard INT NOT NULL,
-	PRIMARY KEY (number_account)
+	bank_card_id INT NOT NULL,
+	PRIMARY KEY (id)
 )ENGINE=InnoDB, DEFAULT CHARSET=utf8mb4 ^;
 
 
@@ -74,9 +76,8 @@ CREATE TABLE IF NOT EXISTS user (
 	zip INT NOT NULL,
 	city VARCHAR(30) NOT NULL,
 	phone VARCHAR(10) NOT NULL,
-	-- number_application_account,number_bank_account,oAuth2_identifier can be null if it' a new user 
-	number_application_account INT , 
-	number_bank_account INT ,
+	application_account_id INT,
+	bank_account_id INT,
 	PRIMARY KEY (id),
 	UNIQUE KEY(email)
 )ENGINE=InnoDB, DEFAULT CHARSET=utf8mb4 ^;
@@ -90,7 +91,7 @@ CREATE TABLE IF NOT EXISTS connection_user (
 
 
 CREATE TABLE IF NOT EXISTS transaction (
-	transaction_id INT AUTO_INCREMENT NOT NULL,
+	id INT AUTO_INCREMENT NOT NULL,
 	date_transaction DATETIME NOT NULL,
 	description VARCHAR(100) NOT NULL,
 	amount DECIMAL(8,2) NOT NULL,
@@ -98,19 +99,21 @@ CREATE TABLE IF NOT EXISTS transaction (
 	type_transaction VARCHAR(20) NOT NULL,
 	user_id INT NOT NULL,
 	user_connection_id INT NOT NULL,
-	PRIMARY KEY (transaction_id)
+
+	PRIMARY KEY (id)
 )ENGINE=InnoDB, DEFAULT CHARSET=utf8mb4 ^;
 
 
 CREATE TABLE IF NOT EXISTS invoice (
-	daily_invoice_id INT AUTO_INCREMENT NOT NULL,
+	id INT AUTO_INCREMENT NOT NULL,
 	date_invoice DATETIME NOT NULL,
 	price_ht DECIMAL(8,2) NOT NULL,
 	price_ttc DECIMAL(8,2) NOT NULL,
 	taxe_percent DECIMAL(3,2) NOT NULL,
-	transaction_id INT NOT NULL,
 	user_id INT NOT NULL,
-	PRIMARY KEY (daily_invoice_id)
+	transaction_id INT NOT NULL,
+	
+	PRIMARY KEY (id)
 )ENGINE=InnoDB, DEFAULT CHARSET=utf8mb4 ^;
 
 
@@ -119,15 +122,15 @@ CREATE TABLE IF NOT EXISTS invoice (
 
 
 
-CREATE PROCEDURE user_oauth2_identifier_fk() 
+CREATE PROCEDURE user_oauth2_provider_fk() 
 BEGIN
 	IF NOT EXISTS(SELECT null 
 				FROM information_schema.TABLE_CONSTRAINTS
 				WHERE TABLE_SCHEMA = 'paymybuddy' 
-				AND CONSTRAINT_NAME= 'user_oauth2_identifier_fk'
+				AND CONSTRAINT_NAME= 'user_oauth2_provider_fk'
 				AND CONSTRAINT_TYPE= 'FOREIGN KEY')
 	THEN
-		ALTER TABLE oauth2_identifier ADD CONSTRAINT user_oauth2_identifier_fk
+		ALTER TABLE oauth2_provider ADD CONSTRAINT user_oauth2_provider_fk
 		FOREIGN KEY (user_id)
 		REFERENCES user(id)
 		ON DELETE NO ACTION
@@ -167,17 +170,17 @@ BEGIN
 	END IF;
 END ^;
 
-CREATE PROCEDURE card_bank_bank_account_fk() 
+CREATE PROCEDURE bank_card_bank_account_fk() 
 BEGIN
 	IF NOT EXISTS(SELECT null 
 				FROM information_schema.TABLE_CONSTRAINTS
 				WHERE TABLE_SCHEMA = 'paymybuddy' 
-				AND CONSTRAINT_NAME= 'card_bank_bank_account_fk'
+				AND CONSTRAINT_NAME= 'bank_card_bank_account_fk'
 				AND CONSTRAINT_TYPE= 'FOREIGN KEY')
 	THEN
-		ALTER TABLE bank_account ADD CONSTRAINT card_bank_bank_account_fk
-		FOREIGN KEY (numberCard)
-		REFERENCES card_bank (numberCard)
+		ALTER TABLE bank_account ADD CONSTRAINT bank_card_bank_account_fk
+		FOREIGN KEY (bank_card_id)
+		REFERENCES bank_card (id)
 		ON DELETE NO ACTION
 		ON UPDATE NO ACTION;
 	END IF;
@@ -192,8 +195,8 @@ BEGIN
 				AND CONSTRAINT_TYPE= 'FOREIGN KEY')
 	THEN
 		ALTER TABLE user ADD CONSTRAINT application_account_user_fk
-		FOREIGN KEY (number_application_account)
-		REFERENCES application_account (number_account)
+		FOREIGN KEY (application_account_id)
+		REFERENCES application_account (id)
 		ON DELETE NO ACTION
 		ON UPDATE NO ACTION;
 	END IF;
@@ -208,8 +211,8 @@ BEGIN
 				AND CONSTRAINT_TYPE= 'FOREIGN KEY')
 	THEN
 		ALTER TABLE user ADD CONSTRAINT bank_account_user_fk
-		FOREIGN KEY (number_bank_account)
-		REFERENCES bank_account (number_account)
+		FOREIGN KEY (bank_account_id)
+		REFERENCES bank_account (id)
 		ON DELETE NO ACTION
 		ON UPDATE NO ACTION;
 	END IF;
@@ -290,15 +293,15 @@ BEGIN
 	THEN
 		ALTER TABLE invoice ADD CONSTRAINT transaction_daily_invoice_fk
 		FOREIGN KEY (transaction_id)
-		REFERENCES transaction (transaction_id)
+		REFERENCES transaction (id)
 		ON DELETE NO ACTION
 		ON UPDATE NO ACTION;
 	END IF;
 END ^;
 
 -- call of procedures
-CALL user_oauth2_identifier_fk()^;
-CALL card_bank_bank_account_fk()^;
+CALL user_oauth2_provider_fk()^;
+CALL bank_card_bank_account_fk()^;
 CALL application_account_user_fk()^;
 CALL bank_account_user_fk()^;
 CALL user_connection_fk()^;

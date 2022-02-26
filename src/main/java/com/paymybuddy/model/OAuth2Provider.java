@@ -26,23 +26,23 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 
-@Table(name = "oauth2_identifier")
+@Table(name = "oauth2_provider")
 public class OAuth2Provider implements Serializable {
   
   private static final long serialVersionUID = 1L;
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Column(name = "oauth2_identifier_id")
-  private Long oauth2IdentifierId;
+  @Column
+  private Long id;
 
   @NotNull
-  @Column(name = "network_provider_name")
+  @Column
   @Enumerated(EnumType.STRING)
-  private AuthProvider registrationId;
+  private AuthProvider registrationClient;
 
   @NotBlank
-  @Column(name = "provider_user_id")
+  @Column
   private String providerUserId;
 
   @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)

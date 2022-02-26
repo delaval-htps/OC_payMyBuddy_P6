@@ -52,7 +52,7 @@ public class CustomOAuth2User implements OAuth2User {
     }
 
     public String getClientId() {
-        return oAuth2UserInfo.getClientId().toString();
+        return oAuth2UserInfo.getClientId();
     }
 
     @Override
