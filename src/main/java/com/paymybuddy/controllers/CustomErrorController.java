@@ -19,17 +19,17 @@ public class CustomErrorController implements ErrorController {
         if (status != null){
             Integer statusCode = Integer.valueOf(status.toString());
             if(statusCode == HttpStatus.NOT_FOUND.value()){
-                log.error(("errormessage:{} \n errormessageURI {}"),request.getAttribute(RequestDispatcher.ERROR_MESSAGE),request.getAttribute(RequestDispatcher.ERROR_REQUEST_URI));
+                log.error(("errormessage: {} & errormessageURI: {}"),request.getAttribute(RequestDispatcher.ERROR_MESSAGE),request.getAttribute(RequestDispatcher.ERROR_REQUEST_URI));
                 return "error-404";
 
             }
             if(statusCode == HttpStatus.INTERNAL_SERVER_ERROR.value()){
-                log.error(("errormessage:{} \n errormessageURI {}"),request.getAttribute(RequestDispatcher.ERROR_MESSAGE),request.getAttribute(RequestDispatcher.ERROR_REQUEST_URI));
+                log.error(("errormessage: {} & errormessageURI: {}"),request.getAttribute(RequestDispatcher.ERROR_MESSAGE),request.getAttribute(RequestDispatcher.ERROR_REQUEST_URI));
                 return "error-505";
 
             }
             if(statusCode == HttpStatus.FORBIDDEN.value()){
-                log.error(("errormessage:{} \n errormessageURI {}"),request.getAttribute(RequestDispatcher.ERROR_MESSAGE),request.getAttribute(RequestDispatcher.ERROR_REQUEST_URI));
+                log.error(("errormessage: {} & errormessageURI: {}"),request.getAttribute(RequestDispatcher.ERROR_MESSAGE),request.getAttribute(RequestDispatcher.ERROR_REQUEST_URI));
                 return "error-403";
 
             }
