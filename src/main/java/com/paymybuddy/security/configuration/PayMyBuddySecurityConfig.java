@@ -46,7 +46,7 @@ public class PayMyBuddySecurityConfig extends WebSecurityConfigurerAdapter {
       .permitAll()
       .antMatchers("/logout")
       .permitAll()
-      .antMatchers("/home")
+      .antMatchers("/home", "/transfert","/connection")
       .hasRole("USER")
       .antMatchers("/registration")
       .permitAll()

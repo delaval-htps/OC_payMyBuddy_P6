@@ -1,5 +1,6 @@
 package com.paymybuddy.service;
 
+import java.util.List;
 import java.util.Optional;
 
 import com.paymybuddy.model.User;
@@ -35,7 +36,8 @@ public class UserService {
     return userRepository.findByEmail(email);
   }
 
-  public User addUserToConnectionUsers(String email){
-  return addUserToConnectionUsers(email);
-  }
+public List<User> findConnectedUserByEmail(String email) {
+    return userRepository.findConnectedUserByEmail(email);
+}
+
 }
