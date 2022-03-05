@@ -20,14 +20,12 @@ public class ApplicationController {
     Optional<User> user = userService.findByEmail(authentication.getName());
 
     if (user.isPresent() && authentication.isAuthenticated()) {
-      model.addAttribute("user", user.get());
+      User currentUser = user.get();
+      model.addAttribute("user", currentUser);
       return "home";
     } else {
       authentication.setAuthenticated(false);
       return ("redirect:/logout");
     }
   }
-
- 
-
 }
