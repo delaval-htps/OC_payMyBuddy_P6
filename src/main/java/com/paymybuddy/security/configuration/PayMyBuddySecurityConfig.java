@@ -56,7 +56,7 @@ public class PayMyBuddySecurityConfig extends WebSecurityConfigurerAdapter {
       .formLogin()
       .loginPage("/loginPage")
       .loginProcessingUrl("/login")
-      .defaultSuccessUrl("/home")
+      .defaultSuccessUrl("/home",true)
       .permitAll()
       .and()
       .oauth2Login()
