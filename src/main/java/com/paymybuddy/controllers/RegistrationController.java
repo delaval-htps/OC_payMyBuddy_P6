@@ -1,12 +1,15 @@
 package com.paymybuddy.controllers;
 
+import java.security.NoSuchAlgorithmException;
 import java.util.Optional;
 import javax.validation.Valid;
 import com.paymybuddy.dto.UserDto;
+import com.paymybuddy.exceptions.ApplicationAccountException;
 import com.paymybuddy.model.Role;
 import com.paymybuddy.model.User;
 import com.paymybuddy.security.oauth2.user.CustomOAuth2User;
 import com.paymybuddy.security.services.CustomUserDetailsService;
+import com.paymybuddy.service.ApplicationAccountService;
 import com.paymybuddy.service.OAuth2ProviderService;
 import com.paymybuddy.service.RoleService;
 import com.paymybuddy.service.UserService;
@@ -41,6 +44,9 @@ public class RegistrationController {
 
   @Autowired
   private CustomUserDetailsService customUserDetailsService;
+
+  @Autowired
+  private ApplicationAccountService appAccountService;
 
   @Autowired
   PasswordEncoder passwordEncoder;
@@ -101,24 +107,37 @@ public class RegistrationController {
       newUser.setEnabled((byte) 1);
       Role userRole = roleService.findByName("ROLE_USER");
       newUser.addRole(userRole);
+      try {
+        appAccountService.createAccountforUser(newUser);
+      } catch (NoSuchAlgorithmException e) {
+        e.printStackTrace();
+        throw new ApplicationAccountException(
+            "A problem occurs because , can't be able to create a account for new user"
+                + newUser.getFullName());
+      }
 
       User saveUser = userService.save(newUser);
 
+      // creation of his application account
+
+
+
       // case of new user but logged with OAuth2login()
-      if (authentication !=null && authentication.getPrincipal() instanceof CustomOAuth2User) {
+      if (authentication != null && authentication.getPrincipal() instanceof CustomOAuth2User) {
 
-        oAuth2ProviderService.saveOAuth2ProviderForUser((CustomOAuth2User) authentication.getPrincipal(), saveUser);
+        oAuth2ProviderService
+            .saveOAuth2ProviderForUser((CustomOAuth2User) authentication.getPrincipal(), saveUser);
       }
-        // convertion of Oauth2Token to UsernamePasswordToken
-        SecurityContext context = SecurityContextHolder.getContext();
+      // convertion of Oauth2Token to UsernamePasswordToken
+      SecurityContext context = SecurityContextHolder.getContext();
 
-        UserDetails userDetails = customUserDetailsService.loadUserByUsername(saveUser.getEmail());
-        
-        UsernamePasswordAuthenticationToken userToken =
-            new UsernamePasswordAuthenticationToken(userDetails, userDetails.getPassword(), userDetails.getAuthorities());
+      UserDetails userDetails = customUserDetailsService.loadUserByUsername(saveUser.getEmail());
 
-        context.setAuthentication(userToken);
-      
+      UsernamePasswordAuthenticationToken userToken = new UsernamePasswordAuthenticationToken(
+          userDetails, userDetails.getPassword(), userDetails.getAuthorities());
+
+      context.setAuthentication(userToken);
+
 
     } else {
       bindingResult.addError(new FieldError("user", "duplicatedUser",
