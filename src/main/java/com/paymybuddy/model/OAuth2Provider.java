@@ -29,7 +29,7 @@ import lombok.Setter;
 @Table(name = "oauth2_provider")
 public class OAuth2Provider implements Serializable {
   
-  private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 2L;
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)

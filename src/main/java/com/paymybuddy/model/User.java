@@ -14,6 +14,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
@@ -32,7 +33,6 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-
 public class User implements Serializable {
 
   private static final long serialVersionUID = 1L;
@@ -92,6 +92,16 @@ public class User implements Serializable {
       inverseJoinColumns = @JoinColumn(name = "user_connection_id", table = "connection_user"))
   private Set<User> connectionUsers = new HashSet<>();
 
+  @OneToOne(
+      cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.REMOVE})
+  @JoinColumn(name = "bank_account_id")
+  private BankAccount bankAccount;
+
+
+  @OneToOne(cascade = CascadeType.ALL)
+  @JoinColumn(name = "application_account_id", nullable = false)
+  private ApplicationAccount applicationAccount;
+
   /**
    * method to link a OAuth2Identier to a user.
    *
@@ -135,6 +145,14 @@ public class User implements Serializable {
    */
   public void addRole(Role role) {
     this.roles.add(role);
+  }
 
+  /**
+   * return the fullname= firstname + lastname of user.
+   * 
+   * @return fullname
+   */
+  public String getFullName() {
+    return this.firstName + " " + this.lastName;
   }
 }
