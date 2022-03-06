@@ -58,7 +58,10 @@ CREATE TABLE IF NOT EXISTS application_account (
 CREATE TABLE IF NOT EXISTS bank_account (
 	id INT NOT NULL AUTO_INCREMENT,
 	account_number VARCHAR(14),
-	iban VARCHAR(34) NOT NULL,
+	bank_code INT NOT NULL,
+	branch_code INT NOT NULL,
+	iban VARCHAR(38) NOT NULL,
+	bic VARCHAR(10) NOT NULL,
 	balance DECIMAL(8,2) NOT NULL,
 	bank_card_id INT NOT NULL,
 	PRIMARY KEY (id)
@@ -119,8 +122,6 @@ CREATE TABLE IF NOT EXISTS invoice (
 
 -- creation of foreign keys 
 -- use of procedure because sql don't support if not exists --
-
-
 
 CREATE PROCEDURE user_oauth2_provider_fk() 
 BEGIN
