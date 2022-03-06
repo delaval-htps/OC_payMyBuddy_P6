@@ -17,6 +17,9 @@ public class ApplicationAccountService {
   @Autowired
   private ApplicationAccountRepository applicationAccountRepository;
 
+  @Autowired
+  private UtilService utilService;
+
   /**
    * retrieve application account of a user by its id.
    * 
@@ -39,7 +42,7 @@ public class ApplicationAccountService {
     if (user != null) {
       if (user.getApplicationAccount() == null) {
         ApplicationAccount appAccountOfUser = new ApplicationAccount();
-        appAccountOfUser.setAccountNumber(UtilService.getRandomAccountNumber());
+        appAccountOfUser.setAccountNumber(utilService.getRandomApplicationAccountNumber());
         appAccountOfUser.setBalance(0d);
         user.setApplicationAccount(appAccountOfUser);
         return appAccountOfUser;

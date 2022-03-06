@@ -2,45 +2,50 @@ package com.paymybuddy;
 
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+import java.util.HashSet;
 import java.util.Random;
-import org.springframework.stereotype.Service;
+import java.util.Set;
+import org.springframework.stereotype.Component;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-@Service
+/**
+ * singleton class (cause of springboot) to create unique random account number or iban. Use of set
+ * to save account numbers and verify if new account number generated is contained in it (with the
+ * size of set) to be sure it's unique.
+ * 
+ * @return void
+ * @throws NoSuchAlgorithmException
+ */
+@Component
+@NoArgsConstructor
+@Getter
+@Setter
 public class UtilService {
 
-  public static String getRandomIban() throws NoSuchAlgorithmException {
+  private static Set<StringBuilder> accountNumbers = new HashSet<>();
 
+  public String getRandomApplicationAccountNumber() throws NoSuchAlgorithmException {
+
+    int lengthOfAccountNumbers = accountNumbers.size();
     Random rand = SecureRandom.getInstanceStrong();
-    StringBuilder numberAccounString = new StringBuilder();
+    StringBuilder accountNumberString = new StringBuilder();
 
-    numberAccounString.append("IBAN FR");
-    numberAccounString.append(String.format("%02d", rand.nextInt(99)));
-    numberAccounString.append(" ");
+    // as new generated account number is added to set , if set.size() > initial size then new
+    // account number is unique
+    while (accountNumbers.size() == lengthOfAccountNumbers) {
 
-    for (int i = 0; i < 5; i++) {
-      numberAccounString.append(String.format("%04d", rand.nextInt(9999)));
-      numberAccounString.append(" ");
+      // for number account
+      accountNumberString.append(String.format("%06d", rand.nextInt(999999)));
+      accountNumberString.append(String.format("%05d", rand.nextInt(99999)));
+
+      // for key RIB
+      accountNumberString.append(" ");
+      accountNumberString.append(String.format("%02d", rand.nextInt(99)));
+      accountNumbers.add(accountNumberString);
     }
-
-    numberAccounString.append(String.format("%03d", rand.nextInt(999)));
-
-    return numberAccounString.toString();
-
-  }
-
-  public static String getRandomAccountNumber() throws NoSuchAlgorithmException {
-
-    Random rand = SecureRandom.getInstanceStrong();
-    StringBuilder numberAccounString = new StringBuilder();
-
-    // for number account
-    numberAccounString.append(String.format("%06d", rand.nextInt(999999)));
-    numberAccounString.append(String.format("%05d", rand.nextInt(99999)));
-    // for key RIB
-    numberAccounString.append(" ");
-    numberAccounString.append(String.format("%02d", rand.nextInt(99)));
-
-    return numberAccounString.toString();
+    return accountNumberString.toString();
 
   }
 }
