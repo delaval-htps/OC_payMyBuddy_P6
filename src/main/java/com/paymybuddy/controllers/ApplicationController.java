@@ -1,5 +1,9 @@
 package com.paymybuddy.controllers;
 
+import java.util.Optional;
+import com.paymybuddy.model.User;
+import com.paymybuddy.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -8,13 +12,16 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class ApplicationController {
 
-  @GetMapping("/home")
+  @Autowired
+  private UserService userService;
 
+  @GetMapping("/home")
   public String getHome(Authentication authentication, Model model) {
-    String username = authentication.getName();
-    model.addAttribute("userName", username);
-   
-    if (authentication.isAuthenticated()) {
+    Optional<User> user = userService.findByEmail(authentication.getName());
+
+    if (user.isPresent() && authentication.isAuthenticated()) {
+      User currentUser = user.get();
+      model.addAttribute("user", currentUser);
       return "home";
     } else {
       authentication.setAuthenticated(false);

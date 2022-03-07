@@ -13,7 +13,7 @@ public interface OAuth2ProviderRepository extends JpaRepository<OAuth2Provider, 
 
     @Query("select op from OAuth2Provider as op "
             + "join op.user as u "
-            + "where u.email =?1 and op.registrationId=?2")
+            + "where u.email =?1 and op.registrationClient=?2")
     Optional<OAuth2Provider> findByEmail(String email,AuthProvider provider);
 
 }

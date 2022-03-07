@@ -14,6 +14,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
@@ -32,7 +33,6 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-
 public class User implements Serializable {
 
   private static final long serialVersionUID = 1L;
@@ -74,6 +74,7 @@ public class User implements Serializable {
   @Column
   private String city;
 
+  @Size(max = 10, message = "the number of phone must contain less than 10 numbers")
   @Column
   private String phone;
 
@@ -85,6 +86,21 @@ public class User implements Serializable {
   @OneToMany(fetch = FetchType.EAGER, mappedBy = "user", cascade = CascadeType.ALL,
       orphanRemoval = true)
   private Set<OAuth2Provider> oauth2Identifiers = new HashSet<>();
+
+  @ManyToMany(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH})
+  @JoinTable(name = "connection_user", joinColumns = @JoinColumn(name = "user_id", table = "user"),
+      inverseJoinColumns = @JoinColumn(name = "user_connection_id", table = "connection_user"))
+  private Set<User> connectionUsers = new HashSet<>();
+
+  @OneToOne(
+      cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.REMOVE})
+  @JoinColumn(name = "bank_account_id")
+  private BankAccount bankAccount;
+
+
+  @OneToOne(cascade = CascadeType.ALL)
+  @JoinColumn(name = "application_account_id", nullable = false)
+  private ApplicationAccount applicationAccount;
 
   /**
    * method to link a OAuth2Identier to a user.
@@ -106,8 +122,37 @@ public class User implements Serializable {
     identifier.setUser(null);
   }
 
-  public void addRole(Role role){
+  /**
+   * method to add a user to the list of connectionUsers.
+   */
+  public void addConnectionUser(User user) {
+    if (user != null) {
+      connectionUsers.add(user);
+    }
+  }
+
+  /**
+   * method to remove a user to the list of connectionUsers.
+   */
+  public void removeConnectionUser(User user) {
+    if (user != null && this.connectionUsers.contains(user)) {
+      connectionUsers.remove(user);
+    }
+  }
+
+  /**
+   * method to add Role to user.
+   */
+  public void addRole(Role role) {
     this.roles.add(role);
-    
+  }
+
+  /**
+   * return the fullname= firstname + lastname of user.
+   * 
+   * @return fullname
+   */
+  public String getFullName() {
+    return this.firstName + " " + this.lastName;
   }
 }

@@ -42,7 +42,7 @@ public class OAuth2ProviderService {
             AuthProvider enumProvider =
                     AuthProvider.fromString(oAuth2User.getClientRegistrationId());
             if (enumProvider != null) {
-                newOAuth2Provider.setRegistrationId(enumProvider);
+                newOAuth2Provider.setRegistrationClient(enumProvider);
             } else {
                 throw new OAuth2ProviderNotFoundException(
                         "the Oauht2Provider is not approuved by paymybuddy.");
