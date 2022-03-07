@@ -8,6 +8,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
+import com.paymybuddy.model.AuthProvider;
 import com.paymybuddy.model.OAuth2Provider;
 import com.paymybuddy.model.User;
 import com.paymybuddy.repository.UserRepository;
@@ -47,7 +48,7 @@ public class CustomOAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHa
       User currentUser = existedUser.get();
 
       Optional<OAuth2Provider> oAuth2ProviderUser =
-          oAuth2ProviderService.getOAuht2ProviderByEmail(currentUser.getEmail());
+          oAuth2ProviderService.getOAuht2ProviderByEmail(currentUser.getEmail(),AuthProvider.fromString(user.getClientRegistrationId()));
 
       if (!oAuth2ProviderUser.isPresent()) {
         // case of OAuth2Provider is not registred for this user

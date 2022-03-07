@@ -20,8 +20,8 @@ public class OAuth2ProviderService {
     private UserService userService;
 
 
-    public Optional<OAuth2Provider> getOAuht2ProviderByEmail(String email) {
-        return oAuth2ProviderRepository.findByEmail(email);
+    public Optional<OAuth2Provider> getOAuht2ProviderByEmail(String email,AuthProvider provider) {
+        return oAuth2ProviderRepository.findByEmail(email,provider);
     }
 
     /**
