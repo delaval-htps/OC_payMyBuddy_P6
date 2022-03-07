@@ -59,8 +59,7 @@ public class RegistrationController {
    * @return return the view without any restriction.
    */
   @GetMapping("/registration")
-  public String registerNewUser(Model model,
-      org.springframework.security.core.Authentication authentication) {
+  public String registerNewUser(Model model, Authentication authentication) {
 
     UserDto userDto = new UserDto();
 
@@ -107,6 +106,8 @@ public class RegistrationController {
       newUser.setEnabled((byte) 1);
       Role userRole = roleService.findByName("ROLE_USER");
       newUser.addRole(userRole);
+
+        // creation of his application account
       try {
         appAccountService.createAccountforUser(newUser);
       } catch (NoSuchAlgorithmException e) {
@@ -117,10 +118,6 @@ public class RegistrationController {
       }
 
       User saveUser = userService.save(newUser);
-
-      // creation of his application account
-
-
 
       // case of new user but logged with OAuth2login()
       if (authentication != null && authentication.getPrincipal() instanceof CustomOAuth2User) {
