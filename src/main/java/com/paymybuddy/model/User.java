@@ -93,7 +93,7 @@ public class User implements Serializable {
   private Set<User> connectionUsers = new HashSet<>();
 
   @OneToOne(
-      cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.REMOVE})
+      cascade = CascadeType.ALL)
   @JoinColumn(name = "bank_account_id")
   private BankAccount bankAccount;
 

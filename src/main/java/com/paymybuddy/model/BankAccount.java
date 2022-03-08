@@ -49,6 +49,7 @@ public class BankAccount implements Serializable {
   @JoinColumn(name = "bank_card_id")
   private BankCard bankCard;
 
-  @OneToOne(cascade = CascadeType.ALL, mappedBy = "bankAccount")
+  @OneToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH},
+      mappedBy = "bankAccount")
   private User user;
 }
