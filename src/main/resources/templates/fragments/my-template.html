@@ -70,7 +70,7 @@
 					<li sec:authorize="isAuthenticated()" th:if="${#httpServletRequest.requestURI != '/registration'}"
 						class="nav-item ">
 						<form th:action="@{/logout}" method="post">
-							<input class="btn btn-outline-success mt-2" id="logout" type="submit" value="Log Off" />
+							<input class="btn-sm btn-gradient mt-2" id="logout" type="submit" value="Log Off" />
 
 						</form>
 					</li>
@@ -98,6 +98,7 @@
 	</article>
 	<footer th:fragment="footer" class="col-12 text-center">
 		<p>delaval.htps@gmail.com copyright <i class="fas fa-copyright"></i> 2021</p>
+		<a target="_blank" href="https://icons8.com/icon/ab7FU9sZy68i/bank">Bank</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a>	
 	</footer>
 </body>
 
