@@ -14,62 +14,66 @@
 		<div class="container mt-3">
 			<div class="d-flex flex-column align-items-between main-content">
 
-				<h1 th:if="${user != null}">Welcome
-					<span th:text="${user.fullName}"></span> ,
-				</h1>
-				<div class="row">
-					<h2>You have been correctly registred !</h2>
-				</div>
-				<div class="row mt-5">
-					<p>Your application's account was created. Effective immediatly, you can:</p>
+				<h2 th:if="${user != null}">Welcome<span th:text="${user.fullName}"></span>, you have been correctly
+					registred !</h2>
+
+				<div class="row mt-3 mb-5">
+					<h4>Your application's account was created...</h4>
 				</div>
 				<div class="row row-cols-1 row-cols-md-3 g-4">
 					<div class="col">
-						<div class="card h-100">
+						<div class="card h-100 shadow p-3 mb-5 bg-white rounded ">
 							<img src="images/icons8-bank-64.png" style="width:60px;" class="card-img-top m-1" alt="...">
 							<div class="card-body">
-								<h5 class="card-title">Card title</h5>
-								<p class="card-text">This is a wider card with supporting text below as a natural
-									lead-in to additional content. This content is a little bit longer.</p>
+								<h5 class="card-title">Application account</h5>
+								<p class="card-text">As you are a new user, paymybuddy opened your application
+									account.<br> But to be able to use it immediatly, your personal bank account
+									informations are required.So let's go to your profile to complete it...</p>
 							</div>
-							<div class="card-footer">
-								<small class="text-muted">Last updated 3 mins ago</small>
+							<div class="card-footer m-auto p-3">
+								<a th:href="@{/profile}"><button type="button" class="btn-sm  btn-gradient ">Complete
+										your informations</button></a>
 							</div>
 						</div>
 					</div>
 					<div class="col">
-						<div class="card h-100">
+						<div class="card h-100 shadow p-3 mb-5 bg-white rounded special-card">
 							<img src="images/icons8-give-64.png" style="width:60px;" class="card-img-top m-1" alt="...">
 							<div class="card-body">
-								<h5 class="card-title">Card title</h5>
-								<p class="card-text">This card has supporting text below as a natural lead-in to
-									additional content.</p>
+								<h5 class="card-title">Account's deposit'</h5>
+								<p class="card-text">You can easely deposit money on your account by card or bank
+									transaction with immediate effect.And of course,at any time, you are able to
+									transfert money on your bank account.</p>
 							</div>
-							<div class="card-footer">
-								<small class="text-muted">Last updated 3 mins ago</small>
+							<div class="card-footer m-auto p-3">
+								<a th:if="${firstConnection}" th:href="@{/transfert}" tabindex="-1"><button
+										type="button" class="btn-sm  btn-gradient ">Deposit money</button></a>
 							</div>
 						</div>
 					</div>
 					<div class="col">
-						<div class="card h-100">
-							<img src="images/icons8-give-64 (1).png" style="width:60px;" class="card-img-top m-1" alt="...">
+						<div class="card h-100 shadow p-3 mb-5 bg-white rounded special-card">
+							<img src="images/icons8-give-64 (1).png" style="width:60px;" class="card-img-top m-1"
+								alt="...">
 							<div class="card-body">
-								<h5 class="card-title">Card title</h5>
-								<p class="card-text">This is a wider card with supporting text below as a natural
-									lead-in to additional content. This card has even longer content than the first
-									to show that equal height action.</p>
+								<h5 class="card-title">Money transfert</h5>
+								<p class="card-text ">You can easely transfert money to your friends that have a account
+									in application: to do that simply enter the email of your friend to save it a new
+									contact and send him money...The transaction will be effective immediatly.</p>
 							</div>
-							<div class="card-footer">
-								<small class="text-muted">Last updated 3 mins ago</small>
+							<div class="card-footer m-auto p-3">
+								<a th:if="${firstConnection}" th:href="@{/transfert}"><button type="button"
+										class="btn-sm  btn-gradient ">Money transfert</button></a>
 							</div>
 						</div>
 					</div>
 				</div>
 			</div>
+			<footer th:replace="~{/fragments/my-template::footer}"></footer>
 		</div>
 
-		<footer th:replace="~{/fragments/my-template::footer}"></footer>
-		<a target="_blank" href="https://icons8.com/icon/ab7FU9sZy68i/bank">Bank</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a>
+
+
 	</div>
 </body>
 
