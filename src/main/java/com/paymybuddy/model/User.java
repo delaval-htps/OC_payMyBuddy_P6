@@ -18,6 +18,7 @@ import javax.persistence.OneToOne;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
+import org.springframework.util.StringUtils;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -92,8 +93,7 @@ public class User implements Serializable {
       inverseJoinColumns = @JoinColumn(name = "user_connection_id", table = "connection_user"))
   private Set<User> connectionUsers = new HashSet<>();
 
-  @OneToOne(
-      cascade = CascadeType.ALL)
+  @OneToOne(cascade = CascadeType.ALL)
   @JoinColumn(name = "bank_account_id")
   private BankAccount bankAccount;
 
@@ -153,6 +153,7 @@ public class User implements Serializable {
    * @return fullname
    */
   public String getFullName() {
-    return this.firstName + " " + this.lastName;
+    return StringUtils.capitalize(this.firstName) + " "
+        + StringUtils.capitalize(this.lastName);
   }
 }
