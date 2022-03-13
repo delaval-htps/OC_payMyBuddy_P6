@@ -37,6 +37,9 @@ public class BankAccount implements Serializable {
   private int accountNumber;
 
   @Column
+  private int ribKey;
+
+  @Column
   private String bic;
 
   @Column

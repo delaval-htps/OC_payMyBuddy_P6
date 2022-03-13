@@ -31,24 +31,26 @@ article {
 	background: linear-gradient(to top, #90C652, #198754);
 	border: 0.2px black;
 	box-shadow: 2px 2px 2px rgb(84, 84, 84);
-	color:white;
+	color: white;
 }
 
-.special-card {
+.special-card , .special-fieldset{
 	/* create a custom class so you 
 	   do not run into specificity issues 
 	   against bootstraps styles
 	   which tends to work better than using !important 
 	   (future you will thank you later)*/
-	
-	  background-color: rgba(245, 245, 245, 1);
-	  opacity: .4;
-	}
-	.card-footer{
-		background-color: white!important;
-	}
-.custom-shadow , #card-login,fieldset  {
-	border: 1px solid rgba(0, 0, 0, 0.22) !important ;
+
+	background-color: rgba(245, 245, 245, 1);
+	opacity: .4;
+}
+
+.card-footer {
+	background-color: white !important;
+}
+
+.custom-shadow, #card-login, fieldset {
+	border: 1px solid rgba(0, 0, 0, 0.22) !important;
 	border-radius: 0.8rem;
 	box-shadow: 2px 2px 3px rgba(184, 184, 184, 0.631);
 }
@@ -67,7 +69,7 @@ article {
 
 }
 
- .btn #valider,.btn #logout{
+.btn #valider, .btn #logout {
 	border-radius: 0.5rem;
 	border-width: 0.2px;
 	box-shadow: 2px 2px 5px grey;
@@ -101,16 +103,37 @@ input[type=number]::-webkit-outer-spin-button {
 	margin: 0;
 }
 
-fieldset{
-	box-shadow: 0px 0px 1px rgb(194, 194, 194)!important;
+fieldset {
+	box-shadow: 0px 0px 1px rgb(194, 194, 194) !important;
 	border-radius: 5px !important;
 }
 
-.is-invalid{
+.is-invalid {
 	border: 1px solid #dc3545 !important;
-	border-radius: 0.25	rem! important;
+	border-radius: 0.25 rem ! important;
 }
 
-.nav-link .selected{
-	color:green;
+.nav-link .selected {
+	color: green;
 }
+
+/*--------- for form profile----------*/
+.no-border {
+	border: none !important;
+}
+
+label {
+	display: inline-block;
+	width: 150px;
+	text-align: right;
+}
+
+.bank-label {
+	display: inline-block;
+	text-align: center;
+	width:max-content;
+}
+.fullname {
+	padding-left: 12px;
+}
+
