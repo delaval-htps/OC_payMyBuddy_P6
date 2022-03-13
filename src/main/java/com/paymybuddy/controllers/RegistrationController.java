@@ -22,6 +22,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -95,8 +96,8 @@ public class RegistrationController {
 
     if (!existedUser.isPresent()) {
       User newUser = new User();
-      newUser.setLastName(userDto.getLastName());
-      newUser.setFirstName(userDto.getFirstName());
+      newUser.setLastName(StringUtils.capitalize(userDto.getLastName()));
+      newUser.setFirstName(StringUtils.capitalize(userDto.getFirstName()));
       newUser.setAddress(userDto.getAddress());
       newUser.setPhone(userDto.getPhone());
       newUser.setZip(userDto.getZip());
