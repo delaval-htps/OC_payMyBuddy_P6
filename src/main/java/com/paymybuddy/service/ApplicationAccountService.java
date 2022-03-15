@@ -20,6 +20,7 @@ public class ApplicationAccountService {
   @Autowired
   private UtilService utilService;
 
+
   /**
    * retrieve application account of a user by its id.
    * 
@@ -28,6 +29,16 @@ public class ApplicationAccountService {
    */
   public Optional<ApplicationAccount> findById(Long id) {
     return applicationAccountRepository.findById(id);
+  }
+
+  /**
+   * retrieve user's application account by his email
+   * 
+   * @param email email of owner of applicationAccount
+   * @return application account if it exists
+   */
+  public Optional<ApplicationAccount> findByEmail(String email) {
+    return applicationAccountRepository.findByEmail(email);
   }
 
   /**

@@ -42,7 +42,7 @@ CREATE TABLE IF NOT EXISTS bank_card (
 	id INT NOT NULL AUTO_INCREMENT,
 	card_number VARCHAR(16),
 	card_code INT NOT NULL,
-	expiration_card DATE NOT NULL,
+	expiration_date DATE NOT NULL,
 	PRIMARY KEY (id)
 )ENGINE=InnoDB, DEFAULT CHARSET=utf8mb4 ^;
 
@@ -60,6 +60,7 @@ CREATE TABLE IF NOT EXISTS bank_account (
 	account_number VARCHAR(14),
 	bank_code INT NOT NULL,
 	branch_code INT NOT NULL,
+	rib_key INT NOT NULL,
 	iban VARCHAR(38) NOT NULL,
 	bic VARCHAR(10) NOT NULL,
 	balance DECIMAL(8,2) NOT NULL,

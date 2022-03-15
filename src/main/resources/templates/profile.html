@@ -14,12 +14,12 @@
 		<nav th:replace="~{/fragments/my-template::nav-breadcrumb('Home,Profile')}"></nav>
 
 		<div class=" container-fluid">
-			<article class="row">
+			<article class="row justify-content-center">
 				<div class="col-md-12 " th:if="${user.bankAccount}">
 
 					<h2>Hi <span th:text="${user.fullName}"></span> !</h2>
 
-					<h5 class="mb-2 text-muted">
+					<h5 class=" text-muted">
 						This is your personnal informations, you can modify it if you want...</h5>
 				</div>
 
@@ -27,191 +27,259 @@
 
 					<h2>Hi <span th:text="${user.fullName}"></span> !</h2>
 
-					<h5 class="mb-2 text-muted">
+					<h5 class="text-muted">
 						This is your personnal informations, please check it, complete your bank's
 						informations
 						to active your account </h5>
 				</div>
 
-				<div class="col-lg-4 col-md-12">
+				<div class="col-lg-8 col-md-12">
 					<form th:action="@{/profile/user}" th:object="${user}" method="post" id="profileForm" novalidate>
 						<i class="fa fa-pencil col-12 text-end m-O text-primary edit-button" aria-hidden="true"></i>
 						<fieldset class=" mb-3 p-1  bg-white rounded special-fieldset">
 
 							<legend class="float-none w-auto lead bg-white ms-2 ps-2 pe-2"> Personal
 								Informations</legend>
-
-							<div id="personal-info">
-								<div class="row mb-2 align-items-end ">
-									<label class="col-form-label col-sm-1 col-md-1" for="LastName"><i
-											class="fas fa-user"></i></label>
-									<div class="col-md-10 col-sm-11  no-wrap fs-4 text">
-										<span class="fullname" th:text="*{fullName}"></sppl-5an>
-									</div>
-								</div>
-
-							</div>
-							<div id="form-content-personal-info" style="display:none;">
-								<div class="row mb-2">
-									<label class="col-form-label col-sm-1 " for="LastName"><i
-											class="fas fa-user"></i></label>
-									<div class="col-md-5 col-sm-12 mb-3">
-										<input type="text" class=" col-12 form-control no-border " id="LastName"
-											th:field="*{lastName}" placeholder="lastname" name="lastName"
-											th:classappend="${#fields.hasErrors('lastName')? 'is-invalid':''}"
-											required />
-
-										<div class="valid-feedback">Valid.</div>
-										<div class="invalid-feedback">
-											<span th:each="error:${#fields.errors('lastName')}" th:text="${error}">
-											</span>
+							<div class="row justify-content-evenly ">
+								<div class="col-4 m-auto">
+									<div id="personal-info">
+										<div class="row mb-2 align-items-end ">
+											<label class="col-form-label col-sm-1 col-md-1" for="LastName"><i
+													class="fas fa-user"></i></label>
+											<div class="col-md-10 col-sm-11  no-wrap fs-4 text">
+												<span class="fullname" th:text="*{fullName}"></sppl-5an>
+											</div>
 										</div>
 
 									</div>
-									<div class=" col-sm-12 col-md-5 offset-md-1 mb-1">
-										<input type="text" class="col-12 form-control no-border" id="user_firstname"
-											th:value="*{firstName}" placeholder="firstname" name="firstName"
-											th:classappend="${#fields.hasErrors('firstName')? 'is-invalid':''}"
-											required />
+									<div id="form-content-personal-info" style="display:none;">
+										<div class="row mb-2">
+											<label class="col-form-label col-sm-1 " for="LastName"><i
+													class="fas fa-user"></i></label>
+											<div class="col-md-5 col-sm-12 mb-3">
+												<input type="text" class=" col-12 form-control no-border " id="LastName"
+													th:field="*{lastName}" placeholder="lastname" name="lastName"
+													th:classappend="${#fields.hasErrors('lastName')? 'is-invalid':''}"
+													required />
 
-										<div class="invalid-feedback">
-											<span th:each="error:${#fields.errors('firstName')}" th:text="${error}">
-											</span>
+												<div class="valid-feedback">Valid.</div>
+												<div class="invalid-feedback">
+													<span th:each="error:${#fields.errors('lastName')}"
+														th:text="${error}">
+													</span>
+												</div>
+
+											</div>
+											<div class=" col-sm-12 col-md-5 offset-md-1 mb-1">
+												<input type="text" class="col-12 form-control no-border"
+													id="user_firstname" th:value="*{firstName}" placeholder="firstname"
+													name="firstName"
+													th:classappend="${#fields.hasErrors('firstName')? 'is-invalid':''}"
+													required />
+
+												<div class="invalid-feedback">
+													<span th:each="error:${#fields.errors('firstName')}"
+														th:text="${error}">
+													</span>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="row mb-2">
+										<label class="col-sm-1 col-form-label" for="email">
+											<i class="far fa-envelope"></i></label>
+										<div class="col-sm-11 mb-1">
+											<input type="email" class=" col-12 form-control no-border" id="email"
+												th:field="*{email}" name="email"
+												th:classappend="${#fields.hasErrors('email')?'is-invalid':''}"
+												required />
+
+											<div class="valid-feedback">Valid.</div>
+											<div class="invalid-feedback">
+												<span th:each="error:${#fields.errors('email')}"
+													th:text="${error}"></span>
+											</div>
+										</div>
+
+										<label class=" col-sm-1 col-form-label" for="phone"><i
+												class="fas fa-phone-alt mr-0"></i></label>
+										<div class="col-sm-11 mb-1">
+											<input type="text" class="col-12 form-control no-border" id="phone"
+												name="phone" th:field="*{phone}" />
+											<div class="valid-feedback">Valid.</div>
+											<div class="invalid-feedback">
+												<span th:each="error:${#fields.errors('phone')}"
+													th:text="${error}"></span>
+											</div>
+										</div>
+									</div>
+									<div class="row mb-2 ">
+
+										<label class="col-sm-1 col-form-label" for="address">
+											<i class="fas fa-map-marker-alt"></i></label>
+										<div class="col-sm-11 mb-2">
+											<input type="text" class="col-12  form-control no-border" id="address"
+												th:field="*{address}" name="address" />
+										</div>
+									</div>
+									<div class="row mb-2 ">
+										<label class=" col-md-1 col-form-label" for="zip">Zip:</label>
+										<div class="col-sm-11">
+											<input type="number" th:field="*{zip}"
+												class=" col-12 form-control no-border" id="zip" name="zip" />
+										</div>
+
+										<label class=" col-md-1 col-form-label" for="city">City:</label>
+										<div class="col-sm-11 ">
+											<input type="text" class="col-12 form-control no-border" id="city"
+												name="city" th:field="*{city}" />
 										</div>
 									</div>
 								</div>
-							</div>
-							<div class="row mb-2">
-								<label class="col-sm-1 col-form-label" for="email">
-									<i class="far fa-envelope"></i></label>
-								<div class="col-sm-11 mb-1">
-									<input type="email" class=" col-12 form-control no-border" id="email"
-										th:field="*{email}" name="email"
-										th:classappend="${#fields.hasErrors('email')?'is-invalid':''}" required />
 
-									<div class="valid-feedback">Valid.</div>
-									<div class="invalid-feedback">
-										<span th:each="error:${#fields.errors('email')}" th:text="${error}"></span>
-									</div>
-								</div>
+								<div id="gauge" class="col-6">
 
-								<label class=" col-sm-1 col-form-label" for="phone"><i
-										class="fas fa-phone-alt mr-0"></i></label>
-								<div class="col-sm-11 mb-1">
-									<input type="text" class="col-12 form-control no-border" id="phone" name="phone"
-										th:field="*{phone}" />
-									<div class="valid-feedback">Valid.</div>
-									<div class="invalid-feedback">
-										<span th:each="error:${#fields.errors('phone')}" th:text="${error}"></span>
-									</div>
 								</div>
 							</div>
-							<div class="row mb-2 ">
-
-								<label class="col-sm-1 col-form-label" for="address">
-									<i class="fas fa-map-marker-alt"></i></label>
-								<div class="col-sm-11 mb-2">
-									<input type="text" class="col-12  form-control no-border" id="address"
-										placeholder="address" name="address" />
-								</div>
-							</div>
-							<div class="row mb-2 ">
-								<label class=" col-md-1 col-form-label" for="zip">Zip:</label>
-								<div class="col-sm-11">
-									<input type="number" value="0" class=" col-12 form-control no-border" id="zip"
-										name="zip" />
-								</div>
-
-								<label class=" col-md-1 col-form-label" for="city">City:</label>
-								<div class="col-sm-11 ">
-									<input type="text" class="col-12 form-control no-border" id="city" name="city" />
-								</div>
-							</div>
-
 						</fieldset>
 					</form>
 				</div>
-				<div class="col-lg-8 col-md-12 mx-auto">
+				<div class="col-lg-8 col-md-12 ">
+
 					<form th:action="@{/profile/bankaccount}" th:object="${bankAccount}" method="post" id="profileForm"
 						novalidate>
 						<div class="row m-auto">
 							<fieldset class=" mb-3 shadow p-2  bg-white rounded ">
-								<legend class="float-none w-auto lead bg-white ms-2 ps-2 pe-2"> Bank informations
+								<legend class="float-none w-auto lead bg-white ms-2 ps-2 pe-2"> <img
+										src="images/icons8-give-64.png" style="width:60px;" class="card-img-top m-1"
+										alt="..."> Bank informations
 								</legend>
-								<div class="row justify-content-evenly mb-2 ">
+								<h5 class="mb-3">There are your means of payment to deposit money on your account,
+									please chose one and fill in informations </h5>
+								<div class="col-lg-8  col-md-12 mx-auto ">
+									<fieldset class=" mb-3 shadow p-2  bg-white rounded ">
+										<legend class="float-none w-auto lead bg-white ms-2 ps-2 pe-2"> <img
+												src="images/icons8-bank-64.png" style="width:60px;"
+												class="card-img-top m-1" alt="..."> Identification national RIB
+										</legend>
+										<div class="row justify-content-evenly mb-2 ">
 
-									<label class="col-sm-12 text-center col-form-label" for="rib">
-										Identification national RIB</label>
-									<div class="col-lg-2 col-md-6  mb-2 text-center   form-group">
-										<label class="form-label bank-label " for="bank-code">
-											Bank code</label>
-										<input type="number" class="form-control text-center" id="bank-code"
-											name="bankCode" th:field="*{bankCode}" placeholder="XXXXX" />
-									</div>
-									<div class="col-lg-2 col-md-6  mb-2 text-center form-group">
-										<label class="form-label bank-label" for="branch-code">
-											Branch code</label>
+											<label class="col-sm-12 text-center col-form-label" for="rib">
+											</label>
+											<div class="col-lg-2 col-md-6  mb-2 text-center   form-group">
+												<label class="form-label bank-label " for="bank-code">
+													Bank code</label>
+												<input type="number" class="form-control text-center" id="bank-code"
+													name="bankCode" th:field="*{bankCode}" placeholder="XXXXX" />
+											</div>
+											<div class="col-lg-2 col-md-6  mb-2 text-center form-group">
+												<label class="form-label bank-label" for="branch-code">
+													Branch code</label>
 
-										<input type="number" class="form-control text-center" id="branch-code"
-											name="branchCode" th:field="*{branchCode}" pattern="{0-9}{5}"
-											title="Must contains only 5 numbers" placeholder="XXXXX" />
-									</div>
+												<input type="number" class="form-control text-center" id="branch-code"
+													name="branchCode" th:field="*{branchCode}" pattern="{0-9}{5}"
+													title="Must contains only 5 numbers" placeholder="XXXXX" />
+											</div>
 
-									<div class="col-lg-4 col-md-6 col-sm-12 mb-2 text-center form-group">
-										<label class="form-label bank-label" for="account-number">Account number</label>
-										<input type="number" class="form-control text-center" id="account-number"
-											name="accountNumber" th:field="*{accountNumber}" pattern="{0-9}{11}"
-											title="Must contains only 11 numbers" placeholder="XXXXXXXXXXX" />
-									</div>
-									<div class="col-lg-1 col-md-3 col-sm-12 mb-2 text-center form-group">
-										<label class="form-label bank-label" for="rib-key">Rib key</label>
-										<input type="number" class="form-control text-center" id="rib-key" name="ribKey"
-											th:field="*{ribKey}" pattern="{0-9}{2}" title="Must contains only 2 numbers"
-											placeholder="XX" />
-									</div>
+											<div class="col-lg-4 col-md-6 col-sm-12 mb-2 text-center form-group">
+												<label class="form-label bank-label" for="account-number">Account
+													number</label>
+												<input type="number" class="form-control text-center"
+													id="account-number" name="accountNumber" th:field="*{accountNumber}"
+													pattern="{0-9}{11}" title="Must contains only 11 numbers"
+													placeholder="XXXXXXXXXXX" />
+											</div>
+											<div class="col-lg-1 col-md-3 col-sm-12 mb-2 text-center form-group">
+												<label class="form-label bank-label" for="rib-key">Rib key</label>
+												<input type="number" class="form-control text-center" id="rib-key"
+													name="ribKey" th:field="*{ribKey}" pattern="{0-9}{2}"
+													title="Must contains only 2 numbers" placeholder="XX" />
+											</div>
+										</div>
+										<div class="row mb-2 ">
+											<div class="col-sm-4 mb-2 m-auto text-center form-group">
+												<label class="form-label bank-label" for="iban">Identification
+													international
+													(IBAN)</label>
+												<input type="text" class="form-control text-center mt-2" id="iban"
+													name="iban" th:field="*{iban}"
+													pattern="{A-Z}{4}-{A-Z}{2}{0-9}{2}-{0-9}{4}-{0-9}{4}-{0-9}{4}-{0-9}{4}-{0-9}{3}"
+													placeholder="XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXX"
+													title="your account's number is incorrect" />
+
+											</div>
+										</div>
+										<div class="row mb-5 ">
+											<div class="col-sm-3 mb-2 m-auto text-center form-group">
+												<label class="form-label d-inline " for="bic">Identification
+													international
+													(BIC)</label>
+												<input type="text" class="form-control text-center mt-2" id="bic"
+													name="bic" th:field="*{bic}" pattern="{A-Z}{8}"
+													title="Must contains only  8 uppercase characters"
+													placeholder="XXXXXXXX" />
+
+											</div>
+										</div>
+									</fieldset>
 								</div>
-								<div class="row mb-2 ">
-									<div class="col-sm-4 mb-2 m-auto text-center form-group">
-										<label class="form-label bank-label" for="iban">Identification international
-											(IBAN)</label>
-										<input type="text" class="form-control text-center mt-2" id="iban" name="iban"
-											th:field="*{iban}"
-											pattern="{A-Z}{4}-{A-Z}{2}{0-9}{2}-{0-9}{4}-{0-9}{4}-{0-9}{4}-{0-9}{4}-{0-9}{3}"
-											placeholder="XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXX" title="your account's number is incorrect" />
+								<div class="col-lg-8  col-md-12 mx-auto ">
 
+									<div class="row m-auto">
+										<fieldset class=" mb-3 shadow p-2  bg-white rounded ">
+											<legend class="float-none w-auto lead bg-white ms-2 ps-2 pe-2"> <img
+													src="/images/icons8-mastercard-logo-64.png" alt="..." /> Bank
+												Card informations
+											</legend>
+											<div class="row justify-content-evenly mb-2 ">
+
+
+												<div class="col-lg-2 col-md-6  mb-2 text-center   form-group">
+													<label class="form-label bank-label " for="card-number">
+														Card Number</label>
+													<input type="number" class="form-control text-center"
+														id="card-number" name="cardnumber"
+														th:field="*{bankCard.cardNumber}" placeholder="XXXXX" />
+												</div>
+												<div class="col-lg-2 col-md-6  mb-2 text-center form-group">
+													<label class="form-label bank-label" for="card-code">
+														Card code (trigramme)</label>
+
+													<input type="number" class="form-control text-center" id="card-code"
+														name="cardCode" th:field="*{bankCard.cardCode}"
+														pattern="{0-9}{3}" title="Must contains only 3 numbers"
+														placeholder="XXX" />
+												</div>
+
+												<div class="col-lg-4 col-md-6 col-sm-12 mb-2 text-center form-group">
+													<label class="form-label bank-label"
+														for="expiration-date">Expiration
+														date</label>
+													<input type="date" class="form-control text-center"
+														id="expiration-date" name="expirationDate"
+														th:field="*{bankCard.expirationDate}" />
+												</div>
+
+											</div>
+										</fieldset>
 									</div>
-								</div>
-								<div class="row mb-2 ">
-									<div class="col-sm-3 mb-2 m-auto text-center form-group">
-										<label class="form-label d-inline " for="bic">Identification international
-											(BIC)</label>
-										<input type="text" class="form-control text-center mt-2" id="bic" name="bic"
-											th:field="*{bic}" pattern="{A-Z}{8}" title="Must contains only  8 uppercase characters"placeholder="XXXXXXXX" />
 
-									</div>
 								</div>
-
 								<div class="row mt-5 justify-content-evenly my-4">
-
 									<input class="col-2 btn btn-success custom-shadow " id="valider" type="submit"
 										value="enregistrer">
-
 								</div>
 							</fieldset>
-
-					</form>
-
-					</form>
-					<form class="row justify-content-center" th:action="@{/logout}" method="post">
-						<input class="col-4 btn btn-outline-dark text-center mb-3 custom-shadow" id="logout"
-							type="submit" value="Annuler" />
-
 					</form>
 				</div>
+
+
+			</article>
 		</div>
-		</article>
-	</div>
-	<footer th:replace="~{/fragments/my-template::footer}"></footer>
+
+
+
+		<footer th:replace="~{/fragments/my-template::footer}"></footer>
 	</div>
 
 </body>
@@ -249,9 +317,20 @@
 		blocks: [8],
 		uppercase: true
 	});
-	
 
+	//--------------- gauge.js ---------------
+	var balance = /*[[${appAccount.balance}]]*/ 'null';
 
+	var gauge = new JustGage({
+		id: "gauge", // the id of the html element
+		value: balance,
+		min: 0,
+		max: 1000,
+		decimals: 2,
+		gaugeWidthScale: 0.6,
+		levelColors: ['#7dbc52'],
+		label: 'Balance'
+	});
 
 </script>
 
