@@ -3,11 +3,11 @@ body {
 }
 
 .container-fluid {
-	height: 100vh;
+min-height: 100%;
 }
 
 article {
-	min-height: 80%;
+	
 }
 
 #card-login {
@@ -34,13 +34,7 @@ article {
 	color: white;
 }
 
-.special-card , .special-fieldset{
-	/* create a custom class so you 
-	   do not run into specificity issues 
-	   against bootstraps styles
-	   which tends to work better than using !important 
-	   (future you will thank you later)*/
-
+.special-card, .special-fieldset {
 	background-color: rgba(245, 245, 245, 1);
 	opacity: .4;
 }
@@ -92,7 +86,8 @@ article {
 }
 
 .main-content {
-	height: 80vh;
+	height: 100%;
+	margin-bottom: 2rem;
 }
 
 input[type=number]::-webkit-inner-spin-button,
@@ -131,10 +126,9 @@ label {
 .bank-label {
 	display: inline-block;
 	text-align: center;
-	width:max-content;
+	width: max-content;
 }
+
 .fullname {
 	padding-left: 12px;
 }
-
-

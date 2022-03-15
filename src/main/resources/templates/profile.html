@@ -13,7 +13,7 @@
 
 		<nav th:replace="~{/fragments/my-template::nav-breadcrumb('Home,Profile')}"></nav>
 
-		<div class=" container-fluid">
+		<div class=" main-content">
 			<article class="row justify-content-center">
 				<div class="col-md-12 " th:if="${user.bankAccount}">
 
@@ -272,16 +272,10 @@
 							</fieldset>
 					</form>
 				</div>
-
-
 			</article>
 		</div>
-
-
-
 		<footer th:replace="~{/fragments/my-template::footer}"></footer>
 	</div>
-
 </body>
 <script th:inline="javascript" type="text/javascript">
 
