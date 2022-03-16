@@ -132,3 +132,7 @@ label {
 .fullname {
 	padding-left: 12px;
 }
+
+.edit-icon{
+	cursor: pointer;
+}

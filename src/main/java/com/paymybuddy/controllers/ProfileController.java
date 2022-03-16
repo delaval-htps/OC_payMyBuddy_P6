@@ -34,9 +34,10 @@ public class ProfileController {
             if (appAccount.isPresent()){
                 model.addAttribute("appAccount", currentUser.getApplicationAccount());
             }
-            model.addAttribute("appAcount", currentUser.getApplicationAccount());
+           
             BankAccount bankAccount = new BankAccount();
             model.addAttribute("bankAccount", bankAccount);
+            
             BankCard bankCard = new BankCard();
             model.addAttribute("bankCard", bankCard);
         }

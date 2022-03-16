@@ -13,7 +13,7 @@
 
 		<nav th:replace="~{/fragments/my-template::nav-breadcrumb('Home,Profile')}"></nav>
 
-		<div class=" main-content">
+		<div class="main-content">
 			<article class="row justify-content-center">
 				<div class="col-md-12 " th:if="${user.bankAccount}">
 
@@ -34,17 +34,19 @@
 				</div>
 
 				<div class="col-lg-8 col-md-12">
-					<form th:action="@{/profile/user}" th:object="${user}" method="post" id="profileForm" novalidate>
-						<i class="fa fa-pencil col-12 text-end m-O text-primary edit-button" aria-hidden="true"></i>
-						<fieldset class=" mb-3 p-1  bg-white rounded special-fieldset">
+					<form th:action="@{/profile/user}" th:object="${user}" method="post" id="profileForm"
+						class="special-fieldset" novalidate>
+						<i class="fa fa-pencil col-12 text-end m-O text-primary edit-icon" onclick="showProfile()"
+							aria-hidden="true"></i>
+						<fieldset class=" mb-3 p-1  bg-white rounded ">
 
 							<legend class="float-none w-auto lead bg-white ms-2 ps-2 pe-2"> Personal
 								Informations</legend>
 							<div class="row justify-content-evenly ">
 								<div class="col-4 m-auto">
-									<div id="personal-info">
-										<div class="row mb-2 align-items-end ">
-											<label class="col-form-label col-sm-1 col-md-1" for="LastName"><i
+									<div id="profile-fullname">
+										<div class="row mb-2 align-items-end">
+											<label class="col-form-label col-sm-1 col-md-1" for="fullName"><i
 													class="fas fa-user"></i></label>
 											<div class="col-md-10 col-sm-11  no-wrap fs-4 text">
 												<span class="fullname" th:text="*{fullName}"></sppl-5an>
@@ -52,11 +54,11 @@
 										</div>
 
 									</div>
-									<div id="form-content-personal-info" style="display:none;">
+									<div id="form-profile-name" style="display:none;">
 										<div class="row mb-2">
 											<label class="col-form-label col-sm-1 " for="LastName"><i
 													class="fas fa-user"></i></label>
-											<div class="col-md-5 col-sm-12 mb-3">
+											<div class="col-md-5 col-sm-12 mb-2">
 												<input type="text" class=" col-12 form-control no-border " id="LastName"
 													th:field="*{lastName}" placeholder="lastname" name="lastName"
 													th:classappend="${#fields.hasErrors('lastName')? 'is-invalid':''}"
@@ -70,7 +72,7 @@
 												</div>
 
 											</div>
-											<div class=" col-sm-12 col-md-5 offset-md-1 mb-1">
+											<div class=" col-sm-12 col-md-5 offset-md-1 mb-2">
 												<input type="text" class="col-12 form-control no-border"
 													id="user_firstname" th:value="*{firstName}" placeholder="firstname"
 													name="firstName"
@@ -88,7 +90,7 @@
 									<div class="row mb-2">
 										<label class="col-sm-1 col-form-label" for="email">
 											<i class="far fa-envelope"></i></label>
-										<div class="col-sm-11 mb-1">
+										<div class="col-sm-11 mb-3">
 											<input type="email" class=" col-12 form-control no-border" id="email"
 												th:field="*{email}" name="email"
 												th:classappend="${#fields.hasErrors('email')?'is-invalid':''}"
@@ -103,7 +105,7 @@
 
 										<label class=" col-sm-1 col-form-label" for="phone"><i
 												class="fas fa-phone-alt mr-0"></i></label>
-										<div class="col-sm-11 mb-1">
+										<div class="col-sm-11 mb-2">
 											<input type="text" class="col-12 form-control no-border" id="phone"
 												name="phone" th:field="*{phone}" />
 											<div class="valid-feedback">Valid.</div>
@@ -124,16 +126,23 @@
 									</div>
 									<div class="row mb-2 ">
 										<label class=" col-md-1 col-form-label" for="zip">Zip:</label>
-										<div class="col-sm-11">
+										<div class="col-sm-11 mb-3">
 											<input type="number" th:field="*{zip}"
 												class=" col-12 form-control no-border" id="zip" name="zip" />
 										</div>
 
 										<label class=" col-md-1 col-form-label" for="city">City:</label>
-										<div class="col-sm-11 ">
+										<div class="col-sm-11 mb-2">
 											<input type="text" class="col-12 form-control no-border" id="city"
 												name="city" th:field="*{city}" />
 										</div>
+									</div>
+									<div class="row justify-content-evenly mb-2 " id="submit-profile"
+										style="display:none">
+										<input class="col-sm-3 mb-2 btn-success btn-sm text-center custom-shadow"
+											type="submit " value="Enregistrer"></input>
+										<button class="col-sm-3 mb-2 btn-outline-dark btn-sm text-center custom-shadow"
+											onclick="hideProfile(event)">Annuler</button>
 									</div>
 								</div>
 
@@ -141,6 +150,7 @@
 
 								</div>
 							</div>
+
 						</fieldset>
 					</form>
 				</div>
@@ -325,6 +335,39 @@
 		levelColors: ['#7dbc52'],
 		label: 'Balance'
 	});
+
+	//----------- show  form personal informations when click pencil ---------------------
+	var editionProfile =false;
+
+	function showProfile() {  
+		if (!editionProfile){
+			editProfile();
+			editionProfile =true;
+		}else{
+			hideProfile(event);
+			editionProfile=false;
+		}
+	};
+	function editProfile() {
+		$('#profile-fullname').hide();
+		$('#form-profile-name').show();
+		$('#submit-profile').show();
+
+		$("#profileForm").removeClass('special-fieldset');
+		$('#profileForm fieldset').addClass('shadow p-2  bg-white rounded');
+		$('#profileForm input').removeClass('no-border');
+
+	};
+	function hideProfile(e) {
+		e.preventDefault();
+		$('#profile-fullname').show();
+		$('#form-profile-name').hide();
+		$('#submit-profile').hide();
+		$("#profileForm").addClass('special-fieldset');
+		$('#profileForm fieldset').removeClass('shadow p-2  bg-white rounded');
+		$('#profileForm input').addClass('no-border');
+	};
+
 
 </script>
 
