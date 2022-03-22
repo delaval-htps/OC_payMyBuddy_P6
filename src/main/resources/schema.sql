@@ -5,7 +5,6 @@ USE paymybuddy ^;
 
 -- drop procedures to be able to recreate them when restart app
 DROP PROCEDURE IF EXISTS user_oauth2_provider_fk^;
-DROP PROCEDURE IF EXISTS bank_card_bank_account_fk^;
 DROP PROCEDURE IF EXISTS application_account_user_fk^;
 DROP PROCEDURE IF EXISTS bank_account_user_fk^;
 DROP PROCEDURE IF EXISTS user_connection_fk^;
@@ -38,15 +37,6 @@ CREATE TABLE IF NOT EXISTS user_role(
 	PRIMARY KEY (user_id,role_id)
 )ENGINE= InnoDB, DEFAULT CHARSET=utf8mb4 ^;
 
-CREATE TABLE IF NOT EXISTS bank_card (
-	id INT NOT NULL AUTO_INCREMENT,
-	card_number VARCHAR(16),
-	card_code INT NOT NULL,
-	expiration_date DATE NOT NULL,
-	PRIMARY KEY (id)
-)ENGINE=InnoDB, DEFAULT CHARSET=utf8mb4 ^;
-
-
 CREATE TABLE IF NOT EXISTS application_account (
 	id INT NOT NULL AUTO_INCREMENT,
 	account_number VARCHAR(14),
@@ -54,17 +44,15 @@ CREATE TABLE IF NOT EXISTS application_account (
 	PRIMARY KEY (id)
 )ENGINE=InnoDB, DEFAULT CHARSET=utf8mb4 ^;
 
-
 CREATE TABLE IF NOT EXISTS bank_account (
 	id INT NOT NULL AUTO_INCREMENT,
-	account_number VARCHAR(14),
+	account_number BIGINT NOT NULL,
 	bank_code INT NOT NULL,
 	branch_code INT NOT NULL,
 	rib_key INT NOT NULL,
 	iban VARCHAR(38) NOT NULL,
 	bic VARCHAR(10) NOT NULL,
 	balance DECIMAL(8,2) NOT NULL,
-	bank_card_id INT NOT NULL,
 	PRIMARY KEY (id)
 )ENGINE=InnoDB, DEFAULT CHARSET=utf8mb4 ^;
 
@@ -168,22 +156,6 @@ BEGIN
 		FOREIGN KEY (role_id)
 		REFERENCES role (id)
 		ON DELETE  CASCADE
-		ON UPDATE CASCADE;
-	END IF;
-END ^;
-
-CREATE PROCEDURE bank_card_bank_account_fk() 
-BEGIN
-	IF NOT EXISTS(SELECT null 
-				FROM information_schema.TABLE_CONSTRAINTS
-				WHERE TABLE_SCHEMA = 'paymybuddy' 
-				AND CONSTRAINT_NAME= 'bank_card_bank_account_fk'
-				AND CONSTRAINT_TYPE= 'FOREIGN KEY')
-	THEN
-		ALTER TABLE bank_account ADD CONSTRAINT bank_card_bank_account_fk
-		FOREIGN KEY (bank_card_id)
-		REFERENCES bank_card (id)
-		ON DELETE CASCADE 
 		ON UPDATE CASCADE;
 	END IF;
 END ^;
@@ -303,7 +275,6 @@ END ^;
 
 -- call of procedures
 CALL user_oauth2_provider_fk()^;
-CALL bank_card_bank_account_fk()^;
 CALL application_account_user_fk()^;
 CALL bank_account_user_fk()^;
 CALL user_connection_fk()^;

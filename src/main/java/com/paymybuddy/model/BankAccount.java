@@ -7,7 +7,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -34,7 +33,7 @@ public class BankAccount implements Serializable {
   private int branchCode;
 
   @Column
-  private int accountNumber;
+  private long accountNumber;
 
   @Column
   private int ribKey;
@@ -47,10 +46,6 @@ public class BankAccount implements Serializable {
 
   @Column
   private double balance;
-
-  @OneToOne(cascade = CascadeType.ALL)
-  @JoinColumn(name = "bank_card_id")
-  private BankCard bankCard;
 
   @OneToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH},
       mappedBy = "bankAccount")
