@@ -2,7 +2,7 @@ package com.paymybuddy.service;
 
 import com.paymybuddy.UtilService;
 import com.paymybuddy.exceptions.ApplicationAccountException;
-import com.paymybuddy.exceptions.UserException;
+import com.paymybuddy.exceptions.UserNotFoundException;
 import com.paymybuddy.model.ApplicationAccount;
 import com.paymybuddy.model.User;
 import com.paymybuddy.repository.ApplicationAccountRepository;
@@ -63,7 +63,7 @@ public class ApplicationAccountService {
 
       }
     } else {
-      throw new UserException("For creation of application account,the user doesn't exist");
+      throw new UserNotFoundException("For creation of application account,the user doesn't exist");
     }
   }
 }

@@ -3,10 +3,10 @@ package com.paymybuddy.controllers;
 import java.util.List;
 import java.util.Optional;
 import javax.validation.Valid;
+import com.paymybuddy.exceptions.UserNotFoundException;
 import com.paymybuddy.model.User;
 import com.paymybuddy.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -60,7 +60,7 @@ public class TransfertController {
             }
         } else {
 
-            throw  new AuthenticationCredentialsNotFoundException("the user is not authenticated.");
+            throw  new UserNotFoundException("the user is not authenticated.");
         }
         return "redirect:/transfert";
     }

@@ -45,7 +45,7 @@ public class OAuth2ProviderService {
                 newOAuth2Provider.setRegistrationClient(enumProvider);
             } else {
                 throw new OAuth2ProviderNotFoundException(
-                        "the Oauht2Provider is not approuved by paymybuddy.");
+                        "This Oauht2Provider "+oAuth2User.getClientRegistrationId()+ " is not approuved by paymybuddy.");
             }
 
             existedUser.addOAuth2Identifier(newOAuth2Provider);
