@@ -15,33 +15,34 @@
 
 		<div class="main-content">
 			<article class="row justify-content-center">
-				<div class="col-md-12 " th:if="${user.bankAccount}">
+				<div class="col-md-12 " th:if="${bankAccount}">
 
-					<h2>Hi <span th:text="${user.fullName}"></span> !</h2>
+					<h2>Hi <span th:text="${user.firstName}"></span> !</h2>
 
 					<h5 class=" text-muted">
 						This is your personnal informations, you can modify it if you want...</h5>
 				</div>
 
-				<div class="col-md-12" th:if="!${user.bankAccount}">
+				<div class="col-md-12" th:if="!${bankAccount}">
 
-					<h2>Hi <span th:text="${user.fullName}"></span> !</h2>
+					<h2>Hi <span></span> !</h2>
 
 					<h5 class="text-muted">
-						This is your personnal informations, please check it, complete your bank's
-						informations
-						to active your account </h5>
+						This is your personnal information
+					</h5>
 				</div>
 
-				<div class="col-lg-8 col-md-12">
-					<form th:action="@{/profile/user}" th:object="${user}" method="post" id="profileForm"
-						class="special-fieldset" novalidate>
+				<div class="col-lg-8 col-md-12" th:if="${bankAccount}">
+
+					<form th:action="@{/profile/user}" th:object="${user}" method="post" novalidate>
 						<i class="fa fa-pencil col-12 text-end m-O text-primary edit-icon" onclick="showProfile()"
 							aria-hidden="true"></i>
-						<fieldset class=" mb-3 p-1  bg-white rounded ">
+
+						<fieldset id="profileForm" class=" mb-3 p-1  bg-white rounded special-fieldset">
 
 							<legend class="float-none w-auto lead bg-white ms-2 ps-2 pe-2"> Personal
 								Informations</legend>
+
 							<div class="row justify-content-evenly ">
 								<div class="col-4 m-auto">
 									<div id="profile-fullname">
@@ -66,9 +67,8 @@
 
 												<div class="valid-feedback">Valid.</div>
 												<div class="invalid-feedback">
-													<span th:each="error:${#fields.errors('lastName')}"
-														th:text="${error}">
-													</span>
+													<p th:each="error:${#fields.errors('lastName')}" th:text="${error}">
+													</p>
 												</div>
 
 											</div>
@@ -80,9 +80,9 @@
 													required />
 
 												<div class="invalid-feedback">
-													<span th:each="error:${#fields.errors('firstName')}"
+													<p th:each="error:${#fields.errors('firstName')}"
 														th:text="${error}">
-													</span>
+													</p>
 												</div>
 											</div>
 										</div>
@@ -98,8 +98,7 @@
 
 											<div class="valid-feedback">Valid.</div>
 											<div class="invalid-feedback">
-												<span th:each="error:${#fields.errors('email')}"
-													th:text="${error}"></span>
+												<p th:each="error:${#fields.errors('email')}" th:text="${error}"></p>
 											</div>
 										</div>
 
@@ -110,8 +109,7 @@
 												name="phone" th:field="*{phone}" />
 											<div class="valid-feedback">Valid.</div>
 											<div class="invalid-feedback">
-												<span th:each="error:${#fields.errors('phone')}"
-													th:text="${error}"></span>
+												<p th:each="error:${#fields.errors('phone')}" th:text="${error}"></p>
 											</div>
 										</div>
 									</div>
@@ -154,132 +152,112 @@
 						</fieldset>
 					</form>
 				</div>
-				<div class="col-lg-8 col-md-12 ">
-
+				<div class="col-lg-8 col-md-12">
 					<form th:action="@{/profile/bankaccount}" th:object="${bankAccount}" method="post" id="profileForm"
 						novalidate>
 						<div class="row m-auto">
 							<fieldset class=" mb-3 shadow p-2  bg-white rounded ">
 								<legend class="float-none w-auto lead bg-white ms-2 ps-2 pe-2"> <img
-										src="images/icons8-give-64.png" style="width:60px;" class="card-img-top m-1"
-										alt="..."> Bank informations
+										src="/images/icons8-bank-64.png" style="width:60px;" class="card-img-top m-1"
+										alt="..."> Identification national RIB
 								</legend>
-								<h5 class="mb-3">There are your means of payment to deposit money on your account,
-									please chose one and fill in informations </h5>
-								<div class="col-lg-8  col-md-12 mx-auto ">
-									<fieldset class=" mb-3 shadow p-2  bg-white rounded ">
-										<legend class="float-none w-auto lead bg-white ms-2 ps-2 pe-2"> <img
-												src="images/icons8-bank-64.png" style="width:60px;"
-												class="card-img-top m-1" alt="..."> Identification national RIB
-										</legend>
-										<div class="row justify-content-evenly mb-2 ">
+								<h5 class="mb-3 text-success">Please fill in informations to activate your account!
+								</h5>
+								<div class="row justify-content-evenly mb-2 ">
 
-											<label class="col-sm-12 text-center col-form-label" for="rib">
-											</label>
-											<div class="col-lg-2 col-md-6  mb-2 text-center   form-group">
-												<label class="form-label bank-label " for="bank-code">
-													Bank code</label>
-												<input type="number" class="form-control text-center" id="bank-code"
-													name="bankCode" th:field="*{bankCode}" placeholder="XXXXX" />
-											</div>
-											<div class="col-lg-2 col-md-6  mb-2 text-center form-group">
-												<label class="form-label bank-label" for="branch-code">
-													Branch code</label>
-
-												<input type="number" class="form-control text-center" id="branch-code"
-													name="branchCode" th:field="*{branchCode}" pattern="{0-9}{5}"
-													title="Must contains only 5 numbers" placeholder="XXXXX" />
-											</div>
-
-											<div class="col-lg-4 col-md-6 col-sm-12 mb-2 text-center form-group">
-												<label class="form-label bank-label" for="account-number">Account
-													number</label>
-												<input type="number" class="form-control text-center"
-													id="account-number" name="accountNumber" th:field="*{accountNumber}"
-													pattern="{0-9}{11}" title="Must contains only 11 numbers"
-													placeholder="XXXXXXXXXXX" />
-											</div>
-											<div class="col-lg-1 col-md-3 col-sm-12 mb-2 text-center form-group">
-												<label class="form-label bank-label" for="rib-key">Rib key</label>
-												<input type="number" class="form-control text-center" id="rib-key"
-													name="ribKey" th:field="*{ribKey}" pattern="{0-9}{2}"
-													title="Must contains only 2 numbers" placeholder="XX" />
-											</div>
+									<label class="col-sm-12 text-center col-form-label" for="rib">
+									</label>
+									<div class="col-lg-2 col-md-6  mb-2 text-center   form-group">
+										<label class="form-label bank-label " for="bankCode">
+											Bank code</label>
+										<input type="number" class="form-control text-center" id="bankCode"
+											name="bankCode" th:field="*{bankCode}"
+											th:placeholder="${bankAccount.bankCode} ? ${bankAccount.bankCode}:'XXXXX'"
+											th:classappend="${#fields.hasErrors('bankCode')? 'is-invalid':''}" />
+										<div class="valid-feedback">Valid.</div>
+										<div class="invalid-feedback">
+											<p th:each="error: ${#fields.errors('bankCode')}" th:text="${error}"></p>
 										</div>
-										<div class="row mb-2 ">
-											<div class="col-sm-4 mb-2 m-auto text-center form-group">
-												<label class="form-label bank-label" for="iban">Identification
-													international
-													(IBAN)</label>
-												<input type="text" class="form-control text-center mt-2" id="iban"
-													name="iban" th:field="*{iban}"
-													pattern="{A-Z}{4}-{A-Z}{2}{0-9}{2}-{0-9}{4}-{0-9}{4}-{0-9}{4}-{0-9}{4}-{0-9}{3}"
-													placeholder="XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXX"
-													title="your account's number is incorrect" />
+									</div>
+									<div class="col-lg-2 col-md-6  mb-2 text-center form-group">
+										<label class="form-label bank-label" for="branchCode">
+											Branch code</label>
 
-											</div>
+										<input type="number" class="form-control text-center" id="branchCode"
+											name="branchCode" th:field="*{branchCode}" pattern="{0-9}{5}"
+											title="Must contains only 5 numbers"
+											th:placeholder="${bankAccount.branchCode} ? ${bankAccount.branchCode}:'XXXXX'"
+											th:classappend="${#fields.hasErrors('branchCode')? 'is-invalid':''}" />
+										<div class="valid-feedback">Valid.</div>
+										<div class="invalid-feedback">
+											<p th:each="error: ${#fields.errors('branchCode')}" th:text="${error}"></p>
 										</div>
-										<div class="row mb-5 ">
-											<div class="col-sm-3 mb-2 m-auto text-center form-group">
-												<label class="form-label d-inline " for="bic">Identification
-													international
-													(BIC)</label>
-												<input type="text" class="form-control text-center mt-2" id="bic"
-													name="bic" th:field="*{bic}" pattern="{A-Z}{8}"
-													title="Must contains only  8 uppercase characters"
-													placeholder="XXXXXXXX" />
-
-											</div>
-										</div>
-									</fieldset>
-								</div>
-								<div class="col-lg-8  col-md-12 mx-auto ">
-
-									<div class="row m-auto">
-										<fieldset class=" mb-3 shadow p-2  bg-white rounded ">
-											<legend class="float-none w-auto lead bg-white ms-2 ps-2 pe-2"> <img
-													src="/images/icons8-mastercard-logo-64.png" alt="..." /> Bank
-												Card informations
-											</legend>
-											<div class="row justify-content-evenly mb-2 ">
-
-
-												<div class="col-lg-2 col-md-6  mb-2 text-center   form-group">
-													<label class="form-label bank-label " for="card-number">
-														Card Number</label>
-													<input type="number" class="form-control text-center"
-														id="card-number" name="cardnumber"
-														th:field="*{bankCard.cardNumber}" placeholder="XXXXX" />
-												</div>
-												<div class="col-lg-2 col-md-6  mb-2 text-center form-group">
-													<label class="form-label bank-label" for="card-code">
-														Card code (trigramme)</label>
-
-													<input type="number" class="form-control text-center" id="card-code"
-														name="cardCode" th:field="*{bankCard.cardCode}"
-														pattern="{0-9}{3}" title="Must contains only 3 numbers"
-														placeholder="XXX" />
-												</div>
-
-												<div class="col-lg-4 col-md-6 col-sm-12 mb-2 text-center form-group">
-													<label class="form-label bank-label"
-														for="expiration-date">Expiration
-														date</label>
-													<input type="date" class="form-control text-center"
-														id="expiration-date" name="expirationDate"
-														th:field="*{bankCard.expirationDate}" />
-												</div>
-
-											</div>
-										</fieldset>
 									</div>
 
+									<div class="col-lg-4 col-md-6 col-sm-12 mb-2 text-center form-group">
+										<label class="form-label bank-label" for="accountNumber">Account
+											number</label>
+										<input type="number" class="form-control text-center" id="accountNumber"
+											name="accountNumber" th:field="*{accountNumber}" pattern="{0-9}{11}"
+											title="Must contains only 11 numbers"
+											th:placeholder="${bankAccount.accountNumber} ? ${bankAccount.accountNumber}:'XXXXXXXXXXX'"
+											th:classappend="${#fields.hasErrors('accountNumber')? 'is-invalid':''}" />
+										<div class="valid-feedback">Valid.</div>
+										<div class="invalid-feedback">
+											<p th:each="error: ${#fields.errors('accountNumber')}" th:text="${error}">
+											</p>
+										</div>
+									</div>
+									<div class="col-lg-1 col-md-3 col-sm-12 mb-2 text-center form-group">
+										<label class="form-label bank-label" for="ribKey">Rib key</label>
+										<input type="number" class="form-control text-center" id="ribKey" name="ribKey"
+											th:field="*{ribKey}" pattern="{0-9}{2}" title="Must contains only 2 numbers"
+											th:placeholder="${bankAccount.ribKey} ? ${bankAccount.ribKey}:'XX'"
+											th:classappend="${#fields.hasErrors('ribKey')? 'is-invalid':''}" />
+										<div class="valid-feedback">Valid.</div>
+										<div class="invalid-feedback">
+											<p th:each="error: ${#fields.errors('ribKey')}" th:text="${error}"></p>
+										</div>
+									</div>
+								</div>
+								<div class="row mb-2 ">
+									<div class="col-sm-4 mb-2 m-auto text-center form-group">
+
+										<label class="form-label bank-label" for="iban">Identification
+											international
+											(IBAN)</label>
+										<input type="text" class="form-control text-center mt-2" id="iban" name="iban"
+											th:field="*{iban}"
+											pattern="\b{A-Z}{4}-{A-Z}{2}{0-9}{2}-{0-9}{4}-{0-9}{4}-{0-9}{4}-{0-9}{4}-{0-9}{3}\b"
+											th:placeholder="${bankAccount.iban} ? ${bankAccount.iban}: 'XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXX'"
+											title="your account's number is incorrect"
+											th:classappend="${#fields.hasErrors('iban')? 'is-invalid':''}" />
+										<div class="valid-feedback">Valid.</div>
+										<div class="invalid-feedback ">
+											<p th:each="error: ${#fields.errors('iban')}" th:text="${error}"></p>
+										</div>
+									</div>
+								</div>
+								<div class="row mb-5 ">
+									<div class="col-sm-3 mb-2 m-auto text-center form-group">
+										<label class="form-label d-inline " for="bic">Identification
+											international(BIC)</label>
+										<input type="text" class="form-control text-center mt-2" id="bic" name="bic"
+											th:field="*{bic}" pattern="{A-Z}{8}"
+											title="Must contains only  8 uppercase characters" placeholder="XXXXXXXX"
+											th:classappend="${#fields.hasErrors('bic')?'is-invalid':''}" />
+										<div class="valid-feedback">Valid.</div>
+										<div class="invalid-feedback">
+											<p th:each="error: ${#fields.errors('bic')}" th:text="${error}"><br /></p>
+										</div>
+									</div>
 								</div>
 								<div class="row mt-5 justify-content-evenly my-4">
 									<input class="col-2 btn btn-success custom-shadow " id="valider" type="submit"
 										value="enregistrer">
 								</div>
 							</fieldset>
+						</div>
 					</form>
 				</div>
 			</article>
@@ -290,31 +268,31 @@
 <script th:inline="javascript" type="text/javascript">
 
 	// initialization of input placeholder
-	$('#bank-code').val('').trigger('change');
-	$('#branch-code').val('').trigger('change');
-	$('#account-number').val('').trigger('change');
-	$('#rib-key').val('').trigger('change');
+	$('#bankCode').val('').trigger('change');
+	$('#branchCode').val('').trigger('change');
+	$('#accountNumber').val('').trigger('change');
+	$('#ribKey').val('').trigger('change');
 
 	// --------- cleave for bank input---------
-	var cleaveBankCode = new Cleave('#bank-code', {
+	var cleaveBankCode = new Cleave('#bankCode', {
 		blocks: [5],
 		uppercase: true
 	});
-	var cleaveBranchCode = new Cleave('#branch-code', {
+	var cleaveBranchCode = new Cleave('#branchCode', {
 		blocks: [5],
 		uppercase: true
 	});
-	var cleaveAccountNumber = new Cleave('#account-number', {
+	var cleaveAccountNumber = new Cleave('#accountNumber', {
 		blocks: [11],
 		uppercase: true
 	});
-	var cleaveRibKey = new Cleave('#rib-key', {
+	var cleaveRibKey = new Cleave('#ribKey', {
 		blocks: [2],
 		uppercase: true
 	});
 	var cleaveIban = new Cleave('#iban', {
 		delimiter: '-',
-		blocks: [4, 4, 4, 4, 4, 4, 3],
+		blocks: [4, 4, 4, 4, 4, 4, 4, 3],
 		uppercase: true
 	});
 	var cleaveBic = new Cleave('#bic', {
@@ -323,7 +301,7 @@
 	});
 
 	//--------------- gauge.js ---------------
-	var balance = /*[[${appAccount.balance}]]*/ 'null';
+	var balance = /*[[${applicationAccount.balance}]]*/ 'null';
 
 	var gauge = new JustGage({
 		id: "gauge", // the id of the html element
@@ -337,15 +315,15 @@
 	});
 
 	//----------- show  form personal informations when click pencil ---------------------
-	var editionProfile =false;
+	var editionProfile = false;
 
-	function showProfile() {  
-		if (!editionProfile){
+	function showProfile() {
+		if (!editionProfile) {
 			editProfile();
-			editionProfile =true;
-		}else{
+			editionProfile = true;
+		} else {
 			hideProfile(event);
-			editionProfile=false;
+			editionProfile = false;
 		}
 	};
 	function editProfile() {
