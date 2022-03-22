@@ -22,6 +22,8 @@ public class UserDto {
   @Size(max = 20, message = "The firstname must contain more than 20 characters")
   private String firstName;
 
+  private String fullName;
+
   @Email(message = "The email must contains a correct email with @")
   @NotBlank(message = "The email can't be empty or null")
   private String email;
@@ -44,4 +46,6 @@ public class UserDto {
   private String matchingPassword;
 
   private boolean duplicatedUser = false;
+  
+ 
 }
