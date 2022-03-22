@@ -6,6 +6,9 @@
 <body>
 <h1><i class="fa-duotone fa-triangle-person-digging"></i>Something went wrong! </h1>
 <h2>Our Engineers are on it</h2>
+<div class="error-attributes" th:text="${errorAttributes}">
+
+</div>
 <a th:href="@{/logout}">Go Back</a>
 </body>
 </html>
