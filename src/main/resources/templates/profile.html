@@ -15,30 +15,31 @@
 
 		<div class="main-content">
 			<article class="row justify-content-center">
-				<div class="col-md-12 " th:if="${bankAccount}">
 
-					<h2>Hi <span th:text="${user.firstName}"></span> !</h2>
+				<!------------------------ ligne of introduction for presentation --------------------------------->
+				<div class="col-md-12 " >
 
-					<h5 class=" text-muted">
-						This is your personnal informations, you can modify it if you want...</h5>
-				</div>
+					<h2>Hi <span th:text="${user.fullName}"></span> !</h2>
 
-				<div class="col-md-12" th:if="!${bankAccount}">
-
-					<h2>Hi <span></span> !</h2>
-
-					<h5 class="text-muted">
-						This is your personnal information
+					<h5 th:if="!${user.bankAccountRegistred}" class=" text-muted">
+						This is your personnal informations, please fill in  bank informations to activate your account!</h5>
+				
+					<h5 th:if="${user.bankAccountRegistred}" class="text-muted">
+						This is your personnal information, you can edit your profile with 
 					</h5>
 				</div>
 
-				<div class="col-lg-8 col-md-12" th:if="${bankAccount}">
+				<!------------------------ edition of profile --------------------------------->
+				<div class="col-lg-8 col-md-12">
 
 					<form th:action="@{/profile/user}" th:object="${user}" method="post" novalidate>
-						<i class="fa fa-pencil col-12 text-end m-O text-primary edit-icon" onclick="showProfile()"
+
+						<i th:if="${user.bankAccountRegistred}" 
+							class="fa fa-pencil col-12 text-end m-O text-primary edit-icon" onclick="showProfile()"
 							aria-hidden="true"></i>
 
-						<fieldset id="profileForm" class=" mb-3 p-1  bg-white rounded special-fieldset">
+						<fieldset id="profileForm" class=" mb-3 p-1  bg-white rounded "
+							th:classappend="${user.bankAccountRegistred} ? '':'special-fieldset'">
 
 							<legend class="float-none w-auto lead bg-white ms-2 ps-2 pe-2"> Personal
 								Informations</legend>
@@ -152,6 +153,8 @@
 						</fieldset>
 					</form>
 				</div>
+
+				<!--------------------------------------- form for user's bank account----------------------------------->
 				<div class="col-lg-8 col-md-12">
 					<form th:action="@{/profile/bankaccount}" th:object="${bankAccount}" method="post" id="profileForm"
 						novalidate>
@@ -161,7 +164,7 @@
 										src="/images/icons8-bank-64.png" style="width:60px;" class="card-img-top m-1"
 										alt="..."> Identification national RIB
 								</legend>
-								<h5 class="mb-3 text-success">Please fill in informations to activate your account!
+								<h5 th:if="!${user.bankAccountRegistred}" class="mb-3 text-success">Please fill in informations to activate your account!
 								</h5>
 								<div class="row justify-content-evenly mb-2 ">
 
@@ -252,7 +255,7 @@
 										</div>
 									</div>
 								</div>
-								<div class="row mt-5 justify-content-evenly my-4">
+								<div th:if="!${user.bankAccountRegistred}" class="row mt-5 justify-content-evenly my-4">
 									<input class="col-2 btn btn-success custom-shadow " id="valider" type="submit"
 										value="enregistrer">
 								</div>
@@ -316,6 +319,7 @@
 
 	//----------- show  form personal informations when click pencil ---------------------
 	var editionProfile = false;
+	var bankAccountRegistred = /*[[${user.bankAccountRegistred}]]*/ 'false';
 
 	function showProfile() {
 		if (!editionProfile) {
@@ -331,7 +335,6 @@
 		$('#form-profile-name').show();
 		$('#submit-profile').show();
 
-		$("#profileForm").removeClass('special-fieldset');
 		$('#profileForm fieldset').addClass('shadow p-2  bg-white rounded');
 		$('#profileForm input').removeClass('no-border');
 
@@ -341,7 +344,7 @@
 		$('#profile-fullname').show();
 		$('#form-profile-name').hide();
 		$('#submit-profile').hide();
-		$("#profileForm").addClass('special-fieldset');
+
 		$('#profileForm fieldset').removeClass('shadow p-2  bg-white rounded');
 		$('#profileForm input').addClass('no-border');
 	};

@@ -41,14 +41,21 @@ public class ProfileController {
                 if (user.isPresent()) {
 
                         User currentUser = user.get();
+
+                        // send of userDto of currentUser
                         UserDto userDto = modelMapper.map(currentUser, UserDto.class);
+
+                        userDto.setBankAccountRegistred(currentUser.getBankAccount() != null);
                         userDto.setFullName(currentUser.getFullName());
+
                         model.addAttribute("user", userDto);
 
+                        // send of ApplicationAccount of user (already existed)
                         model.addAttribute("applicationAccount",
                                         modelMapper.map(currentUser.getApplicationAccount(),
                                                         ApplicationAccountDto.class));
 
+                        // send of bankAccount of user
                         BankAccountDto bankAccountDto = currentUser.getBankAccount() != null
                                         ? modelMapper.map(currentUser.getBankAccount(),
                                                         BankAccountDto.class)
@@ -71,35 +78,41 @@ public class ProfileController {
 
                         User currentUser = user.get();
 
+                        // case of errors in form
                         if (bindingResult.hasErrors()) {
                                 model.addAttribute("user",
                                                 modelMapper.map(currentUser, UserDto.class));
                                 model.addAttribute("applicationAccount",
                                                 modelMapper.map(currentUser.getApplicationAccount(),
                                                                 ApplicationAccountDto.class));
-                                
                                 return "/profile";
                         }
 
+                        // case of bank account correctly fill in
                         BankAccount bankAccount =
                                         modelMapper.map(bankAccountDto, BankAccount.class);
-                        currentUser.setBankAccount(bankAccount);
 
+                        // save of bank account for user
+                        currentUser.setBankAccount(bankAccount);
                         BankAccount userBankAccount = bankAccountService.save(bankAccount);
 
+                        // send of user's bank account
                         redirectAttributes.addFlashAttribute("success",
                                         "your bank account was correctly registred.");
-
-                        UserDto userDto = modelMapper.map(currentUser, UserDto.class);
-                        userDto.setFullName(currentUser.getFullName());
-
-                        model.addAttribute("user", userDto);
-                        model.addAttribute("applicationAccount",
-                                        modelMapper.map(currentUser.getApplicationAccount(),
-                                                        ApplicationAccountDto.class));
                         model.addAttribute("bankAccount",
                                         modelMapper.map(userBankAccount, BankAccountDto.class));
 
+                        // send of user
+                        UserDto userDto = modelMapper.map(currentUser, UserDto.class);
+                        userDto.setBankAccountRegistred(true);
+                        userDto.setFullName(currentUser.getFullName());
+
+                        model.addAttribute("user", userDto);
+
+                        // send of applicationAccount of user
+                        model.addAttribute("applicationAccount",
+                                        modelMapper.map(currentUser.getApplicationAccount(),
+                                                        ApplicationAccountDto.class));
                         return "profile";
 
                 } else {
