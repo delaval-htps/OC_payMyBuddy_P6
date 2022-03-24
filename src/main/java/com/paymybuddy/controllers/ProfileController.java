@@ -113,7 +113,7 @@ public class ProfileController {
                         model.addAttribute("applicationAccount",
                                         modelMapper.map(currentUser.getApplicationAccount(),
                                                         ApplicationAccountDto.class));
-                        return "profile";
+                        return "redirect:/profile";
 
                 } else {
                         throw new UserNotFoundException(
