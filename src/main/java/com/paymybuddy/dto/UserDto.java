@@ -5,19 +5,18 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
 @AllArgsConstructor
+@NoArgsConstructor
 
 public class UserDto {
 
-  private boolean bankAccountRegistred;
-
-  public UserDto(){
-    this.bankAccountRegistred = false;
-  }
+  private boolean bankAccountRegistred =false;
+  private String fullName;
 
   @NotBlank(message = "The lastname must be not null or empty")
   @Size(max = 20, message = "The lastname must contain more than 20 characters")
@@ -26,8 +25,6 @@ public class UserDto {
   @NotBlank(message = "The firstname must be not null or empty !")
   @Size(max = 20, message = "The firstname must contain more than 20 characters")
   private String firstName;
-
-  private String fullName;
 
   @Email(message = "The email must contains a correct email with @")
   @NotBlank(message = "The email can't be empty or null")
