@@ -28,7 +28,7 @@
 
 	<!-- CDN cleave.js for bank form-->
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/cleave.js/1.6.0/cleave.min.js"></script>
-	
+
 	<!-- Raphael must be included before justgage -->
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/raphael/2.1.4/raphael-min.js"></script>
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/justgage/1.2.9/justgage.min.js"></script>
@@ -100,12 +100,41 @@
 	</nav>
 
 	<article th:fragment="article" class="col-12 flex-grow-1">
-		
+
 	</article>
 	<footer th:fragment="footer" class="col-12 text-center">
 		<p>delaval.htps@gmail.com copyright <i class="fas fa-copyright"></i> 2021</p>
-		<a target="_blank" href="https://icons8.com/icon/ab7FU9sZy68i/bank">Bank</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a>	
+		<a target="_blank" href="https://icons8.com/icon/ab7FU9sZy68i/bank">Bank</a> icon by <a target="_blank"
+			href="https://icons8.com">Icons8</a>
 	</footer>
+	<script th:fragment="script-gauge" th:inline="javascript" type="text/javascript">
+		//--------------- gauge.js ---------------
+		var balance = /*[[${applicationAccount.balance}]]*/ 'null';
+
+		var gauge = new JustGage({
+			id: "gauge", // the id of the html element
+			value: balance,
+			min: 0,
+			max: 1000,
+			decimals: 2,
+			gaugeWidthScale: 0.6,
+			levelColors: ['#7dbc52'],
+			label: 'Balance'
+		});
+	</script>
+	<script th:fragment="script-greenNavLink" th:inline="javascript" type="text/javascript">
+		//----------- put color green to navbar link selected
+		$('.navbar-nav .nav-item .nav-link').each(function () {
+			var text = $(this).attr("href");
+			console.log(text);
+			console.log(window.location.href);
+			if (window.location.href.includes(text)) {
+				$(this).css('color', 'green');
+				flag = true;
+			}
+		});
+	</script>
 </body>
+
 
 </html>

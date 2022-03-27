@@ -265,6 +265,7 @@
 		</div>
 		<footer th:replace="~{/fragments/my-template::footer}"></footer>
 	</div>
+	<script th:replace="~{/fragments/my-template::script}"></script>
 </body>
 <script th:inline="javascript" type="text/javascript">
 
@@ -301,19 +302,7 @@
 		uppercase: true
 	});
 
-	//--------------- gauge.js ---------------
-	var balance = /*[[${applicationAccount.balance}]]*/ 'null';
-
-	var gauge = new JustGage({
-		id: "gauge", // the id of the html element
-		value: balance,
-		min: 0,
-		max: 1000,
-		decimals: 2,
-		gaugeWidthScale: 0.6,
-		levelColors: ['#7dbc52'],
-		label: 'Balance'
-	});
+	
 
 	//----------- show  form personal informations when click pencil ---------------------
 	var editionProfile = false;
