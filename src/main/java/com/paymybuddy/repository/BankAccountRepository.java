@@ -8,11 +8,8 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 
-public interface BankAccountRepository extends JpaRepository<BankAccount,Long>{
+public interface BankAccountRepository extends JpaRepository<BankAccount, Long> {
 
-    @Query(value = "select ba from BankAccount ba where ba=?1")
-    Optional<BankAccount> findByBankAccount(BankAccount bankAccount);
-
-   
-    
+    @Query(value = "select ba from BankAccount ba where " + "ba.iban=?1")
+    Optional<BankAccount> findByIban(String iban);
 }

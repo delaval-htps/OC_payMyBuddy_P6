@@ -9,7 +9,9 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -53,6 +55,10 @@ public class BankAccount implements Serializable {
       mappedBy = "bankAccount")
   private Set<User> users = new HashSet<>();
 
+  @OneToOne(cascade = CascadeType.ALL)
+  @JoinColumn(name = "bank_card_id")
+  private BankCard bankCard;
+  
   /**
    * method to add user to a bank account.
    * 

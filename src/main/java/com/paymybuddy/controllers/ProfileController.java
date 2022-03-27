@@ -91,17 +91,20 @@ public class ProfileController {
                         // case of bank account correctly fill in
                         BankAccount bankAccount =
                                         modelMapper.map(bankAccountDto, BankAccount.class);
-                              
-                        // check if bankAccount doesn't already exist
-                        Optional<BankAccount> existedBankAccount = bankAccountService.findByBankAccount(bankAccount);
 
-                        if (existedBankAccount.isPresent()){
-                                bankAccount =existedBankAccount.get();
+                        // check if bankAccount doesn't already exist
+                        Optional<BankAccount> existedBankAccount =
+                                        bankAccountService.findByIban(bankAccount.getIban());
+
+                        if (existedBankAccount.isPresent()) {
+                                bankAccount = existedBankAccount.get();
                         }
-                        
+
                         // save of bank account for user
-                        currentUser.setBankAccount(bankAccount);
+                        bankAccount.addUser(currentUser);
                         BankAccount userBankAccount = bankAccountService.save(bankAccount);
+                        
+
 
                         // send of user's bank account
                         redirectAttributes.addFlashAttribute("success",
@@ -128,5 +131,48 @@ public class ProfileController {
                                                         + " is not registred in application!");
                 }
 
+        }
+
+        @PostMapping("/profile/user")
+        public String editUserProfile(@Valid @ModelAttribute(value = "user") UserDto userDto,
+                        BindingResult bindingResult, Model model, Authentication authentication) {
+                Optional<User> user = userService.findByEmail(authentication.getName());
+
+
+                if (user.isPresent()) {
+
+
+                        User existedUser = user.get();
+
+                        model.addAttribute("applicationAccount",
+                                        modelMapper.map(existedUser.getApplicationAccount(),
+                                                        ApplicationAccountDto.class));
+                        model.addAttribute("bankAccount", modelMapper
+                                        .map(existedUser.getBankAccount(), BankAccountDto.class));
+
+                        if (bindingResult.hasErrors()) {
+                              
+                                return "redirect:/profile";
+                        }
+
+                        User userToUpdate = modelMapper.map(userDto, User.class);
+
+                        existedUser.setFirstName(userToUpdate.getFirstName());
+                        existedUser.setLastName(userToUpdate.getLastName());
+                        existedUser.setPhone(userToUpdate.getPhone());
+                        existedUser.setAddress(userToUpdate.getAddress());
+                        existedUser.setZip(userToUpdate.getZip());
+                        existedUser.setCity(userToUpdate.getCity());
+
+                        User updatedUser = userService.save(userToUpdate);
+
+                        model.addAttribute("user", updatedUser);
+
+                        return "redirect:/profile";
+                } else {
+                        throw new UserNotFoundException(
+                                        "this user with email " + authentication.getName()
+                                                        + " is not registred in application!");
+                }
         }
 }

@@ -139,7 +139,7 @@
 									<div class="row justify-content-evenly mb-2 " id="submit-profile"
 										style="display:none">
 										<input class="col-sm-3 mb-2 btn-success btn-sm text-center custom-shadow"
-											type="submit " value="Enregistrer"></input>
+											type="submit" value="Enregistrer"></input>
 										<button class="col-sm-3 mb-2 btn-outline-dark btn-sm text-center custom-shadow"
 											onclick="hideProfile(event)">Annuler</button>
 									</div>
@@ -174,7 +174,7 @@
 									<div class="col-lg-2 col-md-6  mb-2 text-center   form-group">
 										<label class="form-label bank-label " for="bankCode">
 											Bank code</label>
-										<input type="number" class="form-control text-center" th:field="*{bankCode}"
+										<input type="text" class="form-control text-center" th:field="*{bankCode}"
 											th:placeholder="${bankAccount.bankCode} ? ${bankAccount.bankCode}:'XXXXX'"
 											th:classappend="${#fields.hasErrors('bankCode')? 'is-invalid':''}" />
 										<div class="valid-feedback">Valid.</div>
@@ -186,7 +186,7 @@
 										<label class="form-label bank-label" for="branchCode">
 											Branch code</label>
 
-										<input type="number" class="form-control text-center" th:field="*{branchCode}"
+										<input type="text" class="form-control text-center" th:field="*{branchCode}"
 											pattern="{0-9}{5}" title="Must contains only 5 numbers"
 											th:placeholder="${bankAccount.branchCode} ? ${bankAccount.branchCode}:'XXXXX'"
 											th:classappend="${#fields.hasErrors('branchCode')? 'is-invalid':''}" />
@@ -199,7 +199,7 @@
 									<div class="col-lg-4 col-md-6 col-sm-12 mb-2 text-center form-group">
 										<label class="form-label bank-label" for="accountNumber">Account
 											number</label>
-										<input type="number" class="form-control text-center"
+										<input type="text" class="form-control text-center"
 											th:field="*{accountNumber}" pattern="{0-9}{11}"
 											title="Must contains only 11 numbers"
 											th:placeholder="${bankAccount.accountNumber} ? ${bankAccount.accountNumber}:'XXXXXXXXXXX'"
@@ -212,7 +212,7 @@
 									</div>
 									<div class="col-lg-1 col-md-3 col-sm-12 mb-2 text-center form-group">
 										<label class="form-label bank-label" for="ribKey">Rib key</label>
-										<input type="number" class="form-control text-center" th:field="*{ribKey}"
+										<input type="text" class="form-control text-center" th:field="*{ribKey}"
 											pattern="{0-9}{2}" title="Must contains only 2 numbers"
 											th:placeholder="${bankAccount.ribKey} ? ${bankAccount.ribKey}:'XX'"
 											th:classappend="${#fields.hasErrors('ribKey')? 'is-invalid':''}" />
@@ -253,6 +253,45 @@
 										</div>
 									</div>
 								</div>
+								<div class="col-lg-8  col-md-12 mx-auto ">
+
+									<div class="row m-auto">
+										<fieldset class=" mb-3 shadow p-2  bg-white rounded ">
+											<legend class="float-none w-auto lead bg-white ms-2 ps-2 pe-2"> <img
+													src="/images/icons8-mastercard-logo-64.png" alt="..." /> Bank
+												Card informations
+											</legend>
+											<div class="row justify-content-evenly mb-2 ">
+
+
+												<div class="col-lg-8 col-md-6  mb-2 text-center   form-group">
+													<label class="form-label bank-label " for="card-number">
+														Card Number</label>
+													<input type="text" class="form-control "
+													id="card-number"
+														th:field="*{bankCard.cardNumber}"  />
+												</div>
+												<div class="col-lg-4 col-md-3  mb-2 text-center form-group">
+													<label class="form-label bank-label" for="card-trigram">
+														Card code (trigramme)</label>
+
+													<input type="text" class="form-control text-center" th:field="*{bankCard.cardCode}" id="card-code"
+														pattern="{0-9}{3}" title="Must contains only 3 numbers"
+														placeholder="XXX" />
+												</div>
+
+												<div class="col-lg-6 col-md-6 col-sm-12 mb-2 text-center form-group">
+													<label class="form-label bank-label"
+														for="expiration-date">Expiration
+														date</label>
+													<input type="date" class="form-control text-center"
+														th:field="*{bankCard.expirationDate}" />
+												</div>
+
+											</div>
+										</fieldset>
+									</div>
+								</div>
 								<div th:if="!${user.bankAccountRegistred}" class="row mt-5 justify-content-evenly my-4">
 									<input class="col-2 btn btn-success custom-shadow " id="valider" type="submit"
 										value="enregistrer">
@@ -263,7 +302,8 @@
 				</div>
 			</article>
 		</div>
-		<footer th:replace="~{/fragments/my-template::footer}"></footer>
+	</div>
+	<footer th:replace="~{/fragments/my-template::footer}"></footer>
 	</div>
 	<script th:replace="~{/fragments/my-template::script}"></script>
 </body>
@@ -301,8 +341,17 @@
 		blocks: [8],
 		uppercase: true
 	});
+	var cleaveCardNumber = new Cleave('#card-number', {
+		creditCard: true,
+    	onCreditCardTypeChanged: function (type) {
+        console.log(type);
+    }
+	});
+	var cleaveCardCode = new Cleave('#card-trigram', {
+		blocks: [3],
+		uppercase: true
+	});
 
-	
 
 	//----------- show  form personal informations when click pencil ---------------------
 	var editionProfile = false;

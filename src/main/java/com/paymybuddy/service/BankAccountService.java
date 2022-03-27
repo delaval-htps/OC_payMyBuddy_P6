@@ -16,7 +16,7 @@ public class BankAccountService {
         return bankAccountRepository.save(bankAccount);
     }
 
-    public Optional<BankAccount> findByBankAccount(BankAccount bankAccount) {
-        return bankAccountRepository.findByBankAccount(bankAccount);
+    public Optional<BankAccount> findByIban(String iban) {
+        return bankAccountRepository.findByIban(iban);
     }
 }
