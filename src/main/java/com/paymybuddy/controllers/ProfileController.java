@@ -91,7 +91,14 @@ public class ProfileController {
                         // case of bank account correctly fill in
                         BankAccount bankAccount =
                                         modelMapper.map(bankAccountDto, BankAccount.class);
+                              
+                        // check if bankAccount doesn't already exist
+                        Optional<BankAccount> existedBankAccount = bankAccountService.findByBankAccount(bankAccount);
 
+                        if (existedBankAccount.isPresent()){
+                                bankAccount =existedBankAccount.get();
+                        }
+                        
                         // save of bank account for user
                         currentUser.setBankAccount(bankAccount);
                         BankAccount userBankAccount = bankAccountService.save(bankAccount);
