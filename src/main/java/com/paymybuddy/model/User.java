@@ -13,6 +13,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.validation.constraints.Email;
@@ -93,7 +94,7 @@ public class User implements Serializable {
       inverseJoinColumns = @JoinColumn(name = "user_connection_id", table = "connection_user"))
   private Set<User> connectionUsers = new HashSet<>();
 
-  @OneToOne(cascade = CascadeType.ALL)
+  @ManyToOne(cascade = CascadeType.ALL)
   @JoinColumn(name = "bank_account_id")
   private BankAccount bankAccount;
 
