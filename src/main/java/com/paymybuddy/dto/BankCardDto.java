@@ -12,7 +12,7 @@ import lombok.Setter;
 @NoArgsConstructor
 
 public class BankCardDto {
-    private int cardNumber;
-    private int cardCode;
+    private String cardNumber;
+    private String cardCode;
     private Date expirationDate;
 }

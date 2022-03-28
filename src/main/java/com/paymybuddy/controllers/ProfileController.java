@@ -10,6 +10,7 @@ import com.paymybuddy.model.BankAccount;
 import com.paymybuddy.model.User;
 import com.paymybuddy.service.BankAccountService;
 import com.paymybuddy.service.UserService;
+import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -33,10 +34,18 @@ public class ProfileController {
         @Autowired
         private ModelMapper modelMapper;
 
+        @Autowired
+        private Converter<String, Integer> convertStringToInteger;
+
+        @Autowired
+        private Converter<String, Long> convertStringToLong;
+
         @GetMapping("/profile")
         public String getProfil(Authentication authentication, Model model,
                         RedirectAttributes redirectAttributes) {
                 Optional<User> user = userService.findByEmail(authentication.getName());
+                modelMapper.addConverter(convertStringToInteger);
+                modelMapper.addConverter(convertStringToLong);
 
                 if (user.isPresent()) {
 
@@ -74,6 +83,8 @@ public class ProfileController {
 
                 Optional<User> user = userService.findByEmail(authentication.getName());
 
+                modelMapper.addConverter(convertStringToInteger);
+                modelMapper.addConverter(convertStringToLong);
                 if (user.isPresent()) {
 
                         User currentUser = user.get();
@@ -103,7 +114,7 @@ public class ProfileController {
                         // save of bank account for user
                         bankAccount.addUser(currentUser);
                         BankAccount userBankAccount = bankAccountService.save(bankAccount);
-                        
+
 
 
                         // send of user's bank account
@@ -137,8 +148,8 @@ public class ProfileController {
         public String editUserProfile(@Valid @ModelAttribute(value = "user") UserDto userDto,
                         BindingResult bindingResult, Model model, Authentication authentication) {
                 Optional<User> user = userService.findByEmail(authentication.getName());
-
-
+                modelMapper.addConverter(convertStringToInteger);
+                modelMapper.addConverter(convertStringToLong);
                 if (user.isPresent()) {
 
 
@@ -151,7 +162,7 @@ public class ProfileController {
                                         .map(existedUser.getBankAccount(), BankAccountDto.class));
 
                         if (bindingResult.hasErrors()) {
-                              
+
                                 return "redirect:/profile";
                         }
 
@@ -175,4 +186,6 @@ public class ProfileController {
                                                         + " is not registred in application!");
                 }
         }
+
+
 }

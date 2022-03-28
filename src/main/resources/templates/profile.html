@@ -174,7 +174,7 @@
 									<div class="col-lg-2 col-md-6  mb-2 text-center   form-group">
 										<label class="form-label bank-label " for="bankCode">
 											Bank code</label>
-										<input type="text" class="form-control text-center" th:field="*{bankCode}"
+										<input type="text" class="form-control text-center cleave-num" th:field="*{bankCode}"
 											th:placeholder="${bankAccount.bankCode} ? ${bankAccount.bankCode}:'XXXXX'"
 											th:classappend="${#fields.hasErrors('bankCode')? 'is-invalid':''}" />
 										<div class="valid-feedback">Valid.</div>
@@ -186,7 +186,7 @@
 										<label class="form-label bank-label" for="branchCode">
 											Branch code</label>
 
-										<input type="text" class="form-control text-center" th:field="*{branchCode}"
+										<input type="text" class="form-control text-center cleave-num" th:field="*{branchCode}"
 											pattern="{0-9}{5}" title="Must contains only 5 numbers"
 											th:placeholder="${bankAccount.branchCode} ? ${bankAccount.branchCode}:'XXXXX'"
 											th:classappend="${#fields.hasErrors('branchCode')? 'is-invalid':''}" />
@@ -199,7 +199,7 @@
 									<div class="col-lg-4 col-md-6 col-sm-12 mb-2 text-center form-group">
 										<label class="form-label bank-label" for="accountNumber">Account
 											number</label>
-										<input type="text" class="form-control text-center"
+										<input type="text" class="form-control text-center cleave-num"
 											th:field="*{accountNumber}" pattern="{0-9}{11}"
 											title="Must contains only 11 numbers"
 											th:placeholder="${bankAccount.accountNumber} ? ${bankAccount.accountNumber}:'XXXXXXXXXXX'"
@@ -212,7 +212,7 @@
 									</div>
 									<div class="col-lg-1 col-md-3 col-sm-12 mb-2 text-center form-group">
 										<label class="form-label bank-label" for="ribKey">Rib key</label>
-										<input type="text" class="form-control text-center" th:field="*{ribKey}"
+										<input type="text" class="form-control text-center cleave-num" th:field="*{ribKey}"
 											pattern="{0-9}{2}" title="Must contains only 2 numbers"
 											th:placeholder="${bankAccount.ribKey} ? ${bankAccount.ribKey}:'XX'"
 											th:classappend="${#fields.hasErrors('ribKey')? 'is-invalid':''}" />
@@ -253,7 +253,7 @@
 										</div>
 									</div>
 								</div>
-								<div class="col-lg-8  col-md-12 mx-auto ">
+								<!-- <div class="col-lg-8  col-md-12 mx-auto ">
 
 									<div class="row m-auto">
 										<fieldset class=" mb-3 shadow p-2  bg-white rounded ">
@@ -267,16 +267,16 @@
 												<div class="col-lg-8 col-md-6  mb-2 text-center   form-group">
 													<label class="form-label bank-label " for="card-number">
 														Card Number</label>
-													<input type="text" class="form-control "
-													id="card-number"
+													<input type="text" class="form-control text-center cleave-num"
+													id="cardNumber"
 														th:field="*{bankCard.cardNumber}"  />
 												</div>
 												<div class="col-lg-4 col-md-3  mb-2 text-center form-group">
 													<label class="form-label bank-label" for="card-trigram">
 														Card code (trigramme)</label>
 
-													<input type="text" class="form-control text-center" th:field="*{bankCard.cardCode}" id="card-code"
-														pattern="{0-9}{3}" title="Must contains only 3 numbers"
+													<input type="text" class="form-control text-center cleave-num" th:field="*{bankCard.cardCode}" 
+														pattern="{0-9}{3}" title="Must contains only 3 numbers" id="cardCode"
 														placeholder="XXX" />
 												</div>
 
@@ -291,7 +291,7 @@
 											</div>
 										</fieldset>
 									</div>
-								</div>
+								</div> -->
 								<div th:if="!${user.bankAccountRegistred}" class="row mt-5 justify-content-evenly my-4">
 									<input class="col-2 btn btn-success custom-shadow " id="valider" type="submit"
 										value="enregistrer">
@@ -318,19 +318,23 @@
 	// --------- cleave for bank input---------
 	var cleaveBankCode = new Cleave('#bankCode', {
 		blocks: [5],
-		uppercase: true
+		uppercase: true,
+		
 	});
 	var cleaveBranchCode = new Cleave('#branchCode', {
 		blocks: [5],
-		uppercase: true
+		uppercase: true,
+		
 	});
 	var cleaveAccountNumber = new Cleave('#accountNumber', {
 		blocks: [11],
-		uppercase: true
+		uppercase: true,
+		
 	});
 	var cleaveRibKey = new Cleave('#ribKey', {
 		blocks: [2],
-		uppercase: true
+		uppercase: true,
+		
 	});
 	var cleaveIban = new Cleave('#iban', {
 		delimiter: '-',
@@ -341,17 +345,19 @@
 		blocks: [8],
 		uppercase: true
 	});
-	var cleaveCardNumber = new Cleave('#card-number', {
+	var cleaveCardNumber = new Cleave('#cardNumber', {
 		creditCard: true,
+		
     	onCreditCardTypeChanged: function (type) {
         console.log(type);
     }
 	});
-	var cleaveCardCode = new Cleave('#card-trigram', {
+	var cleaveCardCode = new Cleave('#cardCode', {
 		blocks: [3],
-		uppercase: true
+		uppercase: true,
+	
 	});
-
+	
 
 	//----------- show  form personal informations when click pencil ---------------------
 	var editionProfile = false;
