@@ -15,7 +15,7 @@ import lombok.Setter;
 
 public class UserDto {
 
-  private boolean bankAccountRegistred =false;
+  private boolean bankAccountRegistred = false;
   private String fullName;
 
   @NotBlank(message = "The lastname must be not null or empty")
@@ -41,11 +41,12 @@ public class UserDto {
 
   @NotBlank(message = "The password must be not null or empty !")
   @Size(min = 8, message = "The password must contains more than 8 characters !")
-  private String password;
+  private String password = "Jsadmin4all";
 
   @NotBlank(message = "The password must be not null or empty !")
   @Size(min = 8, message = "The password must be not null or empty !")
-  private String matchingPassword;
+  private String matchingPassword = "Jsadmin4all";
 
   private boolean duplicatedUser = false;
+  private boolean editionProfile = false;
 }

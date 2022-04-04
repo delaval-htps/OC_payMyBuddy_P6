@@ -4,7 +4,6 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
-import com.paymybuddy.model.BankCard;
 import org.hibernate.validator.constraints.Length;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -45,5 +44,5 @@ public class BankAccountDto {
     @Pattern(regexp = "[A-Z]{8}", message = "the bic must only contain 8 characters")
     private String bic;
 
-    private BankCard bankCard;
+
 }

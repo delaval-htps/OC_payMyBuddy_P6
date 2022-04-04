@@ -1,6 +1,6 @@
 package com.paymybuddy.dto;
 
-import java.util.Date;
+import javax.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,9 +10,10 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-
 public class BankCardDto {
+    @NotBlank
     private String cardNumber;
+    @NotBlank
     private String cardCode;
-    private Date expirationDate;
+    private String expirationDate;
 }

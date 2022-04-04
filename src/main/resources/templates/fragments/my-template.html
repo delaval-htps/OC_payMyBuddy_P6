@@ -114,12 +114,15 @@
 		var gauge = new JustGage({
 			id: "gauge", // the id of the html element
 			value: balance,
+			width: 50,
 			min: 0,
 			max: 1000,
 			decimals: 2,
 			gaugeWidthScale: 0.6,
 			levelColors: ['#7dbc52'],
-			label: 'Balance'
+			label: 'Balance in €',
+			relativeGaugeSize: true,
+			gaugeWidthScale: 0.2
 		});
 	</script>
 	<script th:fragment="script-greenNavLink" th:inline="javascript" type="text/javascript">

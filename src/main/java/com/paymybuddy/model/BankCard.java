@@ -27,7 +27,7 @@ public class BankCard implements Serializable {
     private Long id;
     
     @Column
-    private int cardNumber;
+    private String cardNumber;
     
     @Column
     private int cardCode;

@@ -60,7 +60,7 @@ CREATE TABLE IF NOT EXISTS bank_account (
 
 CREATE TABLE IF NOT EXISTS bank_card (
 	id INT NOT NULL AUTO_INCREMENT,
-	card_number VARCHAR(16),
+	card_number VARCHAR(19),
 	card_code INT NOT NULL,
 	expiration_date DATE NOT NULL,
 	PRIMARY KEY (id)
