@@ -5,105 +5,106 @@
 <head th:replace="~{/fragments/my-template::html-head('Transfert')}"></head>
 
 <body>
-    <header th:replace="~{/fragments/my-template::header}"></header>
-    <nav th:replace="~{/fragments/my-template::nav-breadcrumb('Home,Transfert')}"></nav>
     <div class="container-fluid">
-        <div class="row justify-content-end">
-            <div class="col-sm-2 mt-3">
+        <header th:replace="~{/fragments/my-template::header}"></header>
+       
+        <nav th:replace="~{/fragments/my-template::nav-breadcrumb('Home,Transfert')}"></nav>
+      
+        <div class="main-content">
+            <div class="row justify-content-end">
+                <div class="col-sm-2 mt-3">
 
-                <!-- Button trigger modal -->
-                <button type="button" class="btn btn-primary " data-bs-toggle="modal" data-bs-target="#staticBackdrop">
-                    Add Connection
-                </button>
+                    <!-- Button trigger modal -->
+                    <button type="button" class="btn-sm btn-outline-primary  " data-bs-toggle="modal"
+                        data-bs-target="#staticBackdrop">
+                        Add Connection
+                    </button>
 
-                <!-- Modal -->
-                <div class="modal fade " id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false"
-                    tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-                    <div class="modal-dialog  modal-lg modal-dialog-centered">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h3 class="modal-title" id="staticBackdropLabel">Add a friend to your network...</h3>
+                    <!-- Modal -->
+                    <div class="modal fade " id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false"
+                        tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                        <div class="modal-dialog  modal-lg modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h3 class="modal-title" id="staticBackdropLabel">Add a friend to your network...
+                                    </h3>
 
-                                <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                    aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
-                                <h5 class="text-justify ">You can add a friend to your network to be able to transfert
-                                    him
-                                    money... </h5>
-                                <h5 class="mt-3">Just by giving us his email:</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <h5 class="text-justify ">You can add a friend to your network to be able to
+                                        transfert
+                                        him
+                                        money... </h5>
+                                    <h5 class="mt-3">Just by giving us his email:</h5>
 
-                                <fieldset class=" p-3 my-5 custom-shadow">
-                                    <legend class="float-none w-auto lead bg-white ps-2 pe-2"> friend
-                                        Informations</legend>
+                                    <fieldset class=" p-3 my-5 custom-shadow">
+                                        <legend class="float-none w-auto lead bg-white ps-2 pe-2"> friend
+                                            Informations</legend>
 
-                                    <!-- form to add connection user -->
-                                    <form th:action="@{/connection}" method="post">
-                                        <div class="row mb-3">
-                                            <div class="col-10 m-auto ">
-                                                <div class="row">
-                                                    <label class="col-sm-1 col-form-label" for="email">
-                                                        <i class="far fa-envelope"></i></label>
-                                                    <div class="col-sm-10 ">
-                                                        <input type="email" class="  form-control" id="email"
-                                                            placeholder="friend's email" name="email" required />
+                                        <!-- form to add connection user -->
+                                        <form th:action="@{/connection}" method="post">
+                                            <div class="row mb-3">
+                                                <div class="col-10 m-auto ">
+                                                    <div class="row">
+                                                        <label class="col-sm-1 col-form-label" for="email">
+                                                            <i class="far fa-envelope"></i></label>
+                                                        <div class="col-sm-10 ">
+                                                            <input type="email" class="  form-control" id="email"
+                                                                placeholder="friend's email" name="email" required />
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
 
-                                </fieldset>
+                                    </fieldset>
 
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary"
+                                        data-bs-dismiss="modal">Cancel</button>
+                                    <button id='submitConnection' type="submit" class="btn btn-primary">Submit</button>
+                                </div>
+                                </form>
                             </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                                <button id='submitConnection' type="submit" class="btn btn-primary">Submit</button>
-                            </div>
-                            </form>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <!-- toast for success or error message -->
-    <div class="position-fixed top-0 start-50 translate-middle-x " style="z-index: 11">
-        <div id="liveToast" class="toast  align-text-center text-white bg-primary border-0 mt-1" role="alert"
-            aria-live="assertive" aria-atomic="true"
-            th:classappend="${success} ?'bg-success bg-gradient': (${warning}?'bg-warning bg-gradient':'bg-danger bg-gradient')"
-            th:if="${success}or${error}or${warning}">
-            <div class="d-flex">
-                <div class="toast-body" th:text="${success !=null} ? ${success}:(${warning!=null}?${warning}:${error})"></div>
-                <button type="button" class="btn-close me-2 m-auto " data-bs-dismiss="toast" aria-label="Close"></button>
+        <!-- toast for success or error message -->
+        <div class="position-fixed top-0 start-50 translate-middle-x " style="z-index: 11">
+            <div id="liveToast" class="toast  align-text-center text-white bg-primary border-0 mt-1" role="alert"
+                aria-live="assertive" aria-atomic="true"
+                th:classappend="${success} ?'bg-success bg-gradient': (${warning}?'bg-warning bg-gradient':'bg-danger bg-gradient')"
+                th:if="${success}or${error}or${warning}">
+                <div class="d-flex">
+                    <div class="toast-body"
+                        th:text="${success !=null} ? ${success}:(${warning!=null}?${warning}:${error})"></div>
+                    <button type="button" class="btn-close me-2 m-auto " data-bs-dismiss="toast"
+                        aria-label="Close"></button>
+                </div>
             </div>
         </div>
     </div>
+</body>
+<script th:replace="~{/fragments/my-template::script-greenNavLink}"></script>
+<script th:inline="javascript" type="text/javascript">
+    $(document).ready(function () {
 
-    <script th:inline="javascript" type="text/javascript">
-        $(document).ready(function () {
+        $('#submitConnection').on('click', showToaster());
 
-            $('#submitConnection').on('click', showToaster());
+    });
 
-        });
+    function showToaster() {
+        $('#liveToast').toast({ autohide: false });
+        $('#liveToast').toast('show');
 
-        function showToaster() {
-            $('#liveToast').toast({autohide:false});
-            $('#liveToast').toast('show');
+    };
 
-        };
-        
-        $('.navbar-nav .nav-item .nav-link').each(function () {
-            var text = $(this).attr("href");
-            console.log(text);
-            console.log(window.location.href);
-            if (window.location.href.includes(text)) {
-                $(this).css('color', 'green');
-                flag = true;
-            }
-        });
-       
-    </script>
+</script>
 </body>
 
 

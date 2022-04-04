@@ -7,6 +7,7 @@ import com.paymybuddy.security.oauth2.user.user_info.OAuth2UserInfo;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.core.user.OAuth2User;
+import org.springframework.util.StringUtils;
 
 public class CustomOAuth2User implements OAuth2User {
 
@@ -36,11 +37,11 @@ public class CustomOAuth2User implements OAuth2User {
     }
 
     public String getLastName() {
-        return oAuth2UserInfo.getLastName();
+        return StringUtils.capitalize(oAuth2UserInfo.getLastName());
     }
 
     public String getFirstName() {
-        return oAuth2UserInfo.getFirstName();
+        return StringUtils.capitalize(oAuth2UserInfo.getFirstName());
     }
 
     public String getClientRegistrationId() {

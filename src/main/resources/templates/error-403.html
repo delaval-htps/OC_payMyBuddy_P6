@@ -8,6 +8,9 @@
     
 <h1><i class="fa-regular fa-face-frown-open"></i> Something went wrong! </h1>
 <h2>Sorry, you have not permission to go to this page</h2>
+<div class="error-attributes" th:text="${errorAttributes}">
+
+</div>
 <a th:href="@{/logout}">Go Back</a>
 </body>
 </html>

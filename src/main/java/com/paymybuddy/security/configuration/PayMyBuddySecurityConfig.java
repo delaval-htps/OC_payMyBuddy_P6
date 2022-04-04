@@ -38,7 +38,7 @@ public class PayMyBuddySecurityConfig extends WebSecurityConfigurerAdapter {
   protected void configure(HttpSecurity http) throws Exception {
     http
       .authorizeRequests()
-      .antMatchers("/css/**")
+      .antMatchers("/css/**","/images/**")
       .permitAll()
       .antMatchers("/oauth2/**")
       .permitAll()
