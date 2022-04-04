@@ -3,9 +3,12 @@ package com.paymybuddy.controllers;
 import java.util.List;
 import java.util.Optional;
 import javax.validation.Valid;
+import com.paymybuddy.dto.ConnectedUsersDto;
+import com.paymybuddy.dto.TransactionDto;
 import com.paymybuddy.exceptions.UserNotFoundException;
 import com.paymybuddy.model.User;
 import com.paymybuddy.service.UserService;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -19,49 +22,68 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class TransfertController {
 
-    @Autowired
-    private UserService userService;
+  @Autowired
+  private UserService userService;
 
-    @GetMapping("/transfert")
-    public String getTransfert(Authentication authentication, Model model) {
-      if (authentication.isAuthenticated()) {
-        return "transfert";
-      } else {
-        return ("redirect:/logout");
+  @Autowired
+  private ModelMapper modelMapper;
+
+
+  @GetMapping("/transfert")
+  public String getTransfert(Authentication authentication, Model model) {
+    Optional<User> user = userService.findByEmail(authentication.getName());
+
+    if (user.isPresent()) {
+
+      User existedUser = user.get();
+      List<User> connectedUsers = userService.findConnectedUserByEmail(existedUser.getEmail());
+
+      ConnectedUsersDto connectedUsersDto = new ConnectedUsersDto();
+
+      for (User connectedUser : connectedUsers) {
+        connectedUsersDto.getEmails().add(connectedUser.getEmail());
       }
+
+      TransactionDto transactionDto = new TransactionDto();
+      model.addAttribute("transaction", transactionDto);
+      model.addAttribute("connectedUsers", connectedUsersDto);
+      return "transfert";
+    } else {
+      throw new UserNotFoundException("this user is not authenticated!");
     }
+  }
 
-    
-    @PostMapping("/connection")
-    public String saveConnectionUser(@Valid String email, RedirectAttributes redirectAttrs, Authentication auth)  {
 
-        Optional<User> existedUser = userService.findByEmail(email);
-        Optional<User> authenticatedUser = userService.findByEmail(auth.getName());
+  @PostMapping("/connection")
+  public String saveConnectionUser(@Valid String email, RedirectAttributes redirectAttrs, Authentication auth) {
 
-        if (authenticatedUser.isPresent()) {
-            User user = authenticatedUser.get();
+    Optional<User> existedUser = userService.findByEmail(email);
+    Optional<User> authenticatedUser = userService.findByEmail(auth.getName());
 
-            if (existedUser.isPresent()) {
+    if (authenticatedUser.isPresent()) {
+      User user = authenticatedUser.get();
 
-                User connectionUser = existedUser.get();
-                List<User> connectedUsers= userService.findConnectedUserByEmail(user.getEmail());
+      if (existedUser.isPresent()) {
 
-                if (connectedUsers.contains(connectionUser)){
-                  redirectAttrs.addFlashAttribute("warning", "the user with this email " + email + " already connected with you!");
-                }else{
-                  user.addConnectionUser(connectionUser);
-                  userService.save(user);
-                  redirectAttrs.addFlashAttribute("success", "the user with this email " + email + " was registred!");
-                }
-            } else {
+        User connectionUser = existedUser.get();
+        List<User> connectedUsers = userService.findConnectedUserByEmail(user.getEmail());
 
-                log.error("Not be able to add connectionUser with email: {} cause of not found in database.", email);
-                redirectAttrs.addFlashAttribute("error", "the user with this email " + email + " is not registred in application!");
-            }
+        if (connectedUsers.contains(connectionUser)) {
+          redirectAttrs.addFlashAttribute("warning", "the user with this email " + email + " already connected with you!");
         } else {
-
-            throw  new UserNotFoundException("the user is not authenticated.");
+          user.addConnectionUser(connectionUser);
+          userService.save(user);
+          redirectAttrs.addFlashAttribute("success", "the user with this email " + email + " was registred!");
         }
-        return "redirect:/transfert";
+      } else {
+
+        log.error("Not be able to add connectionUser with email: {} cause of not found in database.", email);
+        redirectAttrs.addFlashAttribute("error", "the user with this email " + email + " is not registred in application!");
+      }
+    } else {
+
+      throw new UserNotFoundException("the user is not authenticated.");
     }
+    return "redirect:/transfert";
+  }
 }
