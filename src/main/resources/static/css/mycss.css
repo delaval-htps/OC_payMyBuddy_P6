@@ -3,11 +3,11 @@ body {
 }
 
 .container-fluid {
-min-height: 100%;
+	min-height: 100%;
 }
 
-.col-login{
-	height:100vh;
+.col-login {
+	height: 100vh;
 }
 
 #card-login {
@@ -33,11 +33,13 @@ min-height: 100%;
 	box-shadow: 2px 2px 2px rgb(84, 84, 84);
 	color: white;
 }
-.card-btn{
-	
+
+.card-btn {
+
 	width: 200px !important;
-	max-width:inherit !important;
+	max-width: inherit !important;
 }
+
 .special-card, .special-fieldset {
 	background-color: rgba(245, 245, 245, 1);
 	opacity: .4;
@@ -137,10 +139,17 @@ label {
 	padding-left: 12px;
 }
 
-.edit-icon{
+.edit-icon {
 	cursor: pointer;
 }
 
 #liveToast {
 	margin-top: 120px !important;
+}
+
+#amount-input::-webkit-inner-spin-button,
+#amount-input::-webkit-outer-spin-button {
+	-webkit-appearance: textfield;
+	-moz-appearance: textfield;
+	appearance: textfield;
 }

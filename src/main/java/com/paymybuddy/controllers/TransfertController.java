@@ -1,9 +1,10 @@
 package com.paymybuddy.controllers;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import javax.validation.Valid;
-import com.paymybuddy.dto.ConnectedUsersDto;
+import com.paymybuddy.dto.ConnectedUserDto;
 import com.paymybuddy.dto.TransactionDto;
 import com.paymybuddy.exceptions.UserNotFoundException;
 import com.paymybuddy.model.User;
@@ -38,10 +39,10 @@ public class TransfertController {
       User existedUser = user.get();
       List<User> connectedUsers = userService.findConnectedUserByEmail(existedUser.getEmail());
 
-      ConnectedUsersDto connectedUsersDto = new ConnectedUsersDto();
+      List<ConnectedUserDto> connectedUsersDto = new ArrayList<>();
 
       for (User connectedUser : connectedUsers) {
-        connectedUsersDto.getEmails().add(connectedUser.getEmail());
+        connectedUsersDto.add(modelMapper.map(connectedUser, ConnectedUserDto.class));
       }
 
       TransactionDto transactionDto = new TransactionDto();
