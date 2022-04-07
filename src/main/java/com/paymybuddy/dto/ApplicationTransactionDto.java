@@ -1,6 +1,7 @@
 package com.paymybuddy.dto;
 
-import java.util.Date;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,18 +11,19 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class TransactionDto {
-
-    private Date transactionDate;
-
-    private String description;
-
-    private double commisionPercent;
+public class ApplicationTransactionDto {
 
     private int amount;
 
+    @NotEmpty
+    private String description;
+
+    @NotEmpty
+    @Email
     private String userEmail;
 
-    private Long connectionUserEmail;
+    @NotEmpty
+    @Email
+    private String connectionUserEmail;
 
 }

@@ -14,14 +14,10 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity
-public class Transaction {
+@Entity(name = "transaction")
+public class ApplicationTransaction {
 
-    private static final double COMMISIONPERCENT = 0.5d;
-
-    public enum TransactionType {
-        DEBIT, CREDIT;
-    }
+    public static final double COMMISSIONPERCENT = 0.5d;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,7 +30,7 @@ public class Transaction {
 
     private int amount;
 
-    private TransactionType transactionType;
+    private double amountCommission;
 
     private Long userId;
 
