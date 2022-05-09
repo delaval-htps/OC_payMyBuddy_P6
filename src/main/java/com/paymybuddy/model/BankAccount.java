@@ -24,7 +24,6 @@ import lombok.Setter;
 @AllArgsConstructor
 public class BankAccount implements Serializable {
 
-  private static final long serialVersionUID = 31L;
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column
@@ -51,14 +50,13 @@ public class BankAccount implements Serializable {
   @Column
   private double balance;
 
-  @OneToMany(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH},
-      mappedBy = "bankAccount")
+  @OneToMany(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH}, mappedBy = "bankAccount")
   private Set<User> users = new HashSet<>();
 
   @OneToOne(cascade = CascadeType.ALL)
   @JoinColumn(name = "bank_card_id")
   private BankCard bankCard;
-  
+
   /**
    * method to add user to a bank account.
    * 

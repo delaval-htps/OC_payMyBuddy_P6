@@ -41,7 +41,7 @@ public class PayMyBuddyApplication {
     return new Converter<String, Date>() {
       public Date convert(MappingContext<String, Date> context) {
         SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
-        Date date =new Date();
+        Date date = new Date();
         try {
           date = df.parse(context.getSource());
         } catch (ParseException e) {

@@ -20,22 +20,21 @@ import lombok.Setter;
 @AllArgsConstructor
 public class BankCard implements Serializable {
 
-    private static final long serialVersionUID = 3L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column
     private Long id;
-    
+
     @Column
     private String cardNumber;
-    
+
     @Column
     private int cardCode;
 
     @Column
     private Date expirationDate;
 
-    @OneToOne( mappedBy = "bankCard")
+    @OneToOne(mappedBy = "bankCard")
     private BankAccount bankAccount;
 
 }
