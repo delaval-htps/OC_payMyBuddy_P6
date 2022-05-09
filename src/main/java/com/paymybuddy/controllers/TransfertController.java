@@ -1,13 +1,11 @@
 package com.paymybuddy.controllers;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
-import javax.transaction.Transaction;
 import javax.validation.Valid;
-import com.paymybuddy.dto.ConnectedUserDto;
 import com.paymybuddy.dto.ApplicationTransactionDto;
+import com.paymybuddy.dto.ConnectedUserDto;
 import com.paymybuddy.exceptions.UserNotFoundException;
 import com.paymybuddy.model.ApplicationTransaction;
 import com.paymybuddy.model.User;
@@ -40,14 +38,21 @@ public class TransfertController {
   @Autowired
   private ModelMapper modelMapper;
 
-
-  @GetMapping("/")
+  /**
+   * return view of transfert.
+   * 
+   * @param authentication authentication of connected user.
+   * @param model model to send informations for the view
+   * @return view of transfert.
+   */
+  @GetMapping("")
   public String getTransfert(Authentication authentication, Model model) {
     Optional<User> user = userService.findByEmail(authentication.getName());
 
     if (user.isPresent()) {
 
       User existedUser = user.get();
+
       List<User> connectedUsers = userService.findConnectedUserByEmail(existedUser.getEmail());
 
       List<ConnectedUserDto> connectedUsersDto = new ArrayList<>();
@@ -57,9 +62,24 @@ public class TransfertController {
       }
 
       ApplicationTransactionDto transactionDto = new ApplicationTransactionDto();
+
+      // update list of transactions for the user
+      List<ApplicationTransaction> userAppTransactions = appTransactionService.findBySender(user.get());
+      List<ApplicationTransactionDto> userTransactionsDto = new ArrayList<>();
+      for (ApplicationTransaction userTransaction : userAppTransactions) {
+        ApplicationTransactionDto appTransactionDto = modelMapper.map(userTransaction, ApplicationTransactionDto.class);
+        appTransactionDto.setSenderEmail(userTransaction.getSender().getEmail());
+        appTransactionDto.setReceiverEmail(userTransaction.getReceiver().getEmail());
+        userTransactionsDto.add(appTransactionDto);
+      }
+
+      model.addAttribute("userEmail", user.get().getEmail());
       model.addAttribute("transaction", transactionDto);
       model.addAttribute("connectedUsers", connectedUsersDto);
+      model.addAttribute("userTransactions", userTransactionsDto);
+
       return "transfert";
+
     } else {
       throw new UserNotFoundException("this user is not authenticated!");
     }
@@ -104,52 +124,32 @@ public class TransfertController {
     Optional<User> user = userService.findByEmail(authentication.getName());
 
     if (bindingResult.hasErrors()) {
-      model.addAttribute("transaction", transactionDto);
-      return "/transfert";
+      redirectAttributes.addFlashAttribute("error", "a problem occurs in transaction, please retry!");
+      return "redirect:/transfert";
     }
 
-    if (user.isPresent()) {
+    if (user.isPresent() && user.get().getEmail().equalsIgnoreCase(transactionDto.getSenderEmail())) {
 
       User sender = user.get();
 
-      if (transactionDto != null) {
+      ApplicationTransaction transaction = modelMapper.map(transactionDto, ApplicationTransaction.class);
+      Optional<User> receiverUser = userService.findByEmail(transactionDto.getReceiverEmail());
 
-        ApplicationTransaction transaction = modelMapper.map(transactionDto, ApplicationTransaction.class);
-        Optional<User> receiverUser = userService.findByEmail(transactionDto.getConnectionUserEmail());
+      if (receiverUser.isPresent()) {
 
-        if (receiverUser.isPresent()) {
+        User receiver = receiverUser.get();
 
-          User receiver = receiverUser.get();
+        // proceed transaction
+        ApplicationTransaction succeededTransaction = appTransactionService.proceed(transaction, sender, receiver);
+        redirectAttributes.addFlashAttribute("success", "Transaction of " + succeededTransaction.getAmount() + "€ " + "to " + receiver.getFullName() + " was successfull!");
 
-          // save of transaction
-          transaction.setTransactionDate(new Date());
-          transaction.setConnectionUserId(receiver.getId());
-          transaction.setAmountCommission(appTransactionService.calculateAmountCommission(transaction.getAmount()));
-          transaction.setUserId(sender.getId());
-          transaction.setConnectionUserId(receiver.getId());
-
-          ApplicationTransaction succeededTransaction = appTransactionService.save(transaction);
-
-          // update Amount of ApplicationAccount of user
-          appTransactionService.updateUserApplicationAccountFollowingTransaction(succeededTransaction.getAmount(), succeededTransaction.getAmountCommission(), sender.getApplicationAccount());
-          // update list of transactions for the user
-
-          List<ApplicationTransaction> userAppTransactions = appTransactionService.findByUserId(sender.getId());
-
-          model.addAttribute("userTransactions", userAppTransactions);
-          redirectAttributes.addFlashAttribute("success", "Transaction of " + succeededTransaction.getAmount() + "€ " + "to " + receiver.getFullName() + " was successfull!");
-
-
-        } else {
-          log.error("Not be able to find connectionUser with email: {} during transaction cause of not found in database.", transactionDto.getConnectionUserEmail());
-          redirectAttributes.addFlashAttribute("error", "the receiver doesn't not exist!");
-        }
       } else {
-        // throw new ApplicationTransactionException("there is a probleme with your transaction");
+        log.error("Not be able to find connectionUser with email: {} during transaction cause of not found in database.", transactionDto.getReceiverEmail());
+        redirectAttributes.addFlashAttribute("error", "the receiver doesn't not exist!");
       }
 
     } else {
-      throw new UserNotFoundException("this user is not authenticated");
+      throw new UserNotFoundException("this user is not authenticated or user account not corresponds with sender.email");
     }
 
     return ("redirect:/transfert");

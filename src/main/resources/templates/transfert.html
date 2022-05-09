@@ -15,13 +15,10 @@
                 <div class="card p-0  col-6 m-auto shadow p-3 mb-5 bg-white rounded ">
 
                     <div class="card-header bg-white">
-                        <div class="row justify-content-between align-items-center">
-                            <div class="col-auto">
-                                <h4>Send Money</h4>
-                            </div>
-                            <div class="col-auto">
+                        <div class="row justify-content-end ">
 
-                                <!----------------------- Button trigger modal ---------------------->
+                            <!----------------------- Button trigger modal add connectionUser---------------------->
+                            <div class="col-auto">
                                 <button type="button" class="btn-sm btn-outline-primary  " data-bs-toggle="modal"
                                     data-bs-target="#staticBackdrop">
                                     Add Connection
@@ -30,31 +27,39 @@
 
                             <!-------------------- transaction div --------------------------->
                             <div class="col-sm-12 my-1">
-                                <form th:action=" @{/transfert/sendmoneyto}" th:object="${transaction}">
-                                    <fieldset class="shadow p-3 mb-5 bg-white rounded ">
-                                        <legend class=" mb-0 ">
-                                            <div class="row  g-2  justify-content-evenly">
-                                                <div class="col-sm-5">
-                                                    <select class="form-select-sm form-select"
-                                                        th:field="*{connectionUserEmail}">
-                                                        <option value="" hidden> Select a connection
-                                                        </option>
-                                                        <option th:each="connectedUser:${connectedUsers}"
-                                                            th:value="${connectedUser.email}"
-                                                            th:text="${connectedUser.fullName}">
-                                                        </option>
-                                                    </select>
-                                                </div>
-                                                <div class="col-auto">
-                                                    <input id="amount-input" type="number"
-                                                        class="form-control form-control-sm" th:field="*{amount}">
-                                                </div>
+                                <form method="post" th:action=" @{/transfert/sendmoneyto}" th:object="${transaction}">
+                                    <fieldset class="shadow p-3 mb-3 bg-white rounded ">
+                                        <legend class="float-none w-auto lead bg-white ps-2 pe-2">Send Money</legend>
+                                        <div class="row  my-4 g-2  justify-content-evenly">
+                                            <input type="hidden" th:value="${userEmail}" name="senderEmail" />
+                                            <div class="col-sm-5">
+                                                <select class="form-select-sm form-select" th:field="*{receiverEmail}">
+                                                    <option value="" hidden> Select a connection
+                                                    </option>
+                                                    <option th:each="connectedUser:${connectedUsers}"
+                                                        th:value="${connectedUser.email}"
+                                                        th:text="${connectedUser.fullName}">
+                                                    </option>
+                                                </select>
+                                            </div>
+                                            <div class="col-auto">
+                                                <input id="amount-input" type="number"
+                                                    class="form-control form-control-sm" th:field="*{amount}">
+                                            </div>
 
-                                                <div class="col-auto m-0 text-center">
-                                                    <button type="submit"
-                                                        class="btn-sm btn-gradient text-white ">Pay</button>
+                                            <div class="col-auto m-0 text-center">
+                                                <button type="submit" id="submit-transaction"
+                                                    class="btn-sm btn-gradient text-white ">Pay</button>
+                                            </div>
+                                        </div>
+                                        <div class="row justify-content-center">
+                                            <div class="col-sm-11">
+                                                <div class=" m-4 input-group">
+                                                    <input class="form-control form-control-sm" type="text"
+                                                        th:field="*{description}" placeholder="Description..." />
                                                 </div>
                                             </div>
+                                        </div>
                                         </legend>
                                     </fieldset>
                                 </form>
@@ -62,6 +67,7 @@
                         </div>
                     </div>
                     <!-------------------------- table with list of transaction ---------------------------------->
+                    <h4>My transactions</h4>
                     <div class="card-body bg-white">
                         <table class="table table-striped table-responsive">
                             <thead>
@@ -72,15 +78,10 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td scope="row"></td>
-                                    <td></td>
-                                    <td></td>
-                                </tr>
-                                <tr>
-                                    <td scope="row"></td>
-                                    <td></td>
-                                    <td></td>
+                                <tr th:each="transaction :${userTransactions}">
+                                    <td th:text="${transaction.receiverEmail}"></td>
+                                    <td th:text="${transaction.description}"></td>
+                                    <td th:text="${transaction.amount} +' €'"></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -90,7 +91,7 @@
         </div>
     </div>
 
-    <!-- toast for success or error message -->
+    <!------------------------ toast for success or error message -------------------------------------------------->
     <div class="position-fixed bottom-0 start-0 " style="z-index: 11">
         <div id="liveToast" class="toast  align-text-center text-white bg-primary border-0 mt-1" role="alert"
             aria-live="assertive" aria-atomic="true"
@@ -157,6 +158,7 @@
     $(document).ready(function () {
 
         $('#submitConnection').on('click', showToaster());
+        $('#submit-transaction').on('click', showToaster());
 
     });
 
