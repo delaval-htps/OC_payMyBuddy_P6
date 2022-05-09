@@ -10,9 +10,9 @@ DROP PROCEDURE IF EXISTS application_account_user_fk^;
 DROP PROCEDURE IF EXISTS bank_account_user_fk^;
 DROP PROCEDURE IF EXISTS user_connection_fk^;
 DROP PROCEDURE IF EXISTS user_connection_fk1^;
-DROP PROCEDURE IF EXISTS user_invoice_fk^;
-DROP PROCEDURE IF EXISTS connection_transaction_fk^;
-DROP PROCEDURE IF EXISTS transaction_daily_invoice_fk^;
+DROP PROCEDURE IF EXISTS sender_transaction_fk^;
+DROP PROCEDURE IF EXISTS receiver_transaction_fk^;
+DROP PROCEDURE IF EXISTS transaction_invoice_fk^;
 DROP PROCEDURE IF EXISTS user_role_fk^;
 DROP PROCEDURE IF EXISTS user_role_fk1^;
 
@@ -94,14 +94,12 @@ CREATE TABLE IF NOT EXISTS connection_user (
 
 CREATE TABLE IF NOT EXISTS transaction (
 	id INT AUTO_INCREMENT NOT NULL,
-	date_transaction DATETIME NOT NULL,
+	transaction_date DATETIME NOT NULL,
 	description VARCHAR(100) NOT NULL,
 	amount DECIMAL(8,2) NOT NULL,
-	commision_percent DECIMAL(3,2) NOT NULL,
-	type_transaction VARCHAR(20) NOT NULL,
-	user_id INT NOT NULL,
-	user_connection_id INT NOT NULL,
-
+	amount_commission DECIMAL(3,2) NOT NULL,
+	sender_id INT NOT NULL,
+	receiver_id INT NOT NULL,
 	PRIMARY KEY (id)
 )ENGINE=InnoDB, DEFAULT CHARSET=utf8mb4 ^;
 
@@ -112,7 +110,6 @@ CREATE TABLE IF NOT EXISTS invoice (
 	price_ht DECIMAL(8,2) NOT NULL,
 	price_ttc DECIMAL(8,2) NOT NULL,
 	taxe_percent DECIMAL(3,2) NOT NULL,
-	user_id INT NOT NULL,
 	transaction_id INT NOT NULL,
 	PRIMARY KEY (id)
 )ENGINE=InnoDB, DEFAULT CHARSET=utf8mb4 ^;
@@ -250,39 +247,38 @@ BEGIN
 	END IF;
 END ^;
 
-CREATE PROCEDURE user_invoice_fk() 
+
+CREATE PROCEDURE sender_transaction_fk() 
 BEGIN
 	IF NOT EXISTS(SELECT null 
 				FROM information_schema.TABLE_CONSTRAINTS
 				WHERE TABLE_SCHEMA = 'paymybuddy' 
-				AND CONSTRAINT_NAME= 'user_invoice_fk'
+				AND CONSTRAINT_NAME= 'sender_transaction_fk'
 				AND CONSTRAINT_TYPE= 'FOREIGN KEY')
 	THEN
-		ALTER TABLE invoice ADD CONSTRAINT user_invoice_fk
-		FOREIGN KEY (user_id)
-		REFERENCES user (id)
+		ALTER TABLE transaction ADD CONSTRAINT sender_transaction_fk
+		FOREIGN KEY (sender_id) REFERENCES user (id)
 		ON DELETE CASCADE 
 		ON UPDATE CASCADE;
 	END IF;
 END ^;
 
-CREATE PROCEDURE connection_transaction_fk() 
+CREATE PROCEDURE receiver_transaction_fk() 
 BEGIN
 	IF NOT EXISTS(SELECT null 
 				FROM information_schema.TABLE_CONSTRAINTS
 				WHERE TABLE_SCHEMA = 'paymybuddy' 
-				AND CONSTRAINT_NAME= 'connection_transaction_fk'
+				AND CONSTRAINT_NAME= 'receiver_transaction_fk'
 				AND CONSTRAINT_TYPE= 'FOREIGN KEY')
 	THEN
-		ALTER TABLE transaction ADD CONSTRAINT connection_transaction_fk
-		FOREIGN KEY (user_id, user_connection_id)
-		REFERENCES connection_user (user_id, user_connection_id)
+		ALTER TABLE transaction ADD CONSTRAINT receiver_transaction_fk
+		FOREIGN KEY (receiver_id) REFERENCES user (id)
 		ON DELETE CASCADE 
 		ON UPDATE CASCADE;
 	END IF;
 END ^;
 
-CREATE PROCEDURE transaction_daily_invoice_fk() 
+CREATE PROCEDURE transaction_invoice_fk() 
 BEGIN
 	IF NOT EXISTS(SELECT null 
 				FROM information_schema.TABLE_CONSTRAINTS
@@ -305,9 +301,9 @@ CALL bank_account_user_fk()^;
 CALL bank_card_bank_account_fk()^;
 CALL user_connection_fk()^;
 CALL user_connection_fk1()^;
-CALL user_invoice_fk()^;
-CALL connection_transaction_fk()^;
-CALL transaction_daily_invoice_fk()^;
+CALL sender_transaction_fk()^;
+CALL receiver_transaction_fk()^;
+CALL transaction_invoice_fk()^;
 CALL user_role_fk()^;
 CALL user_role_fk1()^;
 

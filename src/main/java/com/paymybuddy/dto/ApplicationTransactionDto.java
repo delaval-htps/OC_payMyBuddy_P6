@@ -13,17 +13,17 @@ import lombok.Setter;
 @AllArgsConstructor
 public class ApplicationTransactionDto {
 
-    private int amount;
+    private double amount;
 
     @NotEmpty
     private String description;
 
     @NotEmpty
     @Email
-    private String userEmail;
+    private String senderEmail;
 
     @NotEmpty
     @Email
-    private String connectionUserEmail;
+    private String receiverEmail;
 
 }
