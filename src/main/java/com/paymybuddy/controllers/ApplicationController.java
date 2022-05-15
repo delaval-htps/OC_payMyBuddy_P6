@@ -29,12 +29,11 @@ public class ApplicationController {
       User currentUser = user.get();
       UserDto userDto = modelMapper.map(currentUser, UserDto.class);
 
-                        userDto.setBankAccountRegistred(currentUser.getBankAccount() != null);
-                        userDto.setFullName(currentUser.getFullName());
+      userDto.setBankAccountRegistred(currentUser.getBankAccount() != null);
+      userDto.setFullName(currentUser.getFullName());
 
       model.addAttribute("user", userDto);
-      model.addAttribute("applicationAccount",
-          modelMapper.map(currentUser.getApplicationAccount(), ApplicationAccountDto.class));
+      model.addAttribute("applicationAccount", modelMapper.map(currentUser.getApplicationAccount(), ApplicationAccountDto.class));
       return "home";
     } else {
       authentication.setAuthenticated(false);

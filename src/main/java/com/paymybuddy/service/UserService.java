@@ -23,6 +23,10 @@ public class UserService {
     return userRepository.save(user);
   }
 
+  public Optional<User> findById(Long userId) {
+    return userRepository.findById(userId);
+  }
+
   /**
    * retrieve a user with his email.
    *
@@ -35,8 +39,9 @@ public class UserService {
 
   /**
    * retrieve a list of connected users by given email of user
+   * 
    * @param email email of User which we want to know his connected users
-   * @return  list of connected users of user's email
+   * @return list of connected users of user's email
    */
   public List<User> findConnectedUserByEmail(String email) {
     return userRepository.findConnectedUserByEmail(email);

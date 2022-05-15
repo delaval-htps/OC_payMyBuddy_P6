@@ -16,9 +16,6 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
 import org.springframework.util.StringUtils;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -37,33 +34,25 @@ import lombok.Setter;
 @NoArgsConstructor
 public class User implements Serializable {
 
-  private static final long serialVersionUID = 1L;
-
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column
   private Long id;
 
   @Column
-  @NotBlank(message = "The email must not be null or empty")
-  @Email(message = "The email must not be of type email with @")
   private String email;
 
   @Column
-  @NotBlank(message = "The pasword must not be null or empty")
-  @Size(min = 8, message = "The password must contain more than 8 characters")
   private String password;
 
   @Column
   private Byte enabled;
 
-  @NotBlank(message = "The lastname must not be null or empty")
-  @Size(max = 20, message = "the lastname must contain less than 20 charaters")
+
   @Column(name = "last_name")
   private String lastName;
 
-  @NotBlank(message = "The firstname must not be null or empty")
-  @Size(max = 20, message = "the firstname must contain less than 20 charaters")
+
   @Column(name = "first_name")
   private String firstName;
 
@@ -76,28 +65,29 @@ public class User implements Serializable {
   @Column
   private String city;
 
-  @Size(max = 10, message = "the number of phone must contain less than 10 numbers")
   @Column
   private String phone;
 
   @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-  @JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"),
-      inverseJoinColumns = @JoinColumn(name = "role_id"))
+  @JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
   private Set<Role> roles = new HashSet<>();
 
-  @OneToMany(fetch = FetchType.EAGER, mappedBy = "user", cascade = CascadeType.ALL,
-      orphanRemoval = true)
+  @OneToMany(fetch = FetchType.EAGER, mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
   private Set<OAuth2Provider> oauth2Identifiers = new HashSet<>();
 
   @ManyToMany(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH})
-  @JoinTable(name = "connection_user", joinColumns = @JoinColumn(name = "user_id", table = "user"),
-      inverseJoinColumns = @JoinColumn(name = "user_connection_id", table = "connection_user"))
+  @JoinTable(name = "connection_user", joinColumns = @JoinColumn(name = "user_id", table = "user"), inverseJoinColumns = @JoinColumn(name = "user_connection_id", table = "connection_user"))
   private Set<User> connectionUsers = new HashSet<>();
+
+  @OneToMany(mappedBy = "sender", cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.REMOVE})
+  private Set<ApplicationTransaction> senderTransactions = new HashSet<>();
+
+  @OneToMany(mappedBy = "receiver", cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH})
+  private Set<ApplicationTransaction> receiverTransactions = new HashSet<>();
 
   @ManyToOne(cascade = CascadeType.ALL)
   @JoinColumn(name = "bank_account_id")
   private BankAccount bankAccount;
-
 
   @OneToOne(cascade = CascadeType.ALL)
   @JoinColumn(name = "application_account_id", nullable = false)
@@ -154,7 +144,6 @@ public class User implements Serializable {
    * @return fullname
    */
   public String getFullName() {
-    return StringUtils.capitalize(this.firstName) + " "
-        + StringUtils.capitalize(this.lastName);
+    return StringUtils.capitalize(this.firstName) + " " + StringUtils.capitalize(this.lastName);
   }
 }

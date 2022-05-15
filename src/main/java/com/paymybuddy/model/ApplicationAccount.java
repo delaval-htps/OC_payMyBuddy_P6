@@ -21,7 +21,6 @@ import lombok.Setter;
 @NoArgsConstructor
 public class ApplicationAccount implements Serializable {
 
-  private static final long serialVersionUID = 4L;
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column
@@ -34,7 +33,6 @@ public class ApplicationAccount implements Serializable {
   @Column
   private double balance;
 
-  @OneToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH},
-      mappedBy = "applicationAccount")
+  @OneToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH}, mappedBy = "applicationAccount")
   private User user;
 }
