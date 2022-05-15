@@ -110,13 +110,14 @@
 	<script th:fragment="script-gauge" th:inline="javascript" type="text/javascript">
 		//--------------- gauge.js ---------------
 		var balance = /*[[${applicationAccount.balance}]]*/ 'null';
-
+		console.log("balance" + balance);
 		var gauge = new JustGage({
 			id: "gauge", // the id of the html element
 			value: balance,
 			width: 50,
-			min: 0,
-			max: 1000,
+			min: 0.00,
+			max: 1000.00,
+			decimals: true,
 			decimals: 2,
 			gaugeWidthScale: 0.6,
 			levelColors: ['#7dbc52'],

@@ -33,7 +33,8 @@
                                         <div class="row  my-4 g-2  justify-content-evenly">
                                             <input type="hidden" th:value="${userEmail}" name="senderEmail" />
                                             <div class="col-sm-5">
-                                                <select class="form-select-sm form-select" th:field="*{receiverEmail}">
+                                                <select class="form-select-sm form-select" th:field="*{receiverEmail}"
+                                                    required>
                                                     <option value="" hidden> Select a connection
                                                     </option>
                                                     <option th:each="connectedUser:${connectedUsers}"
@@ -43,8 +44,8 @@
                                                 </select>
                                             </div>
                                             <div class="col-auto">
-                                                <input id="amount-input" type="number"
-                                                    class="form-control form-control-sm" th:field="*{amount}">
+                                                <input id="amount-input" type="number" step=".01" min="0"
+                                                    class="form-control form-control-sm" th:field="*{amount}" required>
                                             </div>
 
                                             <div class="col-auto m-0 text-center">
@@ -56,7 +57,8 @@
                                             <div class="col-sm-11">
                                                 <div class=" m-4 input-group">
                                                     <input class="form-control form-control-sm" type="text"
-                                                        th:field="*{description}" placeholder="Description..." />
+                                                        th:field="*{description}" placeholder="Description..."
+                                                        required />
                                                 </div>
                                             </div>
                                         </div>
@@ -89,6 +91,7 @@
                 </div>
             </article>
         </div>
+        <footer th:replace="~{/fragments/my-template::footer}"></footer>
     </div>
 
     <!------------------------ toast for success or error message -------------------------------------------------->

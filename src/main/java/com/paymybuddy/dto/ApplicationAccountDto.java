@@ -5,6 +5,6 @@ import lombok.Data;
 @Data
 public class ApplicationAccountDto {
 
-    private int balance;
-    
+    private double balance;
+
 }
