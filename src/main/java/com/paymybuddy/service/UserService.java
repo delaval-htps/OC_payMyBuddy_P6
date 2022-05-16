@@ -14,15 +14,11 @@ public class UserService {
   private UserRepository userRepository;
 
   /**
-   * save a user in application.
-   *
-   * @param user user to save
-   * @return the user if he was saved
+   * retrieve a user by his id.
+   * 
+   * @param userId the user's id
+   * @return a optional user if user existed in bdd.
    */
-  public User save(User user) {
-    return userRepository.save(user);
-  }
-
   public Optional<User> findById(Long userId) {
     return userRepository.findById(userId);
   }
@@ -47,4 +43,13 @@ public class UserService {
     return userRepository.findConnectedUserByEmail(email);
   }
 
+  /**
+   * save a user in application.
+   *
+   * @param user user to save
+   * @return the user if he was saved
+   */
+  public User save(User user) {
+    return userRepository.save(user);
+  }
 }

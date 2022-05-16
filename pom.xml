@@ -9,15 +9,19 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.paymybuddy</groupId>
-	<artifactId>payMyBuddy-1</artifactId>
+	<artifactId>payMyBuddy-P6_OC</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>payMyBuddy-1</name>
+	<name>payMyBuddy_P6_OC</name>
 	<description>application to transfert money</description>
 	<properties>
 		<java.version>11</java.version>
 		<sonar.organization>delaval-htps</sonar.organization>
 		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
 		<log4j2.version>2.17.1</log4j2.version>
+		<!-- properties failsafe to skip IT -->
+		<skip.it>false</skip.it>
+		<!-- properties jacoco -->
+		<jacoco.execution.data.file>${project.build.directory}/jacoco.exec</jacoco.execution.data.file>
 	  </properties>
 	<dependencies>
 		
@@ -79,6 +83,13 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-devtools</artifactId>
 		</dependency>
+		<dependency>
+		  <groupId>org.assertj</groupId>
+		  <artifactId>assertj-core</artifactId>
+		  <!-- use 2.9.1 for Java 7 projects -->
+		  <version>3.22.0</version>
+		  <scope>test</scope>
+		</dependency>
 		</dependencies>
 
 	<build>
@@ -94,8 +105,136 @@
 						</exclude>
 					</excludes>
 				</configuration>
+				<executions>
+					    <!--  to execute pre-post integration goal for failsafe -->
+                	<execution>
+	                    <id>pre-integration-test</id>
+	                    <goals>
+	                        <goal>start</goal>
+	                    </goals>
+	                    <configuration>
+	                    	<skip>${skip.it}</skip>
+	                    </configuration>
+	                </execution>
+	                <execution>
+	                    <id>post-integration-test</id>
+	                    <goals>
+	                        <goal>stop</goal>
+	                    </goals>
+	                </execution>
+				</executions>
 			</plugin>
+			<!-- override of failsafe plugin to add classpath directory and option to skip IT( -Dskip.it=true) -->
+			
+			<plugin>
+			    <groupId>org.apache.maven.plugins</groupId>
+			    <artifactId>maven-failsafe-plugin</artifactId>
+			    <configuration>
+			        <classesDirectory>${project.build.outputDirectory}</classesDirectory>
+			        <skip>${skip.it}</skip>
+			    </configuration>
+			</plugin>
+			<!-- plugin to create mvn site -->
+			
+			<plugin>
+		        <groupId>org.apache.maven.plugins</groupId>
+		        <artifactId>maven-site-plugin</artifactId>
+		        <version>3.9.1</version>
+		        <configuration>
+		          <locales>en,fr</locales>
+		        </configuration>
+	      	</plugin>
+			  <!-- === Jacoco === -->
+			
+			<plugin>
+				<groupId>org.jacoco</groupId>
+	            <artifactId>jacoco-maven-plugin</artifactId>
+	            <version>0.8.7</version>
+	            <executions>
+	                <execution>
+	                	<id>pre-test</id>
+	                    <goals>
+	                       <goal>prepare-agent</goal>
+	                    </goals>
+	                    <configuration>
+	                    	<destFile>${jacoco.execution.data.file}</destFile>
+	                    </configuration>
+	                </execution>
+	                <execution>
+	                   <id>post-test</id>
+	                   <phase>test</phase>
+	                      <goals>
+	                         <goal>report</goal>
+	                      </goals>
+	                      <configuration>
+	                      	<dataFile>${jacoco.execution.data.file}</dataFile>
+	                      	<outputDirectory>${project.reporting.outputDirectory}/jacoco</outputDirectory>
+	                      </configuration>
+	                </execution>
+	             </executions>
+	         </plugin>
 		</plugins>
 	</build>
-
+		<!-- =============================================================== -->
+		<!-- DistributionManagement -->
+		<!-- =============================================================== -->
+		<distributionManagement>
+			<site>
+			<id>Site-paymybuddy</id>
+			<url>scp://localhost/tmp/</url>
+			</site>
+		</distributionManagement>
+		
+		<!-- ==================== -->
+		<!-- === Reporting  ===== -->
+		<!-- ==================== --> 
+		<reporting>
+			<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-project-info-reports-plugin</artifactId>
+				<version>3.1.2</version>
+			</plugin>
+			
+			<!-- === Surefire Report Plugin === -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-report-plugin</artifactId>
+				<version>3.0.0-M5</version>
+				<reportSets>
+					<reportSet>
+						<reports>
+							<report>report</report>
+						</reports>
+					</reportSet>
+				</reportSets>
+			</plugin>
+			<plugin>
+					<groupId>org.jacoco</groupId>
+					<artifactId>jacoco-maven-plugin</artifactId>
+					<configuration>
+						<dataFile>${jacoco.execution.data.file}</dataFile>
+					</configuration>
+					<reportSets>
+						<reportSet>
+							<reports>
+								<report>report</report>
+							</reports>
+						</reportSet>
+					</reportSets>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-javadoc-plugin</artifactId>
+					<version>3.3.0</version>
+					<reportSets>
+						<reportSet>
+							<reports>
+								<report>javadoc</report>
+							</reports>
+						</reportSet>
+					</reportSets>
+					</plugin>
+			</plugins>
+		</reporting>
 </project>
