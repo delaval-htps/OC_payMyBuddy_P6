@@ -19,9 +19,16 @@ public class OAuth2ProviderService {
     @Autowired
     private UserService userService;
 
-
-    public Optional<OAuth2Provider> getOAuht2ProviderByEmail(String email,AuthProvider provider) {
-        return oAuth2ProviderRepository.findByEmail(email,provider);
+    /**
+     * Retrieve a Oauth2Provider of a user by his email and registrationClient of provider.
+     * 
+     * @param email email of user
+     * @param provider name of Oauth2provider used by user to connect to appplication
+     * @return Optional of Oauht2provider containing registration client (facebook, github...) and
+     *         userId of user for this registration client.
+     */
+    public Optional<OAuth2Provider> getOAuht2ProviderByEmail(String email, AuthProvider provider) {
+        return oAuth2ProviderRepository.findByEmail(email, provider);
     }
 
     /**
@@ -39,13 +46,11 @@ public class OAuth2ProviderService {
         if (oAuth2User.getClientId() != null && oAuth2User.getClientRegistrationId() != null) {
             newOAuth2Provider.setProviderUserId(oAuth2User.getClientId());
 
-            AuthProvider enumProvider =
-                    AuthProvider.fromString(oAuth2User.getClientRegistrationId());
+            AuthProvider enumProvider = AuthProvider.fromString(oAuth2User.getClientRegistrationId());
             if (enumProvider != null) {
                 newOAuth2Provider.setRegistrationClient(enumProvider);
             } else {
-                throw new OAuth2ProviderNotFoundException(
-                        "This Oauht2Provider "+oAuth2User.getClientRegistrationId()+ " is not approuved by paymybuddy.");
+                throw new OAuth2ProviderNotFoundException("This Oauht2Provider " + oAuth2User.getClientRegistrationId() + " is not approuved by paymybuddy.");
             }
 
             existedUser.addOAuth2Identifier(newOAuth2Provider);

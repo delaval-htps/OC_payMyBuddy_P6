@@ -1,10 +1,12 @@
 package com.paymybuddy.model;
 
+/**
+ * enum of Oauth2Provider autorised for the application.
+ * 
+ */
 public enum AuthProvider {
-    LOCAL("local"),
-    GOOGLE("google"),
-    GITHUB("github"),
-    FACEBOOK("facebook");
+
+    LOCAL("local"), GOOGLE("google"), GITHUB("github"), FACEBOOK("facebook");
 
     private String name;
 
@@ -16,6 +18,9 @@ public enum AuthProvider {
         return this.name;
     }
 
+    /**
+     * retrieve the name (enum string) by a string name given in parameter.
+     */
     public static AuthProvider fromString(String name) {
         for (AuthProvider provider : AuthProvider.values()) {
             if (provider.name.equalsIgnoreCase(name)) {
