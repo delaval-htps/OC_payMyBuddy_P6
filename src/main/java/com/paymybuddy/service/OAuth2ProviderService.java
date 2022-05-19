@@ -55,6 +55,8 @@ public class OAuth2ProviderService {
 
             existedUser.addOAuth2Identifier(newOAuth2Provider);
             userService.save(existedUser);
+        } else {
+            throw new OAuth2ProviderNotFoundException("problem occurs: Oauth2provider of CustomOAuth2User logged doesn't have registrationId and clientId!");
         }
 
         return newOAuth2Provider;
