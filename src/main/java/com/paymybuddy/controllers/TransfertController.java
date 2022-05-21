@@ -64,7 +64,7 @@ public class TransfertController {
       ApplicationTransactionDto transactionDto = new ApplicationTransactionDto();
 
       // update list of transactions for the user
-      List<ApplicationTransaction> userAppTransactions = appTransactionService.findBySender(user.get());
+      List<ApplicationTransaction> userAppTransactions = appTransactionService.findByUser(user.get());
       List<ApplicationTransactionDto> userTransactionsDto = new ArrayList<>();
       for (ApplicationTransaction userTransaction : userAppTransactions) {
         ApplicationTransactionDto appTransactionDto = modelMapper.map(userTransaction, ApplicationTransactionDto.class);

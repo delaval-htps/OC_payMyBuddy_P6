@@ -12,10 +12,22 @@ public class BankAccountService {
     @Autowired
     private BankAccountRepository bankAccountRepository;
 
-    public BankAccount save(BankAccount bankAccount){
+    /**
+     * save a BankAccount.
+     * 
+     * @param bankAccount
+     * @return the saved bankAccount if success
+     */
+    public BankAccount save(BankAccount bankAccount) {
         return bankAccountRepository.save(bankAccount);
     }
 
+    /**
+     * find a bankAccount by it's number of Iban.
+     * 
+     * @param iban number of Iban of BankAccount (type String)
+     * @return Optional of bankAccount
+     */
     public Optional<BankAccount> findByIban(String iban) {
         return bankAccountRepository.findByIban(iban);
     }

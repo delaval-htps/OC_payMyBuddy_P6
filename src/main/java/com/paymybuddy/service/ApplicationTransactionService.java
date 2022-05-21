@@ -29,13 +29,23 @@ public class ApplicationTransactionService {
     }
 
     /**
-     * retrieve all transactions for given user (sender)
+     * retrieve all transactions for given sender (sender)
      * 
      * @param sender the user that send money to another one
      * @return all transaction sending by user(sender)
      */
     public List<ApplicationTransaction> findBySender(User sender) {
         return appTransactionRepository.findBySender(sender);
+    }
+
+    /**
+     * retrieve all transactions for given receiver
+     * 
+     * @param sender the user that send money to another one
+     * @return all transaction receiving by user(receiver)
+     */
+    public List<ApplicationTransaction> findByReceiver(User receiver) {
+        return appTransactionRepository.findByReceiver(receiver);
     }
 
     /**
@@ -60,7 +70,8 @@ public class ApplicationTransactionService {
 
     /**
      * proceed and create and save a transaction between sender and receiver. the application accounts
-     * of user will be credited/withdrawed with amount of saved transaction.
+     * of user will be credited/withdrawed with amount of saved transaction. Arguments of method are not
+     * null because verified by controller before.
      * 
      * @param transaction application transaction with amount to send , commission's amount, description
      *        and date.
