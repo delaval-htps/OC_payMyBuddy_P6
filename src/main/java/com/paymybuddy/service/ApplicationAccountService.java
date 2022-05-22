@@ -84,9 +84,10 @@ public class ApplicationAccountService {
    * @throws ApplicationAccountException if amount is greater than balance of account.
    */
   public void withdraw(ApplicationAccount senderApplicationAccount, double amount) {
+
     if (senderApplicationAccount.getBalance() >= amount) {
       senderApplicationAccount.setBalance(senderApplicationAccount.getBalance() - amount);
-      this.save(senderApplicationAccount);
+      applicationAccountRepository.save(senderApplicationAccount);
     } else {
       throw new ApplicationAccountException("You can't send this amount (commision included)" + amount + " to your friend because your balance is not sufficient");
     }
@@ -100,6 +101,6 @@ public class ApplicationAccountService {
    */
   public void credit(ApplicationAccount receiverApplicationAccount, double amount) {
     receiverApplicationAccount.setBalance(receiverApplicationAccount.getBalance() + amount);
-    this.save(receiverApplicationAccount);
+    applicationAccountRepository.save(receiverApplicationAccount);
   }
 }
