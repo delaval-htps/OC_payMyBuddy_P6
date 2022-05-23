@@ -1,10 +1,11 @@
 package com.paymybuddy.service;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -12,30 +13,34 @@ import java.util.List;
 import com.paymybuddy.model.ApplicationAccount;
 import com.paymybuddy.model.ApplicationTransaction;
 import com.paymybuddy.model.User;
+import com.paymybuddy.repository.ApplicationAccountRepository;
 import com.paymybuddy.repository.ApplicationTransactionRepository;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 
-@ExtendWith(MockitoExtension.class)
+
+@SpringBootTest
 @TestMethodOrder(OrderAnnotation.class)
-public class ApplicationTransactionServiceTest {
+public class ApplicationTransactionIT {
 
-    @Mock
+    @MockBean
     private ApplicationTransactionRepository appTransactionRepository;
 
-    @Mock
+    @MockBean
+    private ApplicationAccountRepository appAccountRepository;
+
+    @Autowired
     private ApplicationAccountService appAccountService;
 
-    @InjectMocks
+    @Autowired
     private ApplicationTransactionService cut;
 
     // entities used for testing
@@ -59,6 +64,7 @@ public class ApplicationTransactionServiceTest {
         sender.setApplicationAccount(senderAccount);
         senderAccount.setBalance(1000d);
         senderAccount.setUser(sender);
+        senderAccount.setAccountNumber("senderAccountNumber");
 
 
         receiver.setLastName("lastNameReciever");
@@ -67,6 +73,7 @@ public class ApplicationTransactionServiceTest {
         receiver.setApplicationAccount(receiverAccount);
         receiverAccount.setBalance(1000d);
         receiverAccount.setUser(receiver);
+        receiverAccount.setAccountNumber("receiverAccountNumber");
 
         Calendar cal = Calendar.getInstance();
         cal.set(2022, 05, 21);
@@ -79,6 +86,7 @@ public class ApplicationTransactionServiceTest {
         appTransaction1.setReceiver(receiver);
         appTransaction1.setTransactionDate(date1);
         appTransaction1.setAmount(100d);
+
 
         appTransaction2.setDescription("transaction2");
         appTransaction2.setTransactionDate(date2);
@@ -96,13 +104,13 @@ public class ApplicationTransactionServiceTest {
 
     @Test
     @Order(1)
-    void findByUSer_whenUserExisted_thenReturnUserTransaction() {
+    void findByUSer_whenUserExisted_thenReturnUserTransactions() {
 
         when(appTransactionRepository.findByUser(Mockito.any(User.class))).thenReturn(appTransactions);
 
-        List<ApplicationTransaction> returnedTransactions = cut.findByUser(sender);
+        List<ApplicationTransaction> transactionsForUser = cut.findByUser(sender);
 
-        assertThat(returnedTransactions).containsExactlyInAnyOrder(appTransaction1, appTransaction2);
+        assertThat(transactionsForUser).containsExactlyInAnyOrder(appTransaction1, appTransaction2);
     }
 
     @Test
@@ -111,12 +119,10 @@ public class ApplicationTransactionServiceTest {
 
         when(appTransactionRepository.findByUser(Mockito.any(User.class))).thenReturn(new ArrayList<>());
 
-        List<ApplicationTransaction> returnedTransactions = cut.findByUser(sender);
+        List<ApplicationTransaction> transactionsForUser = cut.findByUser(sender);
 
-        assertThat(returnedTransactions).isEmpty();
+        assertThat(transactionsForUser).isEmpty();
     }
-
-
 
     @Test
     @Order(3)
@@ -132,6 +138,7 @@ public class ApplicationTransactionServiceTest {
     @Test
     @Order(4)
     void save_whenTransactionNull_thenThrowsException() {
+
         ApplicationTransaction nullApplicationTransaction = null;
 
         when(appTransactionRepository.save(null)).thenThrow(IllegalArgumentException.class);
@@ -157,24 +164,29 @@ public class ApplicationTransactionServiceTest {
         assertThat(result).isEqualTo(10 * ApplicationTransaction.COMMISSIONPERCENT);
     }
 
-
+    /**
+     * Transaction, sender and receiver are by definition not null and tested in controller.
+     */
     @Test
     @Order(7)
-    void proceedTransactionTest() {
+    void proceedTransaction_whenEveryThingOK_thenCommit() {
+        // we mock applicationAccount & applicationTransaction Repository to not save in database
+        // not that the returned transaction not corresponding to transactionResult: we don't mind
+        // the only aim is to mock transactionRepository
+        when(appAccountRepository.save(Mockito.any(ApplicationAccount.class))).thenReturn(new ApplicationAccount());
+        when(appTransactionRepository.save(Mockito.any(ApplicationTransaction.class))).thenReturn(new ApplicationTransaction());
 
-        ApplicationTransaction transaction = cut.proceed(appTransaction1, sender, receiver);
-        assertThat(transaction.getTransactionDate()).isAfter(date1);
-        assertThat(transaction.getSender()).isEqualTo(sender);
-        assertThat(transaction.getReceiver()).isEqualTo(receiver);
-        assertThat(transaction.getAmountCommission()).isEqualTo(100d * ApplicationTransaction.COMMISSIONPERCENT);
+
+        ApplicationTransaction transactionResult = cut.proceed(appTransaction1, sender, receiver);
+        assertThat(transactionResult.getTransactionDate()).isAfter(date1);
+        assertThat(transactionResult.getSender()).isEqualTo(sender);
+        assertThat(transactionResult.getReceiver()).isEqualTo(receiver);
+        assertThat(transactionResult.getAmountCommission()).isEqualTo(100d * ApplicationTransaction.COMMISSIONPERCENT);
 
         ArgumentCaptor<ApplicationAccount> appAccountCaptor = ArgumentCaptor.forClass(ApplicationAccount.class);
-        verify(appAccountService, times(1)).withdraw(appAccountCaptor.capture(), Mockito.anyDouble());
-        assertThat(appAccountCaptor.getValue().getUser()).isEqualTo(sender);
-        assertThat(appAccountCaptor.getValue().getBalance()).isEqualTo(1000d);
+        verify(appAccountRepository, times(2)).save(appAccountCaptor.capture());
 
-        verify(appAccountService, times(1)).credit(appAccountCaptor.capture(), Mockito.anyDouble());
-        assertThat(appAccountCaptor.getValue().getUser()).isEqualTo(receiver);
-        assertThat(appAccountCaptor.getValue().getBalance()).isEqualTo(1000d);
+        assertThat(appAccountCaptor.getAllValues().get(0).getBalance()).isEqualTo(895d);
+        assertThat(appAccountCaptor.getAllValues().get(1).getBalance()).isEqualTo(1100d);
     }
 }

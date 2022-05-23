@@ -29,26 +29,6 @@ public class ApplicationTransactionService {
     }
 
     /**
-     * retrieve all transactions for given sender (sender)
-     * 
-     * @param sender the user that send money to another one
-     * @return all transaction sending by user(sender)
-     */
-    public List<ApplicationTransaction> findBySender(User sender) {
-        return appTransactionRepository.findBySender(sender);
-    }
-
-    /**
-     * retrieve all transactions for given receiver
-     * 
-     * @param sender the user that send money to another one
-     * @return all transaction receiving by user(receiver)
-     */
-    public List<ApplicationTransaction> findByReceiver(User receiver) {
-        return appTransactionRepository.findByReceiver(receiver);
-    }
-
-    /**
      * save a application transaction.
      * 
      * @param AppplicationTransaction transaction to save
@@ -88,7 +68,7 @@ public class ApplicationTransactionService {
         appAccountService.withdraw(transaction.getSender().getApplicationAccount(), (transaction.getAmount() + transaction.getAmountCommission()));
         appAccountService.credit(transaction.getReceiver().getApplicationAccount(), transaction.getAmount());
 
-        this.save(transaction);
+        appTransactionRepository.save(transaction);
         return transaction;
     }
 
