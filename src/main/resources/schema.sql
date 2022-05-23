@@ -97,7 +97,7 @@ CREATE TABLE IF NOT EXISTS transaction (
 	transaction_date DATETIME NOT NULL,
 	description VARCHAR(100) NOT NULL,
 	amount DECIMAL(8,2) NOT NULL,
-	amount_commission DECIMAL(3,2) NOT NULL,
+	amount_commission DECIMAL(8,2) NOT NULL,
 	sender_id INT NOT NULL,
 	receiver_id INT NOT NULL,
 	PRIMARY KEY (id)
