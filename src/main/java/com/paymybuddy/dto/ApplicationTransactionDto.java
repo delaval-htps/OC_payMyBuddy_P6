@@ -1,5 +1,6 @@
 package com.paymybuddy.dto;
 
+import javax.validation.constraints.Digits;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
@@ -13,6 +14,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class ApplicationTransactionDto {
 
+    @Digits(integer = 8, fraction = 2)
     private double amount;
 
     @NotEmpty
