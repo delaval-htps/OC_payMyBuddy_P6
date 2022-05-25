@@ -2,7 +2,8 @@ package com.paymybuddy.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -10,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import com.paymybuddy.exceptions.ApplicationAccountException;
 import com.paymybuddy.model.ApplicationAccount;
 import com.paymybuddy.model.ApplicationTransaction;
 import com.paymybuddy.model.User;
@@ -25,9 +27,12 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.annotation.DirtiesContext.ClassMode;
 
 
 @SpringBootTest
+@DirtiesContext(classMode = ClassMode.AFTER_EACH_TEST_METHOD)
 @TestMethodOrder(OrderAnnotation.class)
 public class ApplicationTransactionIT {
 
@@ -37,7 +42,7 @@ public class ApplicationTransactionIT {
     @MockBean
     private ApplicationAccountRepository appAccountRepository;
 
-    @Autowired
+    @MockBean
     private ApplicationAccountService appAccountService;
 
     @Autowired
@@ -185,8 +190,83 @@ public class ApplicationTransactionIT {
 
         ArgumentCaptor<ApplicationAccount> appAccountCaptor = ArgumentCaptor.forClass(ApplicationAccount.class);
         verify(appAccountRepository, times(2)).save(appAccountCaptor.capture());
-
+        verify(appTransactionRepository, times(1)).save(Mockito.any(ApplicationTransaction.class));
         assertThat(appAccountCaptor.getAllValues().get(0).getBalance()).isEqualTo(895d);
         assertThat(appAccountCaptor.getAllValues().get(1).getBalance()).isEqualTo(1100d);
+    }
+
+    @Test
+    @Order(8)
+    void proceedTransaction_whenSenderAccountLessThanTransactionAmount_thenRollBack() {
+
+        // given sender's Account balance =0 => appAccountService throws ApplicationAccountException
+        sender.getApplicationAccount().setBalance(0d);
+
+        // when
+        assertThrows(ApplicationAccountException.class, () -> {
+            cut.proceed(appTransaction1, sender, receiver);
+        });
+
+        // then assertion of repository never use save() method cause of rollback
+        assertThat(appTransaction1.getTransactionDate()).isEqualToIgnoringSeconds(date1);
+        assertThat(appTransaction1.getSender()).isEqualTo(sender);
+        assertThat(appTransaction1.getReceiver()).isEqualTo(receiver);
+        assertThat(appTransaction1.getAmountCommission()).isEqualTo(appTransaction1.getAmount() * ApplicationTransaction.COMMISSIONPERCENT);
+
+
+        verify(appAccountRepository, never()).save(Mockito.any(ApplicationAccount.class));
+        verify(appTransactionRepository, never()).save(Mockito.any(ApplicationTransaction.class));
+        assertThat(sender.getApplicationAccount().getBalance()).isEqualTo(0d);
+        assertThat(receiver.getApplicationAccount().getBalance()).isEqualTo(1000d);
+    }
+
+    @Test
+    @Order(9)
+    void proceedTransaction_whenApplicationAccountServiceWithdrawThrowsException_thenRollBack() {
+
+        // given
+        doThrow(RuntimeException.class).when(appAccountService).withdraw(Mockito.any(ApplicationAccount.class), Mockito.anyDouble());
+
+        // when
+        assertThrows(RuntimeException.class, () -> {
+            cut.proceed(appTransaction1, sender, receiver);
+        });
+
+        // then assertion of repository never use save() method cause of rollback
+        assertThat(appTransaction1.getTransactionDate()).isEqualToIgnoringSeconds(date1);
+        assertThat(appTransaction1.getSender()).isEqualTo(sender);
+        assertThat(appTransaction1.getReceiver()).isEqualTo(receiver);
+        assertThat(appTransaction1.getAmountCommission()).isEqualTo(appTransaction1.getAmount() * ApplicationTransaction.COMMISSIONPERCENT);
+
+
+        verify(appAccountRepository, never()).save(Mockito.any(ApplicationAccount.class));
+        verify(appTransactionRepository, never()).save(Mockito.any(ApplicationTransaction.class));
+        assertThat(sender.getApplicationAccount().getBalance()).isEqualTo(1000d);
+        assertThat(receiver.getApplicationAccount().getBalance()).isEqualTo(1000d);
+    }
+
+    @Test
+    @Order(10)
+    void proceedTransaction_whenApplicationAccountServiceCreditThrowsException_thenRollBack() {
+
+        // given
+        doThrow(RuntimeException.class).when(appAccountService).credit(Mockito.any(ApplicationAccount.class), Mockito.anyDouble());
+
+        // when
+        assertThrows(RuntimeException.class, () -> {
+            cut.proceed(appTransaction1, sender, receiver);
+        });
+
+        // then assertion of repository never use save() method cause of rollback
+        assertThat(appTransaction1.getTransactionDate()).isEqualToIgnoringSeconds(date1);
+        assertThat(appTransaction1.getSender()).isEqualTo(sender);
+        assertThat(appTransaction1.getReceiver()).isEqualTo(receiver);
+        assertThat(appTransaction1.getAmountCommission()).isEqualTo(appTransaction1.getAmount() * ApplicationTransaction.COMMISSIONPERCENT);
+
+
+        verify(appAccountRepository, never()).save(Mockito.any(ApplicationAccount.class));
+        verify(appTransactionRepository, never()).save(Mockito.any(ApplicationTransaction.class));
+        assertThat(sender.getApplicationAccount().getBalance()).isEqualTo(1000d);
+        assertThat(receiver.getApplicationAccount().getBalance()).isEqualTo(1000d);
     }
 }

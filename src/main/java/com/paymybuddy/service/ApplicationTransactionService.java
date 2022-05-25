@@ -2,6 +2,7 @@ package com.paymybuddy.service;
 
 import java.util.Date;
 import java.util.List;
+import com.paymybuddy.exceptions.ApplicationAccountException;
 import com.paymybuddy.model.ApplicationTransaction;
 import com.paymybuddy.model.User;
 import com.paymybuddy.repository.ApplicationTransactionRepository;
@@ -59,7 +60,7 @@ public class ApplicationTransactionService {
      * @param receiver the user that receive amount of transaction.
      * @return the transaction saved with all updated field.
      */
-    @Transactional()
+    @Transactional(rollbackFor = {Exception.class})
     public ApplicationTransaction proceed(ApplicationTransaction transaction, User sender, User receiver) {
         transaction.setTransactionDate(new Date());
         transaction.setSender(sender);

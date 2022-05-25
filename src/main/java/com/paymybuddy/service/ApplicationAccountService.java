@@ -10,6 +10,7 @@ import com.paymybuddy.model.User;
 import com.paymybuddy.repository.ApplicationAccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class ApplicationAccountService {
@@ -83,6 +84,7 @@ public class ApplicationAccountService {
    * @param amount the amount of transaction ( commission included)
    * @throws ApplicationAccountException if amount is greater than balance of account.
    */
+  @Transactional(rollbackFor = {ApplicationAccountException.class, Exception.class})
   public void withdraw(ApplicationAccount senderApplicationAccount, double amount) {
 
     if (senderApplicationAccount.getBalance() >= amount) {
@@ -99,6 +101,7 @@ public class ApplicationAccountService {
    * @param receveiverApplicationAccount application account of receiver of amount
    * @param amount amount to credit
    */
+  @Transactional(rollbackFor = {ApplicationAccountException.class, Exception.class})
   public void credit(ApplicationAccount receiverApplicationAccount, double amount) {
     receiverApplicationAccount.setBalance(receiverApplicationAccount.getBalance() + amount);
     applicationAccountRepository.save(receiverApplicationAccount);
