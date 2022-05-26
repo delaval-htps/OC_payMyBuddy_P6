@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import com.paymybuddy.exceptions.ApplicationAccountException;
 import com.paymybuddy.model.ApplicationAccount;
 import com.paymybuddy.model.ApplicationTransaction;
@@ -32,17 +33,21 @@ import org.springframework.test.annotation.DirtiesContext.ClassMode;
 
 
 @SpringBootTest
+
 @DirtiesContext(classMode = ClassMode.AFTER_EACH_TEST_METHOD)
 @TestMethodOrder(OrderAnnotation.class)
 public class ApplicationTransactionIT {
 
-    @MockBean
+    @Autowired
+    private UserService userService;
+
+    @Autowired
     private ApplicationTransactionRepository appTransactionRepository;
 
-    @MockBean
+    @Autowired
     private ApplicationAccountRepository appAccountRepository;
 
-    @MockBean
+    @Autowired
     private ApplicationAccountService appAccountService;
 
     @Autowired
@@ -111,11 +116,22 @@ public class ApplicationTransactionIT {
     @Order(1)
     void findByUSer_whenUserExisted_thenReturnUserTransactions() {
 
-        when(appTransactionRepository.findByUser(Mockito.any(User.class))).thenReturn(appTransactions);
+        // when(appTransactionRepository.findByUser(Mockito.any(User.class))).thenReturn(appTransactions);
 
-        List<ApplicationTransaction> transactionsForUser = cut.findByUser(sender);
+        // List<ApplicationTransaction> transactionsForUser = cut.findByUser(sender);
 
-        assertThat(transactionsForUser).containsExactlyInAnyOrder(appTransaction1, appTransaction2);
+        // assertThat(transactionsForUser).containsExactlyInAnyOrder(appTransaction1, appTransaction2);
+
+        // userService.save(sender);
+        // userService.save(receiver);
+        // ApplicationTransaction savedTransaction1 = appTransactionRepository.save(appTransaction1);
+        // ApplicationTransaction savedTransaction2 = appTransactionRepository.save(appTransaction2);
+
+        // List<ApplicationTransaction> transactionsForUser = cut.findByUser(sender);
+        // assertThat(transactionsForUser).containsExactlyInAnyOrder(savedTransaction1, savedTransaction2);
+
+        Optional<User> registredUser = userService.findByEmail("delaval.htps@gmail.com");
+        assertThat(registredUser.get().getLastName()).isEqualTo("Delaval");
     }
 
     @Test
@@ -189,9 +205,7 @@ public class ApplicationTransactionIT {
         assertThat(transactionResult.getAmountCommission()).isEqualTo(100d * ApplicationTransaction.COMMISSIONPERCENT);
 
         ArgumentCaptor<ApplicationAccount> appAccountCaptor = ArgumentCaptor.forClass(ApplicationAccount.class);
-        verify(appAccountRepository, times(2)).save(appAccountCaptor.capture());
         verify(appTransactionRepository, times(1)).save(Mockito.any(ApplicationTransaction.class));
-        assertThat(appAccountCaptor.getAllValues().get(0).getBalance()).isEqualTo(895d);
         assertThat(appAccountCaptor.getAllValues().get(1).getBalance()).isEqualTo(1100d);
     }
 
@@ -201,6 +215,7 @@ public class ApplicationTransactionIT {
 
         // given sender's Account balance =0 => appAccountService throws ApplicationAccountException
         sender.getApplicationAccount().setBalance(0d);
+        doThrow(ApplicationAccountException.class).when(appAccountService).withdraw(Mockito.any(ApplicationAccount.class), Mockito.anyDouble());
 
         // when
         assertThrows(ApplicationAccountException.class, () -> {
@@ -208,7 +223,7 @@ public class ApplicationTransactionIT {
         });
 
         // then assertion of repository never use save() method cause of rollback
-        assertThat(appTransaction1.getTransactionDate()).isEqualToIgnoringSeconds(date1);
+        assertThat(appTransaction1.getTransactionDate()).isEqualToIgnoringMinutes(date1);
         assertThat(appTransaction1.getSender()).isEqualTo(sender);
         assertThat(appTransaction1.getReceiver()).isEqualTo(receiver);
         assertThat(appTransaction1.getAmountCommission()).isEqualTo(appTransaction1.getAmount() * ApplicationTransaction.COMMISSIONPERCENT);
@@ -233,7 +248,7 @@ public class ApplicationTransactionIT {
         });
 
         // then assertion of repository never use save() method cause of rollback
-        assertThat(appTransaction1.getTransactionDate()).isEqualToIgnoringSeconds(date1);
+        assertThat(appTransaction1.getTransactionDate()).isEqualToIgnoringMinutes(date1);
         assertThat(appTransaction1.getSender()).isEqualTo(sender);
         assertThat(appTransaction1.getReceiver()).isEqualTo(receiver);
         assertThat(appTransaction1.getAmountCommission()).isEqualTo(appTransaction1.getAmount() * ApplicationTransaction.COMMISSIONPERCENT);
@@ -258,7 +273,7 @@ public class ApplicationTransactionIT {
         });
 
         // then assertion of repository never use save() method cause of rollback
-        assertThat(appTransaction1.getTransactionDate()).isEqualToIgnoringSeconds(date1);
+        assertThat(appTransaction1.getTransactionDate()).isEqualToIgnoringMinutes(date1);
         assertThat(appTransaction1.getSender()).isEqualTo(sender);
         assertThat(appTransaction1.getReceiver()).isEqualTo(receiver);
         assertThat(appTransaction1.getAmountCommission()).isEqualTo(appTransaction1.getAmount() * ApplicationTransaction.COMMISSIONPERCENT);
