@@ -5,6 +5,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -19,6 +21,8 @@ import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -96,27 +100,34 @@ public class ApplicationTransactionServiceTest {
 
     @Test
     @Order(1)
-    void findByUSer_whenUserExisted_thenReturnUserTransaction() {
+    void findBySender_whenUserExisted_thenReturnUserTransaction() {
 
-        when(appTransactionRepository.findByUser(Mockito.any(User.class))).thenReturn(appTransactions);
+        when(appTransactionRepository.findBySender(Mockito.any(User.class))).thenReturn(appTransactions);
 
-        List<ApplicationTransaction> returnedTransactions = cut.findByUser(sender);
+        List<ApplicationTransaction> returnedTransactions = cut.findBySender(sender);
 
         assertThat(returnedTransactions).containsExactlyInAnyOrder(appTransaction1, appTransaction2);
     }
 
     @Test
     @Order(2)
-    void findByUSer_whenUserNotExisted_thenReturnEmptyList() {
+    void findBySender_whenUserNotExisted_thenReturnEmptyList() {
 
-        when(appTransactionRepository.findByUser(Mockito.any(User.class))).thenReturn(new ArrayList<>());
+        when(appTransactionRepository.findBySender(Mockito.any(User.class))).thenReturn(new ArrayList<>());
 
-        List<ApplicationTransaction> returnedTransactions = cut.findByUser(sender);
+        List<ApplicationTransaction> returnedTransactions = cut.findBySender(sender);
 
         assertThat(returnedTransactions).isEmpty();
     }
 
+    @Test
+    @Order(3)
+    void findBySender_whenUserNull_thenReturnEmptyList() {
 
+        assertThrows(IllegalArgumentException.class, () -> {
+            cut.findBySender(null);
+        });
+    }
 
     @Test
     @Order(3)
@@ -134,23 +145,47 @@ public class ApplicationTransactionServiceTest {
     void save_whenTransactionNull_thenThrowsException() {
         ApplicationTransaction nullApplicationTransaction = null;
 
-        when(appTransactionRepository.save(null)).thenThrow(IllegalArgumentException.class);
-
         assertThrows(IllegalArgumentException.class, () -> {
             cut.save(nullApplicationTransaction);
         });
     }
 
+
+
     @Test
     @Order(5)
-    void calculateAmountCommission_whenAmountZero_thenReturnZero() {
+    void calculateAmountCommission_whenAmountZero_thenThrowIllegalArgumentException() {
         double amount = 0;
-        double result = cut.calculateAmountCommission(amount);
-        assertThat(result).isZero();
+        assertThrows(IllegalArgumentException.class, () -> {
+            cut.calculateAmountCommission(amount);
+        });
     }
+
+    @ParameterizedTest
+    @ValueSource(doubles = {0.01d,2d})
+    @Order(6)
+    void calculateAmountCommission_whenAmountBetweenMinAndTwo_thenReturnMinimumCommission(double
+    amount) {
+        
+        double result = cut.calculateAmountCommission(amount);
+        assertThat(result).isEqualTo(0.01d);
+    }
+
 
     @Test
     @Order(6)
+    void calculateAmountCommission_whenAmountGreaterThanTwo_thenReturnRoundingHalfUpDoubleValue() {
+        double amount = 2.01d;
+
+        double exactResult = cut.calculateAmountCommission(amount);
+
+        BigDecimal expectedResult = BigDecimal.valueOf(amount * ApplicationTransaction.COMMISSIONPERCENT).setScale(2, RoundingMode.HALF_UP);
+
+        assertThat(exactResult).isEqualTo(expectedResult.doubleValue());
+    }
+    
+    @Test
+    @Order(7)
     void calculateAmountCommission() {
         double amount = 10;
         double result = cut.calculateAmountCommission(amount);
@@ -159,10 +194,10 @@ public class ApplicationTransactionServiceTest {
 
 
     @Test
-    @Order(7)
+    @Order(8)
     void proceedTransactionTest() {
 
-        ApplicationTransaction transaction = cut.proceed(appTransaction1, sender, receiver);
+        ApplicationTransaction transaction = cut.proceedBetweenUsers(appTransaction1, sender, receiver);
         assertThat(transaction.getTransactionDate()).isAfter(date1);
         assertThat(transaction.getSender()).isEqualTo(sender);
         assertThat(transaction.getReceiver()).isEqualTo(receiver);

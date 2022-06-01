@@ -80,30 +80,40 @@ public class ApplicationAccountService {
   /**
    * Withdraw a amount on applicationAccount (commission included) and save it in bdd.
    * 
-   * @param applicationAccount the application account of sender of amount
+   * @param senderApplicationAccount the application account of sender of amount
    * @param amount the amount of transaction ( commission included)
-   * @throws ApplicationAccountException if amount is greater than balance of account.
+   * @throws ApplicationAccountException extends RuntimeException if amount is greater than balance of
+   *         account.
+   * @throws IllegalArgumentException extends RuntimeException in case the given
+   *         senderApplicationAccount is null.
    */
-  @Transactional(rollbackFor = {ApplicationAccountException.class, Exception.class})
+  @Transactional(rollbackFor = {RuntimeException.class})
   public void withdraw(ApplicationAccount senderApplicationAccount, double amount) {
 
     if (senderApplicationAccount.getBalance() >= amount) {
+
       senderApplicationAccount.setBalance(senderApplicationAccount.getBalance() - amount);
       applicationAccountRepository.save(senderApplicationAccount);
+
     } else {
       throw new ApplicationAccountException("You can't send this amount (commision included)" + amount + " to your friend because your balance is not sufficient");
     }
+
   }
 
   /**
    * credit application account with the amount in parameter and save it in bdd.
    * 
-   * @param receveiverApplicationAccount application account of receiver of amount
+   * @param receiverApplicationAccount application account of receiver of amount
    * @param amount amount to credit
+   * @throws IllegalArgumentException extends RuntimeException in case the given
+   *         receiverApplicationAccount is null.
    */
-  @Transactional(rollbackFor = {ApplicationAccountException.class, Exception.class})
+  @Transactional(rollbackFor = {RuntimeException.class})
   public void credit(ApplicationAccount receiverApplicationAccount, double amount) {
+
     receiverApplicationAccount.setBalance(receiverApplicationAccount.getBalance() + amount);
     applicationAccountRepository.save(receiverApplicationAccount);
+
   }
 }

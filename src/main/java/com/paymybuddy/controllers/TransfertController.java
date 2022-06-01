@@ -64,7 +64,7 @@ public class TransfertController {
       ApplicationTransactionDto transactionDto = new ApplicationTransactionDto();
 
       // update list of transactions for the user
-      List<ApplicationTransaction> userAppTransactions = appTransactionService.findByUser(user.get());
+      List<ApplicationTransaction> userAppTransactions = appTransactionService.findBySender(user.get());
       List<ApplicationTransactionDto> userTransactionsDto = new ArrayList<>();
       for (ApplicationTransaction userTransaction : userAppTransactions) {
         ApplicationTransactionDto appTransactionDto = modelMapper.map(userTransaction, ApplicationTransactionDto.class);
@@ -121,6 +121,7 @@ public class TransfertController {
 
   @PostMapping("/sendmoneyto")
   public String sendMoneyTo(@Valid @ModelAttribute(value = "transaction") ApplicationTransactionDto transactionDto, BindingResult bindingResult, Authentication authentication, Model model, RedirectAttributes redirectAttributes) {
+    
     Optional<User> user = userService.findByEmail(authentication.getName());
 
     if (bindingResult.hasErrors()) {
@@ -140,7 +141,7 @@ public class TransfertController {
         User receiver = receiverUser.get();
 
         // proceed transaction
-        ApplicationTransaction succeededTransaction = appTransactionService.proceed(transaction, sender, receiver);
+        ApplicationTransaction succeededTransaction = appTransactionService.proceedBetweenUsers(transaction, sender, receiver);
         redirectAttributes.addFlashAttribute("success", "Transaction of " + succeededTransaction.getAmount() + "€ " + "to " + receiver.getFullName() + " was successfull!");
 
       } else {

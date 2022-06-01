@@ -1,8 +1,9 @@
 package com.paymybuddy.service;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Date;
 import java.util.List;
-import com.paymybuddy.exceptions.ApplicationAccountException;
 import com.paymybuddy.model.ApplicationTransaction;
 import com.paymybuddy.model.User;
 import com.paymybuddy.repository.ApplicationTransactionRepository;
@@ -20,23 +21,29 @@ public class ApplicationTransactionService {
     private ApplicationAccountService appAccountService;
 
     /**
-     * return application transactions of a user by his id.
+     * return application transactions of a user by his id. user must not be null
      * 
-     * @param id id of user.
+     * @param user i user.
      * @return list of user's application transactions
      */
-    public List<ApplicationTransaction> findByUser(User user) {
-        return appTransactionRepository.findByUser(user);
+    public List<ApplicationTransaction> findBySender(User user) {
+        if (user != null) {
+            return appTransactionRepository.findBySender(user);
+        } else
+            throw new IllegalArgumentException("In method " + this.getClass().getName() + "." + this.getClass().getEnclosingMethod() + "() , user must be not null");
     }
 
     /**
      * save a application transaction.
      * 
-     * @param AppplicationTransaction transaction to save
+     * @param transaction transaction to save
      * @return the saved transaction.
      */
     public ApplicationTransaction save(ApplicationTransaction transaction) {
-        return appTransactionRepository.save(transaction);
+        if (transaction != null) {
+            return appTransactionRepository.save(transaction);
+        } else
+            throw new IllegalArgumentException("In method " + this.getClass().getName() + "." + this.getClass().getEnclosingMethod() + "() ,transaction must not be null");
     }
 
     /**
@@ -46,7 +53,16 @@ public class ApplicationTransactionService {
      * @return the total to withdraw.
      */
     public double calculateAmountCommission(double amount) {
-        return amount * ApplicationTransaction.COMMISSIONPERCENT;
+
+        if (amount >= 0.01d && amount <= 2) {
+            return 0.01d;
+        } else if (amount > 2) {
+            BigDecimal result = BigDecimal.valueOf(amount * ApplicationTransaction.COMMISSIONPERCENT).setScale(2, RoundingMode.HALF_UP);
+            return result.doubleValue();
+        } else {
+            throw new IllegalArgumentException("In method " + this.getClass().getName() + "." + this.getClass().getEnclosingMethod() + "() ,amount must be positive!");
+        }
+
     }
 
     /**
@@ -55,17 +71,21 @@ public class ApplicationTransactionService {
      * null because verified by controller before.
      * 
      * @param transaction application transaction with amount to send , commission's amount, description
-     *        and date.
+     *        and date.Amount of transaction must pe positive.
      * @param sender user that send the amount of transaction and have to pay commission.
      * @param receiver the user that receive amount of transaction.
      * @return the transaction saved with all updated field.
+     * 
      */
-    @Transactional(rollbackFor = {Exception.class})
-    public ApplicationTransaction proceed(ApplicationTransaction transaction, User sender, User receiver) {
+    @Transactional(rollbackFor = {RuntimeException.class, Exception.class})
+    public ApplicationTransaction proceedBetweenUsers(ApplicationTransaction transaction, User sender, User receiver) {
+
         transaction.setTransactionDate(new Date());
         transaction.setSender(sender);
         transaction.setReceiver(receiver);
         transaction.setAmountCommission(this.calculateAmountCommission(transaction.getAmount()));
+
+
         appAccountService.withdraw(transaction.getSender().getApplicationAccount(), (transaction.getAmount() + transaction.getAmountCommission()));
         appAccountService.credit(transaction.getReceiver().getApplicationAccount(), transaction.getAmount());
 
