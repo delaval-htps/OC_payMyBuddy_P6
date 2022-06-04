@@ -1,5 +1,7 @@
 package com.paymybuddy;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -27,11 +29,13 @@ public class PayMyBuddyApplication {
     };
   }
 
+ 
+  
   @Bean
-  public Converter<String, Long> convertStringToLong() {
-    return new Converter<String, Long>() {
-      public Long convert(MappingContext<String, Long> context) {
-        return Long.parseLong(context.getSource());
+  public Converter<BigDecimal, Double> convertBigDecimalToDouble() {
+    return new Converter<BigDecimal, Double>() {
+      public Double convert(MappingContext<BigDecimal, Double> context) {
+        return context.getSource().setScale(2, RoundingMode.HALF_UP).doubleValue();
       }
     };
   }

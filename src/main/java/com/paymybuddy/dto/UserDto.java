@@ -3,6 +3,7 @@ package com.paymybuddy.dto;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
+import com.paymybuddy.dto_services.BaseDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,7 +14,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 
-public class UserDto {
+public class UserDto  extends BaseDto {
 
   private boolean bankAccountRegistred = false;
   private String fullName;
