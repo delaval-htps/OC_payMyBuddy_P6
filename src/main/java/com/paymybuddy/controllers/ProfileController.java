@@ -3,6 +3,16 @@ package com.paymybuddy.controllers;
 import java.util.Date;
 import java.util.Optional;
 import javax.validation.Valid;
+import com.paymybuddy.dto.ApplicationAccountDto;
+import com.paymybuddy.dto.BankAccountDto;
+import com.paymybuddy.dto.BankCardDto;
+import com.paymybuddy.dto.UserDto;
+import com.paymybuddy.exceptions.UserNotFoundException;
+import com.paymybuddy.model.BankAccount;
+import com.paymybuddy.model.BankCard;
+import com.paymybuddy.model.User;
+import com.paymybuddy.service.BankAccountService;
+import com.paymybuddy.service.UserService;
 import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,19 +24,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import com.paymybuddy.dto.ApplicationAccountDto;
-import com.paymybuddy.dto.BankAccountDto;
-import com.paymybuddy.dto.BankCardDto;
-import com.paymybuddy.dto.UserDto;
-import com.paymybuddy.dto_services.BaseDto;
-import com.paymybuddy.dto_services.BaseEntity;
-import com.paymybuddy.dto_services.GenericConverter;
-import com.paymybuddy.exceptions.UserNotFoundException;
-import com.paymybuddy.model.BankAccount;
-import com.paymybuddy.model.BankCard;
-import com.paymybuddy.model.User;
-import com.paymybuddy.service.BankAccountService;
-import com.paymybuddy.service.UserService;
 
 @Controller
 
@@ -38,9 +35,7 @@ public class ProfileController {
         private BankAccountService bankAccountService;
 
         @Autowired
-        private GenericConverter<User,UserDto> userConverter;
-
-        @Autowired private ModelMapper modelMapper;
+        private ModelMapper modelMapper;
 
         @Autowired
         private Converter<String, Integer> convertStringToInteger;
@@ -63,8 +58,7 @@ public class ProfileController {
                         User currentUser = user.get();
 
                         // send of userDto of currentUser
-                        UserDto userDto = userConverter.entityToDto(currentUser);
-                        // modelMapper.map(currentUser, UserDto.class);
+                        UserDto userDto = modelMapper.map(currentUser, UserDto.class);
 
                         userDto.setBankAccountRegistred(currentUser.getBankAccount() != null);
                         userDto.setFullName(currentUser.getFullName());
@@ -100,7 +94,7 @@ public class ProfileController {
                 modelMapper.addConverter(convertStringToInteger);
                 modelMapper.addConverter(convertStringToLong);
                 modelMapper.addConverter(convertStringToDate);
-
+               
                 if (user.isPresent()) {
 
                         User currentUser = user.get();
@@ -145,7 +139,7 @@ public class ProfileController {
 
                         // send of applicationAccount of user
                         model.addAttribute("applicationAccount", modelMapper.map(currentUser.getApplicationAccount(), ApplicationAccountDto.class));
-
+                        
                         return "redirect:/profile";
 
                 } else {
@@ -161,7 +155,7 @@ public class ProfileController {
                 modelMapper.addConverter(convertStringToInteger);
                 modelMapper.addConverter(convertStringToLong);
                 modelMapper.addConverter(convertStringToDate);
-
+                
                 if (user.isPresent()) {
 
                         User existedUser = user.get();

@@ -7,7 +7,6 @@ import java.util.List;
 import com.paymybuddy.model.ApplicationTransaction;
 import com.paymybuddy.model.User;
 import com.paymybuddy.repository.ApplicationTransactionRepository;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,9 +16,6 @@ public class ApplicationTransactionService {
 
     @Autowired
     private ApplicationTransactionRepository appTransactionRepository;
-
-    @Autowired
-    private ModelMapper modelMapper;
 
     @Autowired
     private ApplicationAccountService appAccountService;
@@ -96,5 +92,6 @@ public class ApplicationTransactionService {
         appTransactionRepository.save(transaction);
         return transaction;
     }
+
 
 }
