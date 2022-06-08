@@ -4,12 +4,12 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Date;
 import java.util.List;
-import com.paymybuddy.model.ApplicationTransaction;
-import com.paymybuddy.model.User;
-import com.paymybuddy.repository.ApplicationTransactionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import com.paymybuddy.model.ApplicationTransaction;
+import com.paymybuddy.model.User;
+import com.paymybuddy.repository.ApplicationTransactionRepository;
 
 @Service
 public class ApplicationTransactionService {
@@ -92,6 +92,5 @@ public class ApplicationTransactionService {
         appTransactionRepository.save(transaction);
         return transaction;
     }
-
 
 }

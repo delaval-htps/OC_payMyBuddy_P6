@@ -45,7 +45,11 @@
                                             </div>
                                             <div class="col-auto">
                                                 <input id="amount-input" type="number" step=".01" min="0"
-                                                    class="form-control form-control-sm" th:field="*{amount}" required>
+                                                    max="99999999.99" class="form-control form-control-sm"
+                                                    th:field="*{amount}"
+                                                    th:classappend="${#fields.hasErrors('amount')? 'is-invalid':''}"
+                                                    required>
+
                                             </div>
 
                                             <div class="col-auto m-0 text-center">

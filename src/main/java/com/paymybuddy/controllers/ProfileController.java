@@ -1,19 +1,7 @@
 package com.paymybuddy.controllers;
 
-import java.util.Date;
 import java.util.Optional;
 import javax.validation.Valid;
-import com.paymybuddy.dto.ApplicationAccountDto;
-import com.paymybuddy.dto.BankAccountDto;
-import com.paymybuddy.dto.BankCardDto;
-import com.paymybuddy.dto.UserDto;
-import com.paymybuddy.exceptions.UserNotFoundException;
-import com.paymybuddy.model.BankAccount;
-import com.paymybuddy.model.BankCard;
-import com.paymybuddy.model.User;
-import com.paymybuddy.service.BankAccountService;
-import com.paymybuddy.service.UserService;
-import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -24,6 +12,16 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import com.paymybuddy.dto.ApplicationAccountDto;
+import com.paymybuddy.dto.BankAccountDto;
+import com.paymybuddy.dto.BankCardDto;
+import com.paymybuddy.dto.UserDto;
+import com.paymybuddy.exceptions.UserNotFoundException;
+import com.paymybuddy.model.BankAccount;
+import com.paymybuddy.model.BankCard;
+import com.paymybuddy.model.User;
+import com.paymybuddy.service.BankAccountService;
+import com.paymybuddy.service.UserService;
 
 @Controller
 
@@ -37,21 +35,10 @@ public class ProfileController {
         @Autowired
         private ModelMapper modelMapper;
 
-        @Autowired
-        private Converter<String, Integer> convertStringToInteger;
-
-        @Autowired
-        private Converter<String, Long> convertStringToLong;
-
-        @Autowired
-        private Converter<String, Date> convertStringToDate;
 
         @GetMapping("/profile")
         public String getProfil(Authentication authentication, Model model) {
                 Optional<User> user = userService.findByEmail(authentication.getName());
-                modelMapper.addConverter(convertStringToInteger);
-                modelMapper.addConverter(convertStringToLong);
-                modelMapper.addConverter(convertStringToDate);
 
                 if (user.isPresent()) {
 
@@ -91,10 +78,6 @@ public class ProfileController {
 
                 Optional<User> user = userService.findByEmail(authentication.getName());
 
-                modelMapper.addConverter(convertStringToInteger);
-                modelMapper.addConverter(convertStringToLong);
-                modelMapper.addConverter(convertStringToDate);
-               
                 if (user.isPresent()) {
 
                         User currentUser = user.get();
@@ -152,9 +135,6 @@ public class ProfileController {
         public String editUserProfile(@Valid @ModelAttribute(value = "user") UserDto userDto, BindingResult bindingResult, RedirectAttributes redirectAttributes, Model model, Authentication authentication) {
 
                 Optional<User> user = userService.findByEmail(authentication.getName());
-                modelMapper.addConverter(convertStringToInteger);
-                modelMapper.addConverter(convertStringToLong);
-                modelMapper.addConverter(convertStringToDate);
                 
                 if (user.isPresent()) {
 
