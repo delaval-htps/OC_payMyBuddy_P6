@@ -16,7 +16,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class ApplicationTransactionDto {
 
-    @Digits(integer = 8, fraction = 2)
+    @Digits(integer = 8, fraction = 2, message = "this amount must have 8 integers before coma and only 2 after")
     @Positive
     private BigDecimal amount;
 

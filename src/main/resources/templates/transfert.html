@@ -44,9 +44,8 @@
                                                 </select>
                                             </div>
                                             <div class="col-auto">
-                                                <input id="amount-input" type="number" step=".01" min="0"
-                                                    max="99999999.99" class="form-control form-control-sm"
-                                                    th:field="*{amount}"
+                                                <input id="amount-input" type="number" step=".01" min="0" max="99999999.99"
+                                                    class="form-control form-control-sm" th:field="*{amount}"
                                                     th:classappend="${#fields.hasErrors('amount')? 'is-invalid':''}"
                                                     required>
 
@@ -141,7 +140,7 @@
                                         <label class="col-sm-1 col-form-label" for="email">
                                             <i class="far fa-envelope"></i></label>
                                         <div class="col-sm-10 ">
-                                            <input type="email" class="  form-control" id="email"
+                                            <input type="email" class="form-control" id="email"
                                                 placeholder="friend's email" name="email" required />
                                         </div>
                                     </div>
