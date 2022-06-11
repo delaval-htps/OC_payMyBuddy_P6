@@ -51,20 +51,21 @@ public class TransfertController {
     if (user.isPresent()) {
       User existedUser = user.get();
 
+      // retrieve all connected user for user and create connectedUserDto
       List<User> connectedUsers = userService.findConnectedUserByEmail(existedUser.getEmail());
-
       List<ConnectedUserDto> connectedUsersDto = new ArrayList<>();
-
       for (User connectedUser : connectedUsers) {
         connectedUsersDto.add(modelMapper.map(connectedUser, ConnectedUserDto.class));
       }
+      model.addAttribute("connectedUsers", connectedUsersDto);
 
+      // creation of TransactionDto to fill form for sendMoneyTo
       if (!model.containsAttribute("transaction")) {
         ApplicationTransactionDto transactionDto = new ApplicationTransactionDto();
         model.addAttribute("transaction", transactionDto);
       }
-      
-      // update list of transactions for the user
+
+      // update list of all transactions for the user and display them in table
       List<ApplicationTransaction> userAppTransactions = appTransactionService.findBySender(user.get());
       List<ApplicationTransactionDto> userTransactionsDto = new ArrayList<>();
       for (ApplicationTransaction userTransaction : userAppTransactions) {
@@ -73,13 +74,12 @@ public class TransfertController {
         appTransactionDto.setReceiverEmail(userTransaction.getReceiver().getEmail());
         userTransactionsDto.add(appTransactionDto);
       }
-
-      model.addAttribute("userEmail", user.get().getEmail());
-      
-      model.addAttribute("connectedUsers", connectedUsersDto);
       model.addAttribute("userTransactions", userTransactionsDto);
 
+      model.addAttribute("userEmail", user.get().getEmail());
+
       return "transfert";
+
     } else {
       throw new UserNotFoundException("this user is not authenticated!");
     }
@@ -87,6 +87,7 @@ public class TransfertController {
 
   @PostMapping("/connection")
   public String saveConnectionUser(@Valid String email, RedirectAttributes redirectAttrs, Authentication auth) {
+
     Optional<User> existedUser = userService.findByEmail(email);
     Optional<User> authenticatedUser = userService.findByEmail(auth.getName());
 
@@ -115,13 +116,15 @@ public class TransfertController {
   }
 
   @PostMapping("/sendmoneyto")
-  public String sendMoneyTo(@Valid @ModelAttribute(value = "transaction") ApplicationTransactionDto transactionDto, BindingResult bindingResult, Authentication authentication, Model model,
-      RedirectAttributes redirectAttributes) {
+  public String sendMoneyTo(@Valid @ModelAttribute(value = "transaction") ApplicationTransactionDto transactionDto, BindingResult bindingResult, Authentication authentication, Model model, RedirectAttributes redirectAttributes) {
     Optional<User> user = userService.findByEmail(authentication.getName());
 
+    // in case of validation errors for transactionDto
     if (bindingResult.hasErrors()) {
+
       redirectAttributes.addFlashAttribute("error", "a problem has occured in transaction, please check red fields!");
-      //add bindingResult and ModelAttribute transactionDto to redirectAttribute for redirection 
+
+      // Add bindingResult and ModelAttribute transactionDto to redirectAttribute for redirection
       // see in @GetMapping condition on creation of new transactionDto
       redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.transaction", bindingResult);
       redirectAttributes.addFlashAttribute("transaction", transactionDto);
@@ -137,13 +140,15 @@ public class TransfertController {
       if (receiverUser.isPresent()) {
         User receiver = receiverUser.get();
 
-        // proceed transaction
+        // proceed transaction beetween sender and receiver
         ApplicationTransaction succeededTransaction = appTransactionService.proceedBetweenUsers(transaction, sender, receiver);
         redirectAttributes.addFlashAttribute("success", "Transaction of " + succeededTransaction.getAmount() + "€ " + "to " + receiver.getFullName() + " was successfull!");
+
       } else {
         log.error("Not be able to find connectionUser with email: {} during transaction cause of not found in database.", transactionDto.getReceiverEmail());
         redirectAttributes.addFlashAttribute("error", "the receiver doesn't not exist!");
       }
+
     } else {
       throw new UserNotFoundException("this user is not authenticated or user account not corresponds with sender.email");
     }
