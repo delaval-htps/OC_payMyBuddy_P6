@@ -201,7 +201,6 @@ public class ApplicationTransactionServiceIT {
     }
 
 
-
     @Test
     @Order(10)
     void proceedTransaction_whenSenderAccountLessThanTransactionAmount_thenRollBack() {
