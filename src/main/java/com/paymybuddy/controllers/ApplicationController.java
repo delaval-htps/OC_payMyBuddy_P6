@@ -7,6 +7,7 @@ import com.paymybuddy.model.User;
 import com.paymybuddy.service.UserService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,12 +21,12 @@ public class ApplicationController {
 
   @Autowired
   private ModelMapper modelMapper;
-
+  @PreAuthorize("isAuthenticated()")  
   @GetMapping("/home")
   public String getHome(Authentication authentication, Model model) {
     Optional<User> user = userService.findByEmail(authentication.getName());
 
-    if (user.isPresent() && authentication.isAuthenticated()) {
+    if (user.isPresent()) {
       User currentUser = user.get();
       UserDto userDto = modelMapper.map(currentUser, UserDto.class);
 
