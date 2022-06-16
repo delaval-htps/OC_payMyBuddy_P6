@@ -1,7 +1,5 @@
 package com.paymybuddy.controllers;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -9,17 +7,16 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
-import com.paymybuddy.dto.UserDto;
+import com.paymybuddy.model.ApplicationAccount;
 import com.paymybuddy.model.User;
 import com.paymybuddy.security.oauth2.components.CustomOAuth2SuccessHandler;
 import com.paymybuddy.security.oauth2.services.CustomOAuth2UserService;
@@ -27,7 +24,7 @@ import com.paymybuddy.security.services.CustomUserDetailsService;
 import com.paymybuddy.service.UserService;
 
 @WebMvcTest(controllers = ApplicationController.class)
-// @Sql( "/data-test.sql")
+
 public class ApplicationControllerTest {
 
     @MockBean
@@ -42,24 +39,13 @@ public class ApplicationControllerTest {
     @MockBean
     private CustomOAuth2SuccessHandler customOAuth2SuccessHandlerUserService;
 
-    @MockBean
+    @SpyBean
     private ModelMapper modelMapper;
 
     @Autowired
     private MockMvc mockMvc;
 
-    // @PostConstruct
-    // public void setup() {
-    // User existedUser = new User();
-    // existedUser.setEmail("delaval.htps@gmail.com");
-    // existedUser.setPassword("Jsadmin4all");
-
-    // Set<GrantedAuthority> grantedAuthorities = new HashSet<>();
-    // grantedAuthorities.add(new SimpleGrantedAuthority("ROLE_USER"));
-    // UserDetails user = new org.springframework.security.core.userdetails.User(existedUser.getEmail(),
-    // existedUser.getPassword(), grantedAuthorities);
-    // when(customUserDetailsService.loadUserByUsername(Mockito.anyString())).thenReturn(user);
-    // }
+   
 
     @Test
     void testGetHome_whenUserNotFound_whenRedirectLogout() throws Exception {
@@ -76,21 +62,27 @@ public class ApplicationControllerTest {
 
     }
 
-    // @Test
-    // @WithMockUser
-    // void testGetHome_whenUserOk_whenReturnHome() throws Exception {
-    //     // given : exited user authenticated
-    //     User existedUser = new User();
-    //     existedUser.setEmail("test@gmail.com");
-    //     existedUser.setFirstName("test");
-    //     existedUser.setLastName("test");
+    @Test
+    @WithMockUser
+    void testGetHome_whenUserOkWithApplicationAccount_whenReturnHome() throws Exception {
+        // given : exited user authenticated with already a application account
+        //because at registration we automatically create a application account for him
+        User existedUser = new User();
+        existedUser.setEmail("test@gmail.com");
+        existedUser.setFirstName("test");
+        existedUser.setLastName("test");
+        ApplicationAccount appApplicationAccount = new ApplicationAccount();
+        appApplicationAccount.setAccountNumber("numberTest");
+        appApplicationAccount.setBalance(100d);
+        appApplicationAccount.setUser(existedUser);
+        existedUser.setApplicationAccount(appApplicationAccount);
      
 
-    //     when(userService.findByEmail(Mockito.anyString())).thenReturn(Optional.of(existedUser));
-    //     doReturn(new UserDto()).when(modelMapper).map(Mockito.any(), Mockito.any(UserDto.class));
-    //     MvcResult result = mockMvc.perform(get("/home")).andExpect(status().isFound()).andDo(print()).andReturn();
-    //     assertThat(result.getModelAndView().getViewName()).isEqualTo("/home");
-    // }
+        when(userService.findByEmail(Mockito.anyString())).thenReturn(Optional.of(existedUser));
+        
+       mockMvc.perform(get("/home")).andExpect(status().isOk()).andDo(print());
+       
+    }
 
 
 

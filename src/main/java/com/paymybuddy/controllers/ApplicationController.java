@@ -21,9 +21,12 @@ public class ApplicationController {
 
   @Autowired
   private ModelMapper modelMapper;
-  @PreAuthorize("isAuthenticated()")  
+
+
+  @PreAuthorize("isAuthenticated()")
   @GetMapping("/home")
   public String getHome(Authentication authentication, Model model) {
+
     Optional<User> user = userService.findByEmail(authentication.getName());
 
     if (user.isPresent()) {
