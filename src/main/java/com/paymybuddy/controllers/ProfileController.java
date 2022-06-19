@@ -4,6 +4,7 @@ import java.util.Optional;
 import javax.validation.Valid;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -35,7 +36,7 @@ public class ProfileController {
         @Autowired
         private ModelMapper modelMapper;
 
-
+        @PreAuthorize("isAuthenticated()")
         @GetMapping("/profile")
         public String getProfil(Authentication authentication, Model model) {
                 Optional<User> user = userService.findByEmail(authentication.getName());
@@ -71,6 +72,46 @@ public class ProfileController {
                         throw new UserNotFoundException("this user with email " + authentication.getName() + " is not registred in application!");
                 }
         }
+
+        @PostMapping("/profile/user")
+        public String editUserProfile(@Valid @ModelAttribute(value = "user") UserDto userDto, BindingResult bindingResult, RedirectAttributes redirectAttributes, Model model, Authentication authentication) {
+
+                Optional<User> user = userService.findByEmail(authentication.getName());
+
+                if (user.isPresent()) {
+
+                        User existedUser = user.get();
+
+                        model.addAttribute("applicationAccount", modelMapper.map(existedUser.getApplicationAccount(), ApplicationAccountDto.class));
+                        model.addAttribute("bankAccount", modelMapper.map(existedUser.getBankAccount(), BankAccountDto.class));
+                        model.addAttribute("bankCard", modelMapper.map(existedUser.getBankAccount().getBankCard(), BankCard.class));
+
+                        if (bindingResult.hasErrors()) {
+
+                                userDto.setEditionProfile(true);
+                                return "/profile";
+                        }
+
+                        User userToUpdate = modelMapper.map(userDto, User.class);
+
+                        existedUser.setFirstName(userToUpdate.getFirstName());
+                        existedUser.setLastName(userToUpdate.getLastName());
+                        existedUser.setEmail(userToUpdate.getEmail());
+                        existedUser.setPhone(userToUpdate.getPhone());
+                        existedUser.setAddress(userToUpdate.getAddress());
+                        existedUser.setZip(userToUpdate.getZip());
+                        existedUser.setCity(userToUpdate.getCity());
+
+                        User updatedUser = userService.save(existedUser);
+
+                        model.addAttribute("user", updatedUser);
+
+                        return "redirect:/profile";
+                } else {
+                        throw new UserNotFoundException("this user with email " + authentication.getName() + " is not registred in application!");
+                }
+        }
+
 
         @PostMapping("/profile/bankaccount")
         public String createBankAccount(Model model, @Valid @ModelAttribute(value = "bankAccount") BankAccountDto bankAccountDto, BindingResult bindingResultBankAccount, @Valid @ModelAttribute(value = "bankCard") BankCardDto bankCardDto, BindingResult bindingResultBankCard,
@@ -122,7 +163,7 @@ public class ProfileController {
 
                         // send of applicationAccount of user
                         model.addAttribute("applicationAccount", modelMapper.map(currentUser.getApplicationAccount(), ApplicationAccountDto.class));
-                        
+
                         return "redirect:/profile";
 
                 } else {
@@ -131,44 +172,6 @@ public class ProfileController {
 
         }
 
-        @PostMapping("/profile/user")
-        public String editUserProfile(@Valid @ModelAttribute(value = "user") UserDto userDto, BindingResult bindingResult, RedirectAttributes redirectAttributes, Model model, Authentication authentication) {
-
-                Optional<User> user = userService.findByEmail(authentication.getName());
-                
-                if (user.isPresent()) {
-
-                        User existedUser = user.get();
-
-                        model.addAttribute("applicationAccount", modelMapper.map(existedUser.getApplicationAccount(), ApplicationAccountDto.class));
-                        model.addAttribute("bankAccount", modelMapper.map(existedUser.getBankAccount(), BankAccountDto.class));
-                        model.addAttribute("bankCard", modelMapper.map(existedUser.getBankAccount().getBankCard(), BankCard.class));
-
-                        if (bindingResult.hasErrors()) {
-
-                                userDto.setEditionProfile(true);
-                                return "/profile";
-                        }
-
-                        User userToUpdate = modelMapper.map(userDto, User.class);
-
-                        existedUser.setFirstName(userToUpdate.getFirstName());
-                        existedUser.setLastName(userToUpdate.getLastName());
-                        existedUser.setEmail(userToUpdate.getEmail());
-                        existedUser.setPhone(userToUpdate.getPhone());
-                        existedUser.setAddress(userToUpdate.getAddress());
-                        existedUser.setZip(userToUpdate.getZip());
-                        existedUser.setCity(userToUpdate.getCity());
-
-                        User updatedUser = userService.save(existedUser);
-
-                        model.addAttribute("user", updatedUser);
-
-                        return "redirect:/profile";
-                } else {
-                        throw new UserNotFoundException("this user with email " + authentication.getName() + " is not registred in application!");
-                }
-        }
 
 
 }
