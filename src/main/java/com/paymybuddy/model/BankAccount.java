@@ -50,6 +50,7 @@ public class BankAccount implements Serializable {
   @Column
   private double balance;
 
+  // a bank Account can be open for many users ( example a couple)
   @OneToMany(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH}, mappedBy = "bankAccount")
   private Set<User> users = new HashSet<>();
 

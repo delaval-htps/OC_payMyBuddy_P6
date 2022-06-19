@@ -13,6 +13,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
+/**
+ * Allow a authenticated user to go to home page. If he is not found , he is redirect to logout =>
+ * /loginPage (cf security configuration)
+ */
 @Controller
 public class ApplicationController {
 

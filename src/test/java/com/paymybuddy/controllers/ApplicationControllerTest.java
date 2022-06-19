@@ -17,6 +17,7 @@ import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import com.paymybuddy.model.ApplicationAccount;
+import com.paymybuddy.model.BankAccount;
 import com.paymybuddy.model.User;
 import com.paymybuddy.security.oauth2.components.CustomOAuth2SuccessHandler;
 import com.paymybuddy.security.oauth2.services.CustomOAuth2UserService;
@@ -45,12 +46,13 @@ public class ApplicationControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-   
+
 
     @Test
+    @WithMockUser
     void testGetHome_whenUserNotFound_whenRedirectLogout() throws Exception {
-
-        mockMvc.perform(get("/home")).andExpect(status().isFound()).andExpect(redirectedUrl("http://localhost/loginPage")).andDo(print());
+        when(userService.findByEmail(Mockito.anyString())).thenReturn(Optional.empty());
+        mockMvc.perform(get("/home")).andExpect(status().isFound()).andExpect(redirectedUrl("/logout")).andDo(print());
 
     }
 
@@ -65,25 +67,60 @@ public class ApplicationControllerTest {
     @Test
     @WithMockUser
     void testGetHome_whenUserOkWithApplicationAccount_whenReturnHome() throws Exception {
-        // given : exited user authenticated with already a application account
-        //because at registration we automatically create a application account for him
+        // given : existed authenticated user has already a application account
+        // because at registration we automatically create a application account for him
+
         User existedUser = new User();
         existedUser.setEmail("test@gmail.com");
         existedUser.setFirstName("test");
         existedUser.setLastName("test");
+
+        // As we put application account in model line 44 in ApplicationController, we have to assign him
+        // one application account
         ApplicationAccount appApplicationAccount = new ApplicationAccount();
         appApplicationAccount.setAccountNumber("numberTest");
         appApplicationAccount.setBalance(100d);
         appApplicationAccount.setUser(existedUser);
+
         existedUser.setApplicationAccount(appApplicationAccount);
-     
 
         when(userService.findByEmail(Mockito.anyString())).thenReturn(Optional.of(existedUser));
-        
-       mockMvc.perform(get("/home")).andExpect(status().isOk()).andDo(print());
-       
+
+        mockMvc.perform(get("/home")).andExpect(status().isOk()).andDo(print());
+
     }
 
+    @Test
+    @WithMockUser
+    void testGetHome_whenUserBankAccountNotNull_whenReturnHome() throws Exception {
+        // given : existed authenticated user has already a application account
+        // because at registration we automatically create a application account for him
+        User existedUser = new User();
+        existedUser.setEmail("test@gmail.com");
+        existedUser.setFirstName("test");
+        existedUser.setLastName("test");
 
+        // And we create for him a bankAccount only for missing branch coverage
+        BankAccount bankAccount = new BankAccount();
+        bankAccount.setAccountNumber(123);
+        bankAccount.setBalance(100d);
+        bankAccount.setBankCode(123);
+
+        existedUser.setBankAccount(bankAccount);
+
+        // As we put application account in model line 44 in ApplicationController, we have to assign him
+        // one application account
+        ApplicationAccount appApplicationAccount = new ApplicationAccount();
+        appApplicationAccount.setAccountNumber("numberTest");
+        appApplicationAccount.setBalance(100d);
+        appApplicationAccount.setUser(existedUser);
+
+        existedUser.setApplicationAccount(appApplicationAccount);
+
+        when(userService.findByEmail(Mockito.anyString())).thenReturn(Optional.of(existedUser));
+
+        mockMvc.perform(get("/home")).andExpect(status().isOk()).andDo(print());
+
+    }
 
 }
