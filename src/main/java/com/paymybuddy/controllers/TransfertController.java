@@ -69,8 +69,9 @@ public class TransfertController {
         }
 
         // update list of all transactions for the user and display them in table
-        List<ApplicationTransaction> userAppTransactions = appTransactionService.findBySender(user.get());
+        List<ApplicationTransaction> userAppTransactions = appTransactionService.findBySender(existedUser);
         List<ApplicationTransactionDto> userTransactionsDto = new ArrayList<>();
+       
         for (ApplicationTransaction userTransaction : userAppTransactions) {
           ApplicationTransactionDto appTransactionDto = modelMapper.map(userTransaction, ApplicationTransactionDto.class);
           appTransactionDto.setSenderEmail(userTransaction.getSender().getEmail());
