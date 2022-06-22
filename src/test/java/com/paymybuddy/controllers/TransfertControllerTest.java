@@ -1,17 +1,17 @@
 package com.paymybuddy.controllers;
-
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.*;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.modelmapper.ModelMapper;
@@ -59,6 +59,20 @@ public class TransfertControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
+    private static User existedUser, connectedUser;
+    private static BankAccount userBankAccount;
+    private static ApplicationTransaction applicationTransaction;
+    
+    @BeforeAll
+    private static void inti() {
+        existedUser = new User();
+        connectedUser = new User();
+        existedUser.setEmail("test@gmail.com");
+        connectedUser.setEmail("connectedUser@gmail.com");
+        userBankAccount = new BankAccount();
+        applicationTransaction = new ApplicationTransaction();
+    }
+
     /**
      * Test getTransfert when user not registred in database or not found.
      * 
@@ -68,11 +82,9 @@ public class TransfertControllerTest {
     @WithMockUser
     void getTransfert_whenNotExistedUser_thenTrowsUserNotFoundException() throws Exception {
 
-        // given : exited user but without bank account
-
         when(userService.findByEmail(Mockito.anyString())).thenReturn(Optional.empty());
-        mockMvc.perform(get("/transfert")).andExpect(status().isNotFound()).andDo(print());
 
+        mockMvc.perform(get("/transfert")).andExpect(status().isNotFound()).andDo(print());
     }
 
     /**
@@ -85,10 +97,8 @@ public class TransfertControllerTest {
     @WithMockUser
     void getTransfert_whenExistedWithBankAccountNotRegistered_thenRedirectProfile() throws Exception {
 
-        // given : exited user but without bank account
-        User existedUser = new User();
-        existedUser.setEmail("test@gmail.com");
-
+        // given : existed user but without bank account
+        existedUser.setBankAccount(null);
         when(userService.findByEmail(Mockito.anyString())).thenReturn(Optional.of(existedUser));
 
         mockMvc.perform(get("/transfert")).andExpect(redirectedUrl("/profile")).andDo(print());
@@ -105,14 +115,8 @@ public class TransfertControllerTest {
     @WithMockUser
     void getTransfert_whenModelNotContainsTransaction_thenReturnTransfert() throws Exception {
 
-        // given : exited user but without bank account
-        User existedUser = new User();
-        existedUser.setEmail("test@gmail.com");
-        User connectedUser = new User();
-        connectedUser.setEmail("connectedUser@gmail.com");
-
-        // we create a mock BankAccount for user
-        BankAccount userBankAccount = new BankAccount();
+        // given : existed user with bank account
+     
         userBankAccount.addUser(existedUser);
         userBankAccount.setAccountNumber(12345);
         userBankAccount.setBalance(100d);
@@ -120,15 +124,12 @@ public class TransfertControllerTest {
 
         existedUser.setBankAccount(userBankAccount);
 
-
-        ApplicationTransaction applicationTransaction = new ApplicationTransaction();
         applicationTransaction.setAmount(10d);
         applicationTransaction.setDescription("test_transaction");
         applicationTransaction.setReceiver(connectedUser);
         applicationTransaction.setSender(existedUser);
         applicationTransaction.setTransactionDate(new Date());
         applicationTransaction.setAmountCommission(5d);
-
 
         existedUser.addSenderTransaction(applicationTransaction);
         connectedUser.addReceiverTransaction(applicationTransaction);
@@ -161,14 +162,11 @@ public class TransfertControllerTest {
     @WithMockUser
     void getTransfert_whenModelAlreadyContainsTransaction_thenReturnTransfert() throws Exception {
 
-        // given : exited user but without bank account
-        User existedUser = new User();
-        existedUser.setEmail("test@gmail.com");
-        User connectedUser = new User();
-        connectedUser.setEmail("connectedUser@gmail.com");
+        // given : exited user with bank account
+     
 
         // we create a mock BankAccount for user
-        BankAccount userBankAccount = new BankAccount();
+        
         userBankAccount.addUser(existedUser);
         userBankAccount.setAccountNumber(12345);
         userBankAccount.setBalance(100d);
@@ -177,7 +175,7 @@ public class TransfertControllerTest {
         existedUser.setBankAccount(userBankAccount);
 
         // mock of applicationTransactionDto to use with Model
-        ApplicationTransaction applicationTransaction = new ApplicationTransaction();
+       
         applicationTransaction.setAmount(10d);
         applicationTransaction.setDescription("test_transaction");
         applicationTransaction.setReceiver(connectedUser);
@@ -206,7 +204,22 @@ public class TransfertControllerTest {
     }
 
     @Test
-    void testSaveConnectionUser() {
+    @WithMockUser
+    void testSaveConnectionUser_whenAuthenticatedUserNotfound_thenThrowsUserNotFoundException() throws Exception {
+
+        when(userService.findByEmail(Mockito.anyString())).thenReturn(Optional.of(existedUser), Optional.empty());
+
+        mockMvc.perform(post("/connection").with(csrf())).andExpect(status().isNotFound()).andDo(print());
+
+    }
+    
+    @Test
+    @WithMockUser
+    void testSaveConnectionUser_whenConnectedUserNotFound_thenRedirectWithErrorMessage() throws Exception {
+
+        when(userService.findByEmail(Mockito.anyString())).thenReturn( Optional.empty(),Optional.of(existedUser));
+
+        mockMvc.perform(post("/connection").with(csrf())).andExpect(redirectedUrl("/transfert")).andDo(print());
 
     }
 

@@ -96,14 +96,14 @@ public class TransfertController {
   @PostMapping("/connection")
   public String saveConnectionUser(@Valid String email, RedirectAttributes redirectAttrs, Authentication auth) {
 
-    Optional<User> existedUser = userService.findByEmail(email);
+    Optional<User> connectedUser = userService.findByEmail(email);
     Optional<User> authenticatedUser = userService.findByEmail(auth.getName());
 
     if (authenticatedUser.isPresent()) {
       User user = authenticatedUser.get();
 
-      if (existedUser.isPresent()) {
-        User connectionUser = existedUser.get();
+      if (connectedUser.isPresent()) {
+        User connectionUser = connectedUser.get();
         List<User> connectedUsers = userService.findConnectedUserByEmail(user.getEmail());
 
         if (connectedUsers.contains(connectionUser)) {
