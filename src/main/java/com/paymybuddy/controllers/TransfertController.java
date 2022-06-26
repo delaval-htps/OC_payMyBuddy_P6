@@ -47,7 +47,7 @@ public class TransfertController {
    *         transfert.
    */
   @GetMapping("")
-  public String getTransfert(Authentication authentication, Model model) {
+  public String getTransfert(Authentication authentication,RedirectAttributes redirectAttrs, Model model) {
     Optional<User> user = userService.findByEmail(authentication.getName());
 
     if (user.isPresent()) {
@@ -88,6 +88,7 @@ public class TransfertController {
         return "transfert";
 
       } else {
+        redirectAttrs.addFlashAttribute("error", "Your's bank account is not registred so you can't proceed to a transfert now, Please fill in informations bank account first !");
         return "redirect:/profile";
       }
 

@@ -319,10 +319,14 @@
 			</article>
 		</div>
 	</div>
+
+	<div th:replace="~{/fragments/my-template::toastr}"></div>
+
 	<footer th:replace="~{/fragments/my-template::footer}"></footer>
-	</div>
+
 	<script th:replace="~{/fragments/my-template::script}"></script>
 </body>
+
 <script th:inline="javascript" type="text/javascript">
 
 	// initialization of input placeholder
@@ -333,32 +337,32 @@
 
 	// --------- cleave for bank input---------
 	var cleaveBankCode = new Cleave('#bankCode', {
-		blocks: [5],
+		blocks: [ 5 ],
 		uppercase: true,
 
 	});
 	var cleaveBranchCode = new Cleave('#branchCode', {
-		blocks: [5],
+		blocks: [ 5 ],
 		uppercase: true,
 
 	});
 	var cleaveAccountNumber = new Cleave('#accountNumber', {
-		blocks: [11],
+		blocks: [ 11 ],
 		uppercase: true,
 
 	});
 	var cleaveRibKey = new Cleave('#ribKey', {
-		blocks: [2],
+		blocks: [ 2 ],
 		uppercase: true,
 
 	});
 	var cleaveIban = new Cleave('#iban', {
 		delimiter: '-',
-		blocks: [4, 4, 4, 4, 4, 4, 4, 3],
+		blocks: [ 4, 4, 4, 4, 4, 4, 4, 3 ],
 		uppercase: true
 	});
 	var cleaveBic = new Cleave('#bic', {
-		blocks: [8],
+		blocks: [ 8 ],
 		uppercase: true
 	});
 	var cleaveCardNumber = new Cleave('#cardNumber', {
@@ -369,7 +373,7 @@
 		}
 	});
 	var cleaveCardCode = new Cleave('#cardCode', {
-		blocks: [3],
+		blocks: [ 3 ],
 		uppercase: true,
 
 	});
@@ -378,7 +382,7 @@
 	//----------- show  form personal informations when click pencil ---------------------
 	var editionProfile = /*[[${user.editionProfile}]]*/ 'false';
 	var bankAccountRegistred = /*[[${user.bankAccountRegistred}]]*/ 'false';
-
+	var errorMessage = /*[[${error}]]*/'null';
 
 	function showProfile() {
 		if (!editionProfile) {
@@ -413,8 +417,8 @@
 	}
 	$(document).ready(function () {
 
-		console.log("editionProfile:" + editionProfile);
 		if (editionProfile) { editProfile(); }
+		if (errorMessage){$('#liveToast').toast('show');}
 
 	});
 

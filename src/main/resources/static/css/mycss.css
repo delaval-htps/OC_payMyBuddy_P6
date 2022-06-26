@@ -143,9 +143,6 @@ label {
 	cursor: pointer;
 }
 
-#liveToast {
-	margin-top: 120px !important;
-}
 
 #amount-input::-webkit-inner-spin-button,
 #amount-input::-webkit-outer-spin-button {

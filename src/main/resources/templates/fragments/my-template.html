@@ -102,11 +102,30 @@
 	<article th:fragment="article" class="col-12 flex-grow-1">
 
 	</article>
+	<!------------------------ toast for success or error message -------------------------------------------------->
+	<div th:fragment="toastr">
+		<div class="toast-container position-absolute top-0 start-50 translate-middle-x p-3" id="toastPlacement">
+			<div id="liveToast" class="toast  align-text-center text-white bg-primary border-0 mt-1" role="alert"
+				aria-live="assertive" aria-atomic="true"
+				th:classappend="${success} ?'bg-success bg-gradient': (${warning}?'bg-warning bg-gradient':'bg-danger bg-gradient')"
+				th:if="${success}or${error}or${warning}">
+				<div class="d-flex">
+					<div class="toast-body"
+						th:text="${success !=null} ? ${success}:(${warning!=null}?${warning}:${error})">
+					</div>
+					<button type="button" class="btn-close btn-close-white me-2 m-auto " data-bs-dismiss="toast"
+						aria-label="Close"></button>
+				</div>
+			</div>
+		</div>
+	</div>
+
 	<footer th:fragment="footer" class="col-12 text-center">
 		<p>delaval.htps@gmail.com copyright <i class="fas fa-copyright"></i> 2021</p>
 		<a target="_blank" href="https://icons8.com/icon/ab7FU9sZy68i/bank">Bank</a> icon by <a target="_blank"
 			href="https://icons8.com">Icons8</a>
 	</footer>
+
 	<script th:fragment="script-gauge" th:inline="javascript" type="text/javascript">
 		//--------------- gauge.js ---------------
 		var balance = /*[[${applicationAccount.balance}]]*/ 'null';
@@ -120,7 +139,7 @@
 			decimals: true,
 			decimals: 2,
 			gaugeWidthScale: 0.6,
-			levelColors: ['#7dbc52'],
+			levelColors: [ '#7dbc52' ],
 			label: 'Balance in €',
 			relativeGaugeSize: true,
 			gaugeWidthScale: 0.2
