@@ -38,11 +38,13 @@ public class TransfertController {
   private ModelMapper modelMapper;
 
   /**
-   * return view of transfert.
+   * return view of transfert.No possiblity to go to transfert if user doesn't have a bank account
+   * registred.
    *
    * @param authentication authentication of connected user.
    * @param model model to send informations for the view
-   * @return view of transfert.
+   * @return view of transfert or view Profile to complete bank Account information to proceed a
+   *         transfert.
    */
   @GetMapping("")
   public String getTransfert(Authentication authentication, Model model) {
@@ -52,6 +54,7 @@ public class TransfertController {
 
       User existedUser = user.get();
 
+      // No transaction can be procced if user has not a bankAccount
       if (existedUser.getBankAccount() != null) {
 
         // retrieve all connected user for user and create connectedUserDto
@@ -93,6 +96,15 @@ public class TransfertController {
     }
   }
 
+  /**
+   * Endpoint to add user to his connected user list.
+   * 
+   * @param email email of connected user we want to add for authenticated user
+   * @param redirectAttrs allows to send success, warning & error messages.
+   * @param auth authentication to retreive information of user
+   * @return redirectedUrl to /transfert if no problems
+   * @throws UserNotFoundException if authenticated user is not found in bdd.
+   */
   @PostMapping("/connection")
   public String saveConnectionUser(@Valid String email, RedirectAttributes redirectAttrs, Authentication auth) {
 
@@ -131,19 +143,23 @@ public class TransfertController {
     }
 
   }
-/**
- * 
- * @param transactionDto
- * @param bindingResult
- * @param authentication
- * @param model
- * @param redirectAttributes
- * @return
- */
+
+  /**
+   * endpoint to send money between authenticated user and connected user. a transactionDto is send
+   * with all informations.
+   * 
+   * @param transactionDto to retrieve informations to create a transaction between users
+   * @param bindingResult if fields are not correctly validated for transaction
+   * @param authentication authentication to retreive information of user
+   * @param redirectAttributes allows to send success, warning & error message and resend
+   *        transactionDto and bindigResult to transfert view if errors.
+   * @return redirectedUrl to transfert page with message
+   * @throws UserNotFoundException if users are not found in database
+   */
   @PostMapping("/sendmoneyto")
-  public String sendMoneyTo(@Valid @ModelAttribute(value = "transaction") ApplicationTransactionDto transactionDto, BindingResult bindingResult, Authentication authentication, Model model,
+  public String sendMoneyTo(@Valid @ModelAttribute(value = "transaction") ApplicationTransactionDto transactionDto, BindingResult bindingResult, Authentication authentication,
       RedirectAttributes redirectAttributes) {
-    
+
     Optional<User> user = userService.findByEmail(authentication.getName());
 
     // in case of validation errors for transactionDto
