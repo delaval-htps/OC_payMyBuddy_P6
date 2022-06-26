@@ -20,6 +20,8 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
@@ -53,7 +55,9 @@ public class RegistrationController {
   PasswordEncoder passwordEncoder;
 
   /**
-   * display a registration page to register a new user or a Oauth2Login not yet registred.
+   * display a registration page to register a new user or a Oauth2Login not yet registred. If
+   * Oauth2User is not registred in database , his firstname lastname and email are retrieve to fill
+   * in form of registration.
    * 
    * @param model the model to give to view registration
    * @param authentication authentication of user in the page registration
@@ -85,8 +89,7 @@ public class RegistrationController {
    *         authentication.
    */
   @PostMapping("/registration")
-  public String saveNewUser(Model model, @Valid @ModelAttribute(value = "user") UserDto userDto,
-      BindingResult bindingResult, Authentication authentication) {
+  public String saveNewUser(Model model, @Valid @ModelAttribute(value = "user") UserDto userDto, BindingResult bindingResult, Authentication authentication) {
 
     if (bindingResult.hasErrors()) {
       return "registration";
@@ -108,14 +111,12 @@ public class RegistrationController {
       Role userRole = roleService.findByName("ROLE_USER");
       newUser.addRole(userRole);
 
-        // creation of his application account
+      // creation of his application account
       try {
         appAccountService.createAccountforUser(newUser);
       } catch (NoSuchAlgorithmException e) {
         e.printStackTrace();
-        throw new ApplicationAccountException(
-            "A problem occurs because , can't be able to create a account for new user"
-                + newUser.getFullName());
+        throw new ApplicationAccountException("A problem occurs because , can't be able to create a account for new user" + newUser.getFullName());
       }
 
       User saveUser = userService.save(newUser);
@@ -123,26 +124,22 @@ public class RegistrationController {
       // case of new user but logged with OAuth2login()
       if (authentication != null && authentication.getPrincipal() instanceof CustomOAuth2User) {
 
-        oAuth2ProviderService
-            .saveOAuth2ProviderForUser((CustomOAuth2User) authentication.getPrincipal(), saveUser);
+        oAuth2ProviderService.saveOAuth2ProviderForUser((CustomOAuth2User) authentication.getPrincipal(), saveUser);
       }
       // convertion of Oauth2Token to UsernamePasswordToken
       SecurityContext context = SecurityContextHolder.getContext();
 
       UserDetails userDetails = customUserDetailsService.loadUserByUsername(saveUser.getEmail());
 
-      UsernamePasswordAuthenticationToken userToken = new UsernamePasswordAuthenticationToken(
-          userDetails, userDetails.getPassword(), userDetails.getAuthorities());
+      UsernamePasswordAuthenticationToken userToken = new UsernamePasswordAuthenticationToken(userDetails, userDetails.getPassword(), userDetails.getAuthorities());
 
       context.setAuthentication(userToken);
 
 
     } else {
-      bindingResult.addError(new FieldError("user", "duplicatedUser",
-          "Please chose another names and email because they already use by another user!"));
+      bindingResult.addError(new FieldError("user", "duplicatedUser", "Please chose another names and email because they already use by another user!"));
 
-      log.error("user {} {} already existed in database.", userDto.getLastName(),
-          userDto.getFirstName());
+      log.error("user {} {} already existed in database.", userDto.getLastName(), userDto.getFirstName());
       return "registration";
     }
 
