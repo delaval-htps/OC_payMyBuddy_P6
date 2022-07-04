@@ -1,21 +1,18 @@
 package com.paymybuddy.controllers;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.oauth2Login;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import org.aspectj.lang.annotation.Before;
-import org.hamcrest.core.IsEqual;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.core.authority.AuthorityUtils;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers;
@@ -24,19 +21,15 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import com.paymybuddy.dto.UserDto;
-import com.paymybuddy.model.AuthProvider;
 import com.paymybuddy.security.oauth2.components.CustomOAuth2SuccessHandler;
 import com.paymybuddy.security.oauth2.services.CustomOAuth2UserService;
 import com.paymybuddy.security.oauth2.user.CustomOAuth2User;
 import com.paymybuddy.security.oauth2.user.user_info.GithubUserInfo;
-import com.paymybuddy.security.oauth2.user.user_info.OAuth2UserInfo;
-import com.paymybuddy.security.oauth2.user.user_info.OAuth2UserInfoFactory;
 import com.paymybuddy.security.services.CustomUserDetailsService;
 import com.paymybuddy.service.ApplicationAccountService;
 import com.paymybuddy.service.OAuth2ProviderService;
 import com.paymybuddy.service.RoleService;
 import com.paymybuddy.service.UserService;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.*;
 
 
 @WebMvcTest(controllers = RegistrationController.class)

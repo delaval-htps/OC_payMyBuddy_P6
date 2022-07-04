@@ -1,11 +1,5 @@
 package com.paymybuddy.configuration;
 
-import com.paymybuddy.dto.ApplicationTransactionDto;
-import com.paymybuddy.dto.BankAccountDto;
-import com.paymybuddy.dto.BankCardDto;
-import com.paymybuddy.model.ApplicationTransaction;
-import com.paymybuddy.model.BankAccount;
-import com.paymybuddy.model.BankCard;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -15,6 +9,10 @@ import org.modelmapper.PropertyMap;
 import org.modelmapper.spi.MappingContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import com.paymybuddy.dto.ApplicationTransactionDto;
+import com.paymybuddy.dto.BankCardDto;
+import com.paymybuddy.model.ApplicationTransaction;
+import com.paymybuddy.model.BankCard;
 
 @Configuration
 public class ModelMapperConfig {
@@ -22,7 +20,6 @@ public class ModelMapperConfig {
   @Bean
   public ModelMapper modelMapper() {
     ModelMapper mm = new ModelMapper();
-    mm.addMappings(bankAccountMap);
     mm.addMappings(bankCardMap);
     mm.addMappings(appTransactionMap);
     return mm;
@@ -58,19 +55,6 @@ public class ModelMapperConfig {
   public Converter<BigDecimal, Double> convertBigDecimalToDouble() {
     return context -> (context.getSource()).doubleValue();
   }
-
-  PropertyMap<BankAccountDto, BankAccount> bankAccountMap = new PropertyMap<BankAccountDto, BankAccount>() {
-
-    @Override
-    protected void configure() {
-      using(convertStringToInteger())
-        .map(source.getBankCode(), destination.getBankCode());
-      using(convertStringToInteger())
-        .map(source.getBranchCode(), destination.getBranchCode());
-      using(convertStringToLong())
-        .map(source.getAccountNumber(), destination.getAccountNumber());
-    }
-  };
 
   PropertyMap<BankCardDto, BankCard> bankCardMap = new PropertyMap<BankCardDto, BankCard>() {
 
