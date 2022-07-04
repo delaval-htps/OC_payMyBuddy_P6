@@ -31,7 +31,7 @@ public class BankAccountServiceTest {
     void saveBankAccount_whenBankAccountExists_thenReturnBankAccount() {
 
         BankAccount bankAccount = new BankAccount();
-        bankAccount.setAccountNumber(12345L);
+        bankAccount.setIban("iban_test");
         bankAccount.setBalance(1000d);
 
         when(bankAccountRepository.save(Mockito.any(BankAccount.class))).thenReturn(bankAccount);
@@ -59,7 +59,6 @@ public class BankAccountServiceTest {
     void findByIban_whenIbanExisted_thenReturnLinkedBankAccount() {
 
         BankAccount bankAccount = new BankAccount();
-        bankAccount.setAccountNumber(12345L);
         bankAccount.setBalance(1000d);
         bankAccount.setIban("numberOfIban");
 

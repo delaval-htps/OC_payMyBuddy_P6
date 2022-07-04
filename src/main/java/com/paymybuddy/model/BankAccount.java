@@ -30,18 +30,6 @@ public class BankAccount implements Serializable {
   private Long id;
 
   @Column
-  private int bankCode;
-
-  @Column
-  private int branchCode;
-
-  @Column
-  private long accountNumber;
-
-  @Column
-  private int ribKey;
-
-  @Column
   private String bic;
 
   @Column

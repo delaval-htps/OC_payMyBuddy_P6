@@ -129,9 +129,8 @@ public class TransfertControllerTest {
         // given : existed user with bank account
 
         userBankAccount.addUser(existedUser);
-        userBankAccount.setAccountNumber(12345);
+        userBankAccount.setIban("iban-test");
         userBankAccount.setBalance(100d);
-        userBankAccount.setBankCode(123);
 
         existedUser.setBankAccount(userBankAccount);
 
@@ -179,9 +178,8 @@ public class TransfertControllerTest {
         // we create a mock BankAccount for user
 
         userBankAccount.addUser(existedUser);
-        userBankAccount.setAccountNumber(12345);
+        userBankAccount.setIban("iban-test");
         userBankAccount.setBalance(100d);
-        userBankAccount.setBankCode(123);
 
         existedUser.setBankAccount(userBankAccount);
 
