@@ -47,10 +47,6 @@ CREATE TABLE IF NOT EXISTS application_account (
 
 CREATE TABLE IF NOT EXISTS bank_account (
 	id INT NOT NULL AUTO_INCREMENT,
-	account_number BIGINT NOT NULL,
-	bank_code INT NOT NULL,
-	branch_code INT NOT NULL,
-	rib_key INT NOT NULL,
 	iban VARCHAR(38) NOT NULL,
 	bic VARCHAR(10) NOT NULL,
 	balance DECIMAL(8,2) NOT NULL,
