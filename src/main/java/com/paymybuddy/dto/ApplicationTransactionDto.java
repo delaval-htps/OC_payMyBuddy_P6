@@ -24,6 +24,9 @@ public class ApplicationTransactionDto {
     private String description;
 
     @NotEmpty
+    private String type;
+
+    @NotEmpty
     @Email
     private String senderEmail;
 

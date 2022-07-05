@@ -24,7 +24,7 @@ import com.paymybuddy.model.Role;
 import com.paymybuddy.model.User;
 import com.paymybuddy.security.oauth2.user.CustomOAuth2User;
 import com.paymybuddy.security.services.CustomUserDetailsService;
-import com.paymybuddy.service.ApplicationAccountService;
+import com.paymybuddy.service.ApplicationAccountServiceImpl;
 import com.paymybuddy.service.OAuth2ProviderService;
 import com.paymybuddy.service.RoleService;
 import com.paymybuddy.service.UserService;
@@ -47,7 +47,7 @@ public class RegistrationController {
   private CustomUserDetailsService customUserDetailsService;
 
   @Autowired
-  private ApplicationAccountService appAccountService;
+  private ApplicationAccountServiceImpl appAccountService;
 
   @Autowired
   PasswordEncoder passwordEncoder;

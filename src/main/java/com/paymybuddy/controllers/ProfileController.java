@@ -12,32 +12,44 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.paymybuddy.dto.ApplicationAccountDto;
+import com.paymybuddy.dto.ApplicationTransactionDto;
 import com.paymybuddy.dto.BankAccountDto;
 import com.paymybuddy.dto.BankCardDto;
 import com.paymybuddy.dto.UserDto;
 import com.paymybuddy.exceptions.UserNotFoundException;
+import com.paymybuddy.model.ApplicationTransaction;
 import com.paymybuddy.model.BankAccount;
 import com.paymybuddy.model.BankCard;
 import com.paymybuddy.model.User;
-import com.paymybuddy.service.BankAccountService;
+import com.paymybuddy.service.ApplicationTransactionService;
+import com.paymybuddy.service.BankAccountServiceImpl;
 import com.paymybuddy.service.UserService;
 
 @Controller
-
+@RequestMapping("/profile")
 public class ProfileController {
         @Autowired
         private UserService userService;
 
         @Autowired
-        private BankAccountService bankAccountService;
+        private BankAccountServiceImpl bankAccountService;
+
+        @Autowired
+        private ApplicationTransactionService appTransactionService;
 
         @Autowired
         private ModelMapper modelMapper;
 
+        /**
+         * @param authentication
+         * @param model
+         * @return
+         */
         @PreAuthorize("isAuthenticated()")
-        @GetMapping("/profile")
+        @GetMapping("")
         public String getProfil(Authentication authentication, Model model) {
                 Optional<User> user = userService.findByEmail(authentication.getName());
 
@@ -58,6 +70,11 @@ public class ProfileController {
                         // send of ApplicationAccount of user (already existed)
                         model.addAttribute("applicationAccount", modelMapper.map(currentUser.getApplicationAccount(), ApplicationAccountDto.class));
 
+                        // send bankTransaction
+                        if (!model.containsAttribute("bankTransaction")) {
+                                model.addAttribute("bankTransaction", new ApplicationTransactionDto());
+                        }
+
                         // send bankAccount of user
                         BankAccountDto bankAccountDto = currentUser.getBankAccount() != null ? modelMapper.map(currentUser.getBankAccount(), BankAccountDto.class) : new BankAccountDto();
                         model.addAttribute("bankAccount", bankAccountDto);
@@ -73,8 +90,9 @@ public class ProfileController {
                 }
         }
 
-        @PostMapping("/profile/user")
-        public String editUserProfile(@Valid @ModelAttribute(value = "user") UserDto userDto, BindingResult bindingResult, RedirectAttributes redirectAttributes, Model model, Authentication authentication) {
+        @PostMapping("/user")
+        public String editUserProfile(@Valid @ModelAttribute(value = "user") UserDto userDto, BindingResult bindingResult, RedirectAttributes redirectAttributes, Model model,
+                        Authentication authentication) {
 
                 Optional<User> user = userService.findByEmail(authentication.getName());
 
@@ -113,9 +131,9 @@ public class ProfileController {
         }
 
 
-        @PostMapping("/profile/bankaccount")
-        public String createBankAccount(Model model, @Valid @ModelAttribute(value = "bankAccount") BankAccountDto bankAccountDto, BindingResult bindingResultBankAccount, @Valid @ModelAttribute(value = "bankCard") BankCardDto bankCardDto, BindingResult bindingResultBankCard,
-                        RedirectAttributes redirectAttributes, Authentication authentication) {
+        @PostMapping("/bankaccount")
+        public String createBankAccount(Model model, @Valid @ModelAttribute(value = "bankAccount") BankAccountDto bankAccountDto, BindingResult bindingResultBankAccount,
+                        @Valid @ModelAttribute(value = "bankCard") BankCardDto bankCardDto, BindingResult bindingResultBankCard, RedirectAttributes redirectAttributes, Authentication authentication) {
 
                 Optional<User> user = userService.findByEmail(authentication.getName());
 
@@ -148,7 +166,7 @@ public class ProfileController {
                         // save of bank account and bankCard of user
                         bankAccount.setBankCard(bankCard);
                         bankAccount.addUser(currentUser);
-                        BankAccount userBankAccount = bankAccountService.save(bankAccount);
+                        BankAccount userBankAccount = (BankAccount) bankAccountService.save(bankAccount);
 
                         // send of user's bank account
                         redirectAttributes.addFlashAttribute("success", "your bank account was correctly registred.");
@@ -172,6 +190,47 @@ public class ProfileController {
 
         }
 
+        @PostMapping("/bank_transaction")
+        public String bankTransaction(Authentication authentication, Model model, @Valid @ModelAttribute(name = "bankTransaction") ApplicationTransactionDto applicationTransactionDto,
+                        BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+
+                if (bindingResult.hasErrors()) {
+                        redirectAttributes.addFlashAttribute("error", "a problem has occured in transaction, please check red fields!");
+
+                        // Add bindingResult and ModelAttribute transactionDto to redirectAttribute for redirection
+                        // see in @GetMapping condition on creation of new transactionDto
+                        redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.transaction", bindingResult);
+                        redirectAttributes.addFlashAttribute("transaction", applicationTransactionDto);
+                        return "redirect:/profile";
+                }
+
+                Optional<User> user = userService.findByEmail(applicationTransactionDto.getSenderEmail());
+
+                if (user.isEmpty()) {
+                        throw new UserNotFoundException("the user was not found, transaction was cancel!");
+                }
+
+                ApplicationTransaction bankTransaction = modelMapper.map(applicationTransactionDto, ApplicationTransaction.class);
+
+                ApplicationTransaction executedBankTransaction = appTransactionService.proceedBankTransaction(bankTransaction);
+
+                if (executedBankTransaction != null) {
+
+                        String messageTransaction = "";
+                        messageTransaction = executedBankTransaction.getDescription().equalsIgnoreCase("withdraw") ? "from your application account to your bank account"
+                                        : "from your bank account to your application account";
+
+                        redirectAttributes.addFlashAttribute("success",
+                                        "the " + executedBankTransaction.getDescription() + " of " + executedBankTransaction.getAmount() + "€ was correctly realised " + messageTransaction);
+
+
+                } else {
+                        redirectAttributes.addFlashAttribute("error", "A problem occured with the transaction; please retry it or contact us from more information.");
+                }
+
+                return ("redirect:/profile");
+
+        }
 
 
 }

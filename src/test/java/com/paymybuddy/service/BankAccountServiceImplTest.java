@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 import java.util.Optional;
+import com.paymybuddy.model.Account;
 import com.paymybuddy.model.BankAccount;
 import com.paymybuddy.repository.BankAccountRepository;
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
@@ -18,13 +19,13 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 @TestMethodOrder(OrderAnnotation.class)
-public class BankAccountServiceTest {
+public class BankAccountServiceImplTest {
 
     @Mock
     private BankAccountRepository bankAccountRepository;
 
     @InjectMocks
-    private BankAccountService cut;
+    private BankAccountServiceImpl cut;
 
     @Test
     @Order(1)
@@ -36,7 +37,7 @@ public class BankAccountServiceTest {
 
         when(bankAccountRepository.save(Mockito.any(BankAccount.class))).thenReturn(bankAccount);
 
-        BankAccount savedBankAccount = cut.save(bankAccount);
+        Account savedBankAccount = cut.save(bankAccount);
 
         assertThat(savedBankAccount).isEqualTo(bankAccount);
     }

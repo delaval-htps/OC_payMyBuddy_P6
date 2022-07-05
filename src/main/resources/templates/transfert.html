@@ -31,7 +31,10 @@
                                     <fieldset class="shadow p-3 mb-3 bg-white rounded ">
                                         <legend class="float-none w-auto lead bg-white ps-2 pe-2">Send Money</legend>
                                         <div class="row  my-4 g-2  justify-content-evenly">
+                                            
                                             <input type="hidden" th:value="${userEmail}" name="senderEmail" />
+                                            <input type="hidden" th:value="*{type}" name="withdraw" />
+                                            
                                             <div class="col-sm-5">
                                                 <select class="form-select-sm form-select" th:field="*{receiverEmail}"
                                                     required>
@@ -44,8 +47,9 @@
                                                 </select>
                                             </div>
                                             <div class="col-auto">
-                                                <input id="amount-input" type="number" step=".01" min="0" max="99999999.99"
-                                                    class="form-control form-control-sm" th:field="*{amount}"
+                                                <input id="amount-input" type="number" step=".01" min="0"
+                                                    max="99999999.99" class="form-control form-control-sm"
+                                                    th:field="*{amount}"
                                                     th:classappend="${#fields.hasErrors('amount')? 'is-invalid':''}"
                                                     required>
 
@@ -97,10 +101,10 @@
         <footer th:replace="~{/fragments/my-template::footer}"></footer>
     </div>
 
-   <div th:replace="~{/fragments/my-template::toastr}"></div>
-   
-   
-   <!------------------------ Modal add connection ------------------------------------------->
+    <div th:replace="~{/fragments/my-template::toastr}"></div>
+
+
+    <!------------------------ Modal add connection ------------------------------------------->
     <div class="modal fade " id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
         aria-labelledby="staticBackdropLabel" aria-hidden="true">
         <div class="modal-dialog  modal-lg modal-dialog-centered">

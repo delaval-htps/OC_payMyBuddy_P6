@@ -18,11 +18,11 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Getter
 @Setter
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class BankAccount implements Serializable {
+public class BankAccount  extends Account implements  Serializable {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,6 +36,7 @@ public class BankAccount implements Serializable {
   private String iban;
 
   @Column
+  @Getter(onMethod = @__(@Override))
   private double balance;
 
   // a bank Account can be open for many users ( example a couple)
@@ -51,10 +52,16 @@ public class BankAccount implements Serializable {
    * 
    * @param user user to add to a BankAccount
    */
+
   public void addUser(User user) {
     if (user != null) {
       this.users.add(user);
       user.setBankAccount(this);
     }
+  }
+
+  @Override
+  public void setBalance(double d) {
+    this.setBalance(d);
   }
 }

@@ -37,7 +37,7 @@ public class ApplicationTransactionServiceTest {
     private ApplicationTransactionRepository appTransactionRepository;
 
     @Mock
-    private ApplicationAccountService appAccountService;
+    private AccountService appAccountService;
 
     @InjectMocks
     private ApplicationTransactionService cut;

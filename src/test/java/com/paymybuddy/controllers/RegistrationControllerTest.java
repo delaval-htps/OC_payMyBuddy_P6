@@ -26,7 +26,7 @@ import com.paymybuddy.security.oauth2.services.CustomOAuth2UserService;
 import com.paymybuddy.security.oauth2.user.CustomOAuth2User;
 import com.paymybuddy.security.oauth2.user.user_info.GithubUserInfo;
 import com.paymybuddy.security.services.CustomUserDetailsService;
-import com.paymybuddy.service.ApplicationAccountService;
+import com.paymybuddy.service.AccountService;
 import com.paymybuddy.service.OAuth2ProviderService;
 import com.paymybuddy.service.RoleService;
 import com.paymybuddy.service.UserService;
@@ -55,7 +55,7 @@ public class RegistrationControllerTest {
     private RoleService roleService;
 
     @MockBean
-    private ApplicationAccountService appAccountService;
+    private AccountService appAccountService;
 
     @Autowired
     private MockMvc mockMvc;

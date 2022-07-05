@@ -37,8 +37,8 @@ import com.paymybuddy.model.User;
 import com.paymybuddy.security.oauth2.components.CustomOAuth2SuccessHandler;
 import com.paymybuddy.security.oauth2.services.CustomOAuth2UserService;
 import com.paymybuddy.security.services.CustomUserDetailsService;
+import com.paymybuddy.service.AccountService;
 import com.paymybuddy.service.ApplicationTransactionService;
-import com.paymybuddy.service.BankAccountService;
 import com.paymybuddy.service.UserService;
 
 @WebMvcTest(controllers = TransfertController.class)
@@ -61,7 +61,7 @@ public class TransfertControllerTest {
     private ApplicationTransactionService applicationTransactionService;
 
     @MockBean
-    private BankAccountService bankAccountService;
+    private AccountService bankAccountService;
 
     @SpyBean
     private ModelMapper modelMapper;

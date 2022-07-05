@@ -45,7 +45,7 @@ public class ApplicationTransactionServiceIT {
     private ApplicationAccountRepository appAccountRepository;
 
     @Autowired
-    private ApplicationAccountService appAccountService;
+    private ApplicationAccountServiceImpl appAccountService;
 
     @Autowired
     private ApplicationTransactionService cut;

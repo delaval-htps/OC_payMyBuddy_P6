@@ -1,10 +1,10 @@
 package com.paymybuddy.repository;
 
 import java.util.Optional;
-import com.paymybuddy.model.ApplicationAccount;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
+import com.paymybuddy.model.ApplicationAccount;
 
 @Repository
 public interface ApplicationAccountRepository extends JpaRepository<ApplicationAccount,Long>{

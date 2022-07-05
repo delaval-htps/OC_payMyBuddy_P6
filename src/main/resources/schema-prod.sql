@@ -92,6 +92,7 @@ CREATE TABLE IF NOT EXISTS transaction (
 	id INT AUTO_INCREMENT NOT NULL,
 	transaction_date DATETIME NOT NULL,
 	description VARCHAR(100) NOT NULL,
+	type VARCHAR(8)NOT NULL,
 	amount DECIMAL(8,2) NOT NULL,
 	amount_commission DECIMAL(8,2) NOT NULL,
 	sender_id INT NOT NULL,

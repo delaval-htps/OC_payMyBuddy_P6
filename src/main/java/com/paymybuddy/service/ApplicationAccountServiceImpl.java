@@ -2,18 +2,19 @@ package com.paymybuddy.service;
 
 import java.security.NoSuchAlgorithmException;
 import java.util.Optional;
-import com.paymybuddy.UtilService;
-import com.paymybuddy.exceptions.ApplicationAccountException;
-import com.paymybuddy.exceptions.UserNotFoundException;
-import com.paymybuddy.model.ApplicationAccount;
-import com.paymybuddy.model.User;
-import com.paymybuddy.repository.ApplicationAccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import com.paymybuddy.UtilService;
+import com.paymybuddy.exceptions.ApplicationAccountException;
+import com.paymybuddy.exceptions.UserNotFoundException;
+import com.paymybuddy.model.Account;
+import com.paymybuddy.model.ApplicationAccount;
+import com.paymybuddy.model.User;
+import com.paymybuddy.repository.ApplicationAccountRepository;
 
 @Service
-public class ApplicationAccountService {
+public class ApplicationAccountServiceImpl implements AccountService {
 
   @Autowired
   private ApplicationAccountRepository applicationAccountRepository;
@@ -28,6 +29,7 @@ public class ApplicationAccountService {
    * @param id id of application account
    * @return application account if it exists
    */
+
   public Optional<ApplicationAccount> findById(Long id) {
     return applicationAccountRepository.findById(id);
   }
@@ -49,7 +51,7 @@ public class ApplicationAccountService {
    * @return the application account saved.
    */
   public ApplicationAccount save(ApplicationAccount appAccount) {
-    return applicationAccountRepository.save(appAccount);
+    return applicationAccountRepository.save( appAccount);
   }
 
   /**
@@ -87,13 +89,15 @@ public class ApplicationAccountService {
    * @throws IllegalArgumentException extends RuntimeException in case the given
    *         senderApplicationAccount is null.
    */
-  @Transactional(rollbackFor = {RuntimeException.class})
-  public void withdraw(ApplicationAccount senderApplicationAccount, double amount) {
+  @Override
+  @Transactional(rollbackFor = { RuntimeException.class})
+  public void withdraw(Account senderAccount, double amount) {
 
-    if (senderApplicationAccount.getBalance() >= amount) {
+    if (senderAccount.getBalance() >= amount) {
 
-      senderApplicationAccount.setBalance(senderApplicationAccount.getBalance() - amount);
-      applicationAccountRepository.save(senderApplicationAccount);
+      senderAccount.setBalance(senderAccount.getBalance() - amount);
+
+      applicationAccountRepository.save((ApplicationAccount) senderAccount);
 
     } else {
       throw new ApplicationAccountException("You can't send this amount (commision included)" + amount + " to your friend because your balance is not sufficient");
@@ -109,11 +113,14 @@ public class ApplicationAccountService {
    * @throws IllegalArgumentException extends RuntimeException in case the given
    *         receiverApplicationAccount is null.
    */
-  @Transactional(rollbackFor = {RuntimeException.class})
-  public void credit(ApplicationAccount receiverApplicationAccount, double amount) {
+  @Override
+  @Transactional(rollbackFor = { RuntimeException.class})
+  public void credit(Account receiverAccount, double amount) {
 
-    receiverApplicationAccount.setBalance(receiverApplicationAccount.getBalance() + amount);
-    applicationAccountRepository.save(receiverApplicationAccount);
+    receiverAccount.setBalance(receiverAccount.getBalance() + amount);
+
+    applicationAccountRepository.save((ApplicationAccount) receiverAccount);
 
   }
+
 }

@@ -11,4 +11,7 @@ public interface BankAccountRepository extends JpaRepository<BankAccount, Long> 
 
     @Query(value = "select ba from BankAccount ba where ba.iban=?1")
     Optional<BankAccount> findByIban(String iban);
+
+    @Query(value= "select ba from BankAccount as ba left join fetch ba.users as u where u.email=?1")
+    Optional<BankAccount> findByEmail(String email);
 }

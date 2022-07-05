@@ -19,7 +19,7 @@ import lombok.Setter;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ApplicationAccount implements Serializable {
+public class ApplicationAccount extends Account implements Serializable {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,8 +31,17 @@ public class ApplicationAccount implements Serializable {
   private String accountNumber;
 
   @Column
+  @Getter(onMethod = @__(@Override))
   private double balance;
 
   @OneToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH}, mappedBy = "applicationAccount")
   private User user;
+
+  @Override
+  public void setBalance(double d) {
+    this.setBalance(d);
+    
+  }
+
+ 
 }

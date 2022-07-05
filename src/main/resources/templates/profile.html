@@ -152,7 +152,7 @@
 					</form>
 				</div>
 				<div class="col-lg-8 col-md-12" th:if="${user.bankAccountRegistred}">
-					<form action="@/transfert/account_transaction" method="post">
+					<form action="@{/profile/bank_transaction}" method="post" th:object="${bankTransaction}">
 						<div class="row m-auto">
 							<fieldset class="mb-3 shadow p-2 bg-white rounded">
 								<legend class="float-none w-auto lead bg-white ms-3 px-2"> <img
@@ -160,18 +160,23 @@
 										alt="..."> <h3 class="d-inline">Account transaction: withdraw/credit</h3>
 								</legend>
 								<h4  class="mb-5 text-center text-success">Here you can withdraw or credit your account: just please choose the type of transaction , fill in a amount and save it</h4>
+
+								<input type="hidden" th:field="*{senderEmail}" th:value="${user.email}"/>
+								<input type="hidden" th:field="*{receiverEmail}" th:value="${user.email}"/>
+								<input type="hidden" th:field="*{description}" value="Bank-Transaction"/>
+
 								<div class="col-md-12 text-center">
 									<div class="row justify-content-center">
 										<div class="form-check form-check-inline col-auto ">
 											<input class="form-check-input" type="radio" id="widthdraw-transaction"
-												name="account-transaction" value="withdraw" />
+												th:fields="*{type}" value="withdraw" />
 											<label class="form-check-label d-inline "
 												for="widthdraw-transaction">Withdraw from your account</label>
 										</div>
 										<div class="col-md-1"></div>
 										<div class=" form-check form-check-inline col-auto">
 											<input class="form-check-input" type="radio" id="credit-transaction"
-												name="account-transaction" value="credit" />
+											th:fields="*{type}" value="credit" />
 											<label class="form-check-label d-inline" for="credit-transaction">Credit to
 												your account</label>
 										</div>
@@ -179,7 +184,7 @@
 								</div>
 								<div class="col-md-3 my-5 form-group text-center m-auto">
 									<label class="form-label d-inline">Amount to transfert</label>
-									<input id="amount-input" type="number" step=".01" min="0" max="99999999.99"
+									<input th:fields="*{amount}" type="number" step=".01" min="0" max="99999999.99"
 										class="form-control form-control-sm" required>
 
 								</div>
