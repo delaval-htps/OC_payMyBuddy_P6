@@ -37,11 +37,7 @@ public class ApplicationAccount extends Account implements Serializable {
   @OneToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH}, mappedBy = "applicationAccount")
   private User user;
 
-  @Override
-  public void setBalance(double d) {
-    this.setBalance(d);
-    
-  }
+
 
  
 }

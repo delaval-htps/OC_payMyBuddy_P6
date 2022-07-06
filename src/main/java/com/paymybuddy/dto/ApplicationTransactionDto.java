@@ -3,7 +3,9 @@ package com.paymybuddy.dto;
 import java.math.BigDecimal;
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -17,20 +19,21 @@ import lombok.Setter;
 public class ApplicationTransactionDto {
 
     @Digits(integer = 8, fraction = 2, message = "this amount must have 8 integers before coma and only 2 after")
-    @Positive
+    @Positive(message="the amount must be positive number")
+    @NotNull(message="the amount of transaction must be not null")
     private BigDecimal amount;
 
-    @NotEmpty
+    @NotBlank(message="the description of transaction must be not null")
     private String description;
 
-    @NotEmpty
+    @NotBlank(message="the type of transaction must be not null")
     private String type;
 
-    @NotEmpty
+    @NotBlank(message="the connected user of transaction must be not empty")
     @Email
     private String senderEmail;
 
-    @NotEmpty
+    @NotBlank(message="the connected user of transaction must be not empty")
     @Email
     private String receiverEmail;
 

@@ -4,7 +4,6 @@ import java.util.Optional;
 import javax.validation.Valid;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -48,7 +47,6 @@ public class ProfileController {
          * @param model
          * @return
          */
-        @PreAuthorize("isAuthenticated()")
         @GetMapping("")
         public String getProfil(Authentication authentication, Model model) {
                 Optional<User> user = userService.findByEmail(authentication.getName());
@@ -199,20 +197,22 @@ public class ProfileController {
 
                         // Add bindingResult and ModelAttribute transactionDto to redirectAttribute for redirection
                         // see in @GetMapping condition on creation of new transactionDto
-                        redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.transaction", bindingResult);
-                        redirectAttributes.addFlashAttribute("transaction", applicationTransactionDto);
+                        redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.bankTransaction", bindingResult);
+                        redirectAttributes.addFlashAttribute("bankTransaction", applicationTransactionDto);
                         return "redirect:/profile";
                 }
 
                 Optional<User> user = userService.findByEmail(applicationTransactionDto.getSenderEmail());
-
+               
                 if (user.isEmpty()) {
                         throw new UserNotFoundException("the user was not found, transaction was cancel!");
                 }
+                
+                User existedUser = user.get();
 
                 ApplicationTransaction bankTransaction = modelMapper.map(applicationTransactionDto, ApplicationTransaction.class);
 
-                ApplicationTransaction executedBankTransaction = appTransactionService.proceedBankTransaction(bankTransaction);
+                ApplicationTransaction executedBankTransaction = appTransactionService.proceedBankTransaction(bankTransaction,existedUser);
 
                 if (executedBankTransaction != null) {
 

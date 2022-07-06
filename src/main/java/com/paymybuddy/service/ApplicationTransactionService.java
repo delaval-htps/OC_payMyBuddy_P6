@@ -99,10 +99,13 @@ public class ApplicationTransactionService {
     }
 
     @Transactional(rollbackFor = RuntimeException.class)
-    public ApplicationTransaction proceedBankTransaction(ApplicationTransaction bankTransaction) {
+    public ApplicationTransaction proceedBankTransaction(ApplicationTransaction bankTransaction,User bankAccountOwner) {
         ApplicationTransaction result = new ApplicationTransaction();
 
         bankTransaction.setTransactionDate(new Date());
+        bankTransaction.setSender(bankAccountOwner);
+        bankTransaction.setReceiver(bankAccountOwner);
+
         switch (bankTransaction.getType()) {
 
             case ("withdraw"):

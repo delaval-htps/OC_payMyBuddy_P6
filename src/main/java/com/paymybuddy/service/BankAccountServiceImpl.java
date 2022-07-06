@@ -47,6 +47,9 @@ public class BankAccountServiceImpl implements AccountService {
     @Override
     @Transactional(rollbackFor  = { RuntimeException.class})
     public void withdraw(Account bankAccount, double amount) {
+       
+            retrieveBalance(bankAccount);
+       
         if (bankAccount.getBalance() >= amount) {
 
             bankAccount.setBalance(bankAccount.getBalance() - amount);
@@ -63,8 +66,13 @@ public class BankAccountServiceImpl implements AccountService {
     @Transactional(rollbackFor = { RuntimeException.class})
     public void credit(Account bankAccount, double amount) {
         bankAccount.setBalance(bankAccount.getBalance() + amount);
-
-        bankAccountRepository.save((BankAccount)bankAccount);
-        
+        bankAccountRepository.save((BankAccount) bankAccount);
+    }
+    
+    
+    private void retrieveBalance(Account bankAccount) {
+        //TODO create a method to retrieve balance of bank Account of user using IBAN & SWIFT code(BIC)
+        //bu default, we put 1000€ on each bankAccount
+        bankAccount.setBalance(1000d);
     }
 }

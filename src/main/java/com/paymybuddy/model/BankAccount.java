@@ -60,8 +60,4 @@ public class BankAccount  extends Account implements  Serializable {
     }
   }
 
-  @Override
-  public void setBalance(double d) {
-    this.setBalance(d);
-  }
 }
