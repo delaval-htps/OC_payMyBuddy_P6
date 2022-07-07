@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.paymybuddy.model.ApplicationTransaction;
 import com.paymybuddy.model.User;
+import com.paymybuddy.model.ApplicationTransaction.TransactionType;
 import com.paymybuddy.repository.ApplicationTransactionRepository;
 
 @Service
@@ -88,7 +89,7 @@ public class ApplicationTransactionService {
         transaction.setSender(sender);
         transaction.setReceiver(receiver);
         transaction.setAmountCommission(this.calculateAmountCommission(transaction.getAmount()));
-
+        transaction.setType(TransactionType.WIHTDRAW);
 
         appAccountService.withdraw(transaction.getSender().getApplicationAccount(), (transaction.getAmount() + transaction.getAmountCommission()));
         appAccountService.credit(transaction.getReceiver().getApplicationAccount(), transaction.getAmount());
@@ -99,7 +100,7 @@ public class ApplicationTransactionService {
     }
 
     @Transactional(rollbackFor = RuntimeException.class)
-    public ApplicationTransaction proceedBankTransaction(ApplicationTransaction bankTransaction,User bankAccountOwner) {
+    public ApplicationTransaction proceedBankTransaction(ApplicationTransaction bankTransaction, User bankAccountOwner) {
         ApplicationTransaction result = new ApplicationTransaction();
 
         bankTransaction.setTransactionDate(new Date());
@@ -108,12 +109,12 @@ public class ApplicationTransactionService {
 
         switch (bankTransaction.getType()) {
 
-            case ("withdraw"):
+            case WIHTDRAW:
                 appAccountService.withdraw(bankTransaction.getSender().getApplicationAccount(), (bankTransaction.getAmount() + bankTransaction.getAmountCommission()));
                 bankAccountService.credit(bankTransaction.getSender().getBankAccount(), bankTransaction.getAmount());
                 break;
 
-            case ("credit"):
+            case CREDIT:
                 bankAccountService.withdraw(bankTransaction.getSender().getBankAccount(), (bankTransaction.getAmount() + bankTransaction.getAmountCommission()));
                 appAccountService.credit(bankTransaction.getSender().getApplicationAccount(), bankTransaction.getAmount());
                 break;
@@ -121,7 +122,7 @@ public class ApplicationTransactionService {
             default:
 
         }
-        
+
         result = appTransactionRepository.save(bankTransaction);
         return result;
     }

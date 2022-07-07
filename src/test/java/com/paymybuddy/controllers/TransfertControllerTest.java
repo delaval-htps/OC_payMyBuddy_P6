@@ -34,6 +34,7 @@ import com.paymybuddy.dto.ApplicationTransactionDto;
 import com.paymybuddy.model.ApplicationTransaction;
 import com.paymybuddy.model.BankAccount;
 import com.paymybuddy.model.User;
+import com.paymybuddy.model.ApplicationTransaction.TransactionType;
 import com.paymybuddy.security.oauth2.components.CustomOAuth2SuccessHandler;
 import com.paymybuddy.security.oauth2.services.CustomOAuth2UserService;
 import com.paymybuddy.security.services.CustomUserDetailsService;
@@ -297,6 +298,7 @@ public class TransfertControllerTest {
         // create a validated applicationTransactionDto 
         ApplicationTransactionDto appTransactionDto = new ApplicationTransactionDto();
         appTransactionDto.setAmount(BigDecimal.TEN);
+        appTransactionDto.setType("WIHTDRAW");
         appTransactionDto.setDescription("test");
         appTransactionDto.setReceiverEmail(connectedUser.getEmail());
         appTransactionDto.setSenderEmail(existedUser.getEmail());
@@ -315,6 +317,7 @@ public class TransfertControllerTest {
         // create a validated applicationTransactionDto but with sender'email different to existedUser 
         ApplicationTransactionDto appTransactionDto = new ApplicationTransactionDto();
         appTransactionDto.setAmount(BigDecimal.TEN);
+        appTransactionDto.setType("WIHTDRAW");
         appTransactionDto.setDescription("test");
         appTransactionDto.setReceiverEmail(connectedUser.getEmail());
         appTransactionDto.setSenderEmail(connectedUser.getEmail());
@@ -333,6 +336,7 @@ public class TransfertControllerTest {
         // create a validated applicationTransactionDto 
         ApplicationTransactionDto appTransactionDto = new ApplicationTransactionDto();
         appTransactionDto.setAmount(BigDecimal.TEN);
+        appTransactionDto.setType("WIHTDRAW");
         appTransactionDto.setDescription("test");
         appTransactionDto.setReceiverEmail(connectedUser.getEmail());
         appTransactionDto.setSenderEmail(existedUser.getEmail());
@@ -355,6 +359,7 @@ public class TransfertControllerTest {
          applicationTransaction.setAmount(10d);
          applicationTransaction.setDescription("test_transaction");
          applicationTransaction.setReceiver(connectedUser);
+         applicationTransaction.setType(TransactionType.WIHTDRAW);
          applicationTransaction.setSender(existedUser);
          applicationTransaction.setTransactionDate(new Date());
          applicationTransaction.setAmountCommission(5d);

@@ -20,6 +20,8 @@ import com.paymybuddy.security.oauth2.components.CustomOAuth2SuccessHandler;
 import com.paymybuddy.security.oauth2.services.CustomOAuth2UserService;
 import com.paymybuddy.security.services.CustomUserDetailsService;
 import com.paymybuddy.service.AccountService;
+import com.paymybuddy.service.ApplicationTransactionService;
+import com.paymybuddy.service.BankAccountServiceImpl;
 import com.paymybuddy.service.UserService;
 
 @WebMvcTest(controllers = ProfileController.class)
@@ -32,7 +34,10 @@ public class ProfileControllerTest {
     private UserService userService;
 
     @MockBean
-    private AccountService bankAccountService;
+    private BankAccountServiceImpl bankAccountService;
+    
+    @MockBean
+    private ApplicationTransactionService appTransactionService;
 
     @MockBean
     private CustomUserDetailsService customUserDetailsService;

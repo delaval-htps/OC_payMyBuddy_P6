@@ -13,6 +13,7 @@ import com.paymybuddy.dto.ApplicationTransactionDto;
 import com.paymybuddy.dto.BankCardDto;
 import com.paymybuddy.model.ApplicationTransaction;
 import com.paymybuddy.model.BankCard;
+import com.paymybuddy.model.ApplicationTransaction.TransactionType;
 
 @Configuration
 public class ModelMapperConfig {
@@ -56,14 +57,17 @@ public class ModelMapperConfig {
     return context -> (context.getSource()).doubleValue();
   }
 
+  @Bean
+  public Converter<String, TransactionType> convertStringToEnum() {
+    return context -> context.getSource().equalsIgnoreCase("CREDIT") ? TransactionType.CREDIT : TransactionType.WIHTDRAW;
+  }
+
   PropertyMap<BankCardDto, BankCard> bankCardMap = new PropertyMap<BankCardDto, BankCard>() {
 
     @Override
     protected void configure() {
-      using(convertStringToInteger())
-        .map(source.getCardCode(), destination.getCardCode());
-      using(convertStringToDate())
-        .map(source.getExpirationDate(), destination.getExpirationDate());
+      using(convertStringToInteger()).map(source.getCardCode(), destination.getCardCode());
+      using(convertStringToDate()).map(source.getExpirationDate(), destination.getExpirationDate());
     }
   };
 
@@ -71,8 +75,8 @@ public class ModelMapperConfig {
 
     @Override
     protected void configure() {
-      using(convertBigDecimalToDouble())
-        .map(source.getAmount(), destination.getAmount());
+      using(convertBigDecimalToDouble()).map(source.getAmount(), destination.getAmount());
+      using(convertStringToEnum()).map(source.getType(), destination.getType());
     }
   };
 }

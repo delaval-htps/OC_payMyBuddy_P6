@@ -187,7 +187,7 @@ public class ApplicationTransactionServiceIT {
 
         assertThat(changes).change()
                 .rowAtStartPoint().doesNotExist()
-                .rowAtEndPoint().exists().hasNumberOfColumns(7);
+                .rowAtEndPoint().exists().hasNumberOfColumns(8);
 
         assertThat(changes).changeOnTable("transaction").change()
                 .rowAtEndPoint()

@@ -14,6 +14,7 @@ import java.util.List;
 import com.paymybuddy.model.ApplicationAccount;
 import com.paymybuddy.model.ApplicationTransaction;
 import com.paymybuddy.model.User;
+import com.paymybuddy.model.ApplicationTransaction.TransactionType;
 import com.paymybuddy.repository.ApplicationTransactionRepository;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
@@ -37,7 +38,10 @@ public class ApplicationTransactionServiceTest {
     private ApplicationTransactionRepository appTransactionRepository;
 
     @Mock
-    private AccountService appAccountService;
+    private ApplicationAccountServiceImpl appAccountService;
+
+    @Mock
+    private BankAccountServiceImpl bankAccountService;
 
     @InjectMocks
     private ApplicationTransactionService cut;
@@ -81,6 +85,7 @@ public class ApplicationTransactionServiceTest {
         appTransaction1.setDescription("transaction1");
         appTransaction1.setSender(sender);
         appTransaction1.setReceiver(receiver);
+        appTransaction1.setType(TransactionType.WIHTDRAW);
         appTransaction1.setTransactionDate(date1);
         appTransaction1.setAmount(100d);
 
@@ -162,11 +167,10 @@ public class ApplicationTransactionServiceTest {
     }
 
     @ParameterizedTest
-    @ValueSource(doubles = {0.01d,2d})
+    @ValueSource(doubles = { 0.01d, 2d})
     @Order(6)
-    void calculateAmountCommission_whenAmountBetweenMinAndTwo_thenReturnMinimumCommission(double
-    amount) {
-        
+    void calculateAmountCommission_whenAmountBetweenMinAndTwo_thenReturnMinimumCommission(double amount) {
+
         double result = cut.calculateAmountCommission(amount);
         assertThat(result).isEqualTo(0.01d);
     }
@@ -183,7 +187,7 @@ public class ApplicationTransactionServiceTest {
 
         assertThat(exactResult).isEqualTo(expectedResult.doubleValue());
     }
-    
+
     @Test
     @Order(7)
     void calculateAmountCommission() {
@@ -197,11 +201,14 @@ public class ApplicationTransactionServiceTest {
     @Order(8)
     void proceedTransactionTest() {
 
-        ApplicationTransaction transaction = cut.proceedBetweenUsers(appTransaction1, sender, receiver);
-        assertThat(transaction.getTransactionDate()).isAfter(date1);
-        assertThat(transaction.getSender()).isEqualTo(sender);
-        assertThat(transaction.getReceiver()).isEqualTo(receiver);
-        assertThat(transaction.getAmountCommission()).isEqualTo(100d * ApplicationTransaction.COMMISSIONPERCENT);
+         cut.proceedBetweenUsers(appTransaction1, sender, receiver);
+
+        ArgumentCaptor<ApplicationTransaction> appTransactionCaptor = ArgumentCaptor.forClass(ApplicationTransaction.class);
+        verify(appTransactionRepository, times(1)).save(appTransactionCaptor.capture());
+        assertThat(appTransactionCaptor.getValue().getTransactionDate()).isAfter(date1);
+        assertThat(appTransactionCaptor.getValue().getSender()).isEqualTo(sender);
+        assertThat(appTransactionCaptor.getValue().getReceiver()).isEqualTo(receiver);
+        assertThat(appTransactionCaptor.getValue().getAmountCommission()).isEqualTo(100d * ApplicationTransaction.COMMISSIONPERCENT);
 
         ArgumentCaptor<ApplicationAccount> appAccountCaptor = ArgumentCaptor.forClass(ApplicationAccount.class);
         verify(appAccountService, times(1)).withdraw(appAccountCaptor.capture(), Mockito.anyDouble());

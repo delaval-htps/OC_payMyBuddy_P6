@@ -2,7 +2,7 @@ package com.paymybuddy.controllers;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.oauth2Login;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import java.util.HashMap;
@@ -15,6 +15,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.security.oauth2.core.user.OAuth2User;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -26,7 +27,7 @@ import com.paymybuddy.security.oauth2.services.CustomOAuth2UserService;
 import com.paymybuddy.security.oauth2.user.CustomOAuth2User;
 import com.paymybuddy.security.oauth2.user.user_info.GithubUserInfo;
 import com.paymybuddy.security.services.CustomUserDetailsService;
-import com.paymybuddy.service.AccountService;
+import com.paymybuddy.service.ApplicationAccountServiceImpl;
 import com.paymybuddy.service.OAuth2ProviderService;
 import com.paymybuddy.service.RoleService;
 import com.paymybuddy.service.UserService;
@@ -55,7 +56,7 @@ public class RegistrationControllerTest {
     private RoleService roleService;
 
     @MockBean
-    private AccountService appAccountService;
+    private ApplicationAccountServiceImpl appAccountService;
 
     @Autowired
     private MockMvc mockMvc;
@@ -148,7 +149,13 @@ public class RegistrationControllerTest {
 
 
     @Test
-    void testSaveNewUser() {
+    @WithMockUser
+    void testSaveNewUser_whenBindingResultHasErrors_thenReturnRegistration() throws Exception {
+        //when userDto has errors -> all fields are null
+        UserDto mockUserDto = new UserDto();
+        
+        MvcResult result = mockMvc.perform(post("/registration").flashAttr("user", mockUserDto)).andExpect(status().isOk()).andDo(print()).andReturn();
 
+        assertThat(result.getModelAndView().getViewName()).isEqualTo("registration");
     }
 }

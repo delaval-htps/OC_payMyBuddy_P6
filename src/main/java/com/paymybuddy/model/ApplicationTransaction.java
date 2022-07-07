@@ -22,7 +22,10 @@ import lombok.Setter;
 @Entity
 @Table(name = "transaction")
 public class ApplicationTransaction implements Serializable {
-
+   
+    public  enum TransactionType {
+        WIHTDRAW, CREDIT
+    }
 
     public static final double COMMISSIONPERCENT = 0.05d;
 
@@ -34,8 +37,8 @@ public class ApplicationTransaction implements Serializable {
 
     private String description;
 
-    private String type;
-    
+    private TransactionType type;
+
     private double amount;
 
     private double amountCommission;

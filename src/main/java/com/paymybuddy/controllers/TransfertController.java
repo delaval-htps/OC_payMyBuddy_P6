@@ -175,7 +175,7 @@ public class TransfertController {
       return "redirect:/transfert";
     }
 
-    if (user.isPresent() && user.get().getEmail().equalsIgnoreCase(transactionDto.getSenderEmail())) {
+    if (user.isPresent() && user.get().getEmail().trim().equalsIgnoreCase(transactionDto.getSenderEmail())) {
       User sender = user.get();
 
       ApplicationTransaction transaction = modelMapper.map(transactionDto, ApplicationTransaction.class);
