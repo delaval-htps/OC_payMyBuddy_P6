@@ -1,27 +1,33 @@
 package com.paymybuddy.controllers;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.when;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.oauth2Login;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.security.oauth2.core.user.OAuth2User;
-import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MockMvcResultHandlersDsl;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import com.paymybuddy.dto.UserDto;
+import com.paymybuddy.model.User;
 import com.paymybuddy.security.oauth2.components.CustomOAuth2SuccessHandler;
 import com.paymybuddy.security.oauth2.services.CustomOAuth2UserService;
 import com.paymybuddy.security.oauth2.user.CustomOAuth2User;
@@ -115,7 +121,8 @@ public class RegistrationControllerTest {
 
         /*
          * Creation of CustomOauth2User to log with it just for this test. A CustomOAuth2User was decided to
-         * oblige application to accept only Oauht2login from registrationId Facebook,Github and Google because of OAuth2UserInfoFactory
+         * oblige application to accept only Oauht2login from registrationId Facebook,Github and Google
+         * because of OAuth2UserInfoFactory
          */
         CustomOAuth2User mockOauth2User = new CustomOAuth2User(oAuth2User, new GithubUserInfo(userDetails));
 
@@ -149,13 +156,33 @@ public class RegistrationControllerTest {
 
 
     @Test
-    @WithMockUser
+
     void testSaveNewUser_whenBindingResultHasErrors_thenReturnRegistration() throws Exception {
-        //when userDto has errors -> all fields are null
+        // when userDto has errors -> all fields are null
         UserDto mockUserDto = new UserDto();
-        
-        MvcResult result = mockMvc.perform(post("/registration").flashAttr("user", mockUserDto)).andExpect(status().isOk()).andDo(print()).andReturn();
+
+        MvcResult result = mockMvc.perform(post("/registration").flashAttr("user", mockUserDto).with(csrf())).andDo(print()).andReturn();
 
         assertThat(result.getModelAndView().getViewName()).isEqualTo("registration");
+    }
+
+    @Test
+
+    void testSaveNewUser_whenAlreadyExistUserWithSameEmail_thenReturnRegistrationWithBindingResult() throws Exception {
+        UserDto mockUserDto = new UserDto();
+        mockUserDto.setEmail("test@gmail.com");
+        mockUserDto.setFirstName("test");
+        mockUserDto.setLastName("test");
+
+        User mockUser = new User();
+        mockUser.setEmail("test@gmail.com");
+        when(userService.findByEmail(Mockito.anyString())).thenReturn(Optional.of(mockUser));
+
+        MvcResult result =
+                mockMvc.perform(post("/registration").flashAttr("user", mockUserDto).with(csrf())).andExpect(model().attributeHasFieldErrors("user", "duplicatedUser")).andDo(print()).andReturn();
+
+        assertThat(result.getModelAndView().getViewName()).isEqualTo("registration");
+
+
     }
 }
