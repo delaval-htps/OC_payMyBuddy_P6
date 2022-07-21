@@ -22,8 +22,11 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.oauth2.core.DefaultOAuth2AuthenticatedPrincipal;
+import org.springframework.security.oauth2.core.OAuth2AccessToken;
 import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.security.oauth2.core.user.OAuth2User;
+import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers;
@@ -226,12 +229,12 @@ public class RegistrationControllerTest {
    
     void testSaveNewUser_whenNewUserOauth2Login_thenRedirectHome() throws Exception {
    
-    //     //mock of userDto
-    // UserDto mockUserDto = new UserDto();
-    //     mockUserDto.setEmail("test@gmail.com");
-    //     mockUserDto.setFirstName("test");
-    //     mockUserDto.setLastName("test");
-    //     mockUserDto.setPassword("testPassword");
+        //mock of userDto
+        UserDto mockUserDto = new UserDto();
+        mockUserDto.setEmail("delaval.htps@gmail.com");
+        mockUserDto.setFirstName("dorian");
+        mockUserDto.setLastName("delaval");
+       
 
         // mock UserDetails
         SimpleGrantedAuthority simpleGrantedAuthority = new SimpleGrantedAuthority("ROLE_USER");
@@ -240,20 +243,14 @@ public class RegistrationControllerTest {
 
         //mockUser
         User mockUser = new User();
-        mockUser.setEmail("test@gmail.com");
-
-         /*
-         * creation of userDetails attributes for CustomOAuth2User ( all attributes that we need for application) this
-         * attriubutes were be used to complete the form of registration page In fact, when a user log with
-         * OAuth2 , his lastname firstname and email are retrieve from attributes of CustomOAuht2User and
-         * they are displayed in form of registration
-         */
+        mockUser.setEmail("delaval.htps@gmail.com");
 
         Map<String, Object> userDetails = new HashMap<>();
         userDetails.put("email", "delaval.htps@gmail.com");
         userDetails.put("name", "dorian delaval");
         userDetails.put("id", "test");
-         /*
+
+        /*
          * creation of OAuth2User to have possibility to log with our customOAuth2User cretaed just after
          * when MockMvc.perform(/registration).oauth2Login()
          */
@@ -265,19 +262,13 @@ public class RegistrationControllerTest {
          * because of OAuth2UserInfoFactory
          */
         CustomOAuth2User mockOauth2User = new CustomOAuth2User(oAuth2User, new GithubUserInfo(userDetails));
-
-
         
         when(userService.findByEmail(Mockito.anyString())).thenReturn(Optional.empty());
         when(userService.save(Mockito.any(User.class))).thenReturn(mockUser);
         when(customUserDetailsService.loadUserByUsername(Mockito.anyString()))
                 .thenReturn(new org.springframework.security.core.userdetails.User(mockUser.getEmail(), "testPassword", grantedAuthority));
 
-        MvcResult result = mockMvc.perform(post("/registration").with(oauth2Login()).with(csrf())).andExpect(redirectedUrl("/home")).andDo(print()).andReturn();
-
-        
-                
-      
+        MvcResult result = mockMvc.perform(post("/registration").flashAttr("user", mockUserDto).with(oauth2Login().oauth2User(mockOauth2User)).with(csrf())).andExpect(redirectedUrl("/home")).andDo(print()).andReturn();
 
     }
 }
