@@ -32,7 +32,7 @@
 									account.<br> But to be able to use it immediatly, your personal bank account
 									informations are required.So let's go to your profile to complete it...</p>
 								<div th:if="${user.bankAccountRegistred}" class="card-text">
-									<div id="gauge" class="mt-4" ></div>
+									<div id="gauge" class="mt-4 col-md-6 m-auto" ></div>
 									<p class="mt-3">You can see or edit your profile and bank informations in section profile</p>
 								</div>
 							</div>
@@ -53,7 +53,7 @@
 									transfert money on your bank account.</p>
 							</div>
 							<div class="card-footer m-auto  p-3">
-								<a th:if="${user.bankAccountRegistred}" th:href="@{/transfert}" tabindex="-1"><button
+								<a th:if="${user.bankAccountRegistred}" th:href="@{/profile}" tabindex="-1"><button
 										type="button" class="btn-sm  btn-gradient card-btn">Deposit money</button></a>
 							</div>
 						</div>

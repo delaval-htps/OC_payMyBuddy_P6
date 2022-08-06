@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.paymybuddy.model.ApplicationTransaction;
 import com.paymybuddy.model.User;
+import com.paymybuddy.model.ApplicationTransaction.TransactionType;
 import com.paymybuddy.repository.ApplicationTransactionRepository;
 
 @Service
@@ -18,7 +19,10 @@ public class ApplicationTransactionService {
     private ApplicationTransactionRepository appTransactionRepository;
 
     @Autowired
-    private ApplicationAccountService appAccountService;
+    private ApplicationAccountServiceImpl appAccountService;
+
+    @Autowired
+    private BankAccountServiceImpl bankAccountService;
 
     /**
      * return application transactions of a user by his id. user must not be null
@@ -75,22 +79,52 @@ public class ApplicationTransactionService {
      * @param sender user that send the amount of transaction and have to pay commission.
      * @param receiver the user that receive amount of transaction.
      * @return the transaction saved with all updated field.
-     * 
      */
-    @Transactional(rollbackFor = {RuntimeException.class, Exception.class})
+    @Transactional(rollbackFor = { RuntimeException.class, Exception.class})
     public ApplicationTransaction proceedBetweenUsers(ApplicationTransaction transaction, User sender, User receiver) {
+
+        ApplicationTransaction result = new ApplicationTransaction();
 
         transaction.setTransactionDate(new Date());
         transaction.setSender(sender);
         transaction.setReceiver(receiver);
         transaction.setAmountCommission(this.calculateAmountCommission(transaction.getAmount()));
-
+        transaction.setType(TransactionType.WIHTDRAW);
 
         appAccountService.withdraw(transaction.getSender().getApplicationAccount(), (transaction.getAmount() + transaction.getAmountCommission()));
         appAccountService.credit(transaction.getReceiver().getApplicationAccount(), transaction.getAmount());
 
-        appTransactionRepository.save(transaction);
-        return transaction;
+        result = appTransactionRepository.save(transaction);
+
+        return result;
+    }
+
+    @Transactional(rollbackFor = RuntimeException.class)
+    public ApplicationTransaction proceedBankTransaction(ApplicationTransaction bankTransaction, User bankAccountOwner) {
+        ApplicationTransaction result = new ApplicationTransaction();
+
+        bankTransaction.setTransactionDate(new Date());
+        bankTransaction.setSender(bankAccountOwner);
+        bankTransaction.setReceiver(bankAccountOwner);
+
+        switch (bankTransaction.getType()) {
+
+            case WIHTDRAW:
+                appAccountService.withdraw(bankTransaction.getSender().getApplicationAccount(), (bankTransaction.getAmount() + bankTransaction.getAmountCommission()));
+                bankAccountService.credit(bankTransaction.getSender().getBankAccount(), bankTransaction.getAmount());
+                break;
+
+            case CREDIT:
+                bankAccountService.withdraw(bankTransaction.getSender().getBankAccount(), (bankTransaction.getAmount() + bankTransaction.getAmountCommission()));
+                appAccountService.credit(bankTransaction.getSender().getApplicationAccount(), bankTransaction.getAmount());
+                break;
+
+            default:
+
+        }
+
+        result = appTransactionRepository.save(bankTransaction);
+        return result;
     }
 
 }

@@ -4,6 +4,10 @@ import java.util.Map;
 
 import com.paymybuddy.model.AuthProvider;
 
+/**
+ * Class that allow us to retrieve correctly informations of Oauht2login form Web application
+ * Githuib.
+ */
 public class GithubUserInfo extends OAuth2UserInfo {
 
   public GithubUserInfo(Map<String, Object> attributes) {
@@ -44,8 +48,7 @@ public class GithubUserInfo extends OAuth2UserInfo {
 
   @Override
   public String toString() {
-    return this.getClientId() + "\t:" + this.getEmail() + "\t:" + this.getRegistrationId() + "\t:" + this.getFullName()
-        + "\t:" + this.getLastName() + "\t:" + this.getFirstName();
+    return this.getClientId() + "\t:" + this.getEmail() + "\t:" + this.getRegistrationId() + "\t:" + this.getFullName() + "\t:" + this.getLastName() + "\t:" + this.getFirstName();
   }
 
 }

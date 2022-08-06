@@ -9,6 +9,11 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.util.StringUtils;
 
+/**
+ * Class that represent your CustomOauth2User after his authentication and filters of
+ * spriongSecurity. It's {@link com.paymybuddy.security.oauth2.services.CustomOAuth2UserService}
+ * that create entity from request of OAuth2login.
+ */
 public class CustomOAuth2User implements OAuth2User {
 
     private OAuth2User oAuth2User;

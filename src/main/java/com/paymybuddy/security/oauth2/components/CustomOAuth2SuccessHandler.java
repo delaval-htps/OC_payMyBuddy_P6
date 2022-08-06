@@ -22,6 +22,12 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 
+/**
+ * Class that implements what to do when OAuth2User is authenticated by SpringSecurity.
+ * it verifies if user is present in datasource and in this cas redirect him to /home.
+ * In the another case of not be registres , it registred the registrationId and clientId in database
+ * and add it in context before transforme it in {@link UsernamePasswordAuthenticationToken}.
+ */
 @Component
 public class CustomOAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 

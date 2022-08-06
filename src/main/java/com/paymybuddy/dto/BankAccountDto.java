@@ -1,7 +1,6 @@
 package com.paymybuddy.dto;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import org.hibernate.validator.constraints.Length;
@@ -16,21 +15,6 @@ import lombok.Setter;
 @AllArgsConstructor
 public class BankAccountDto {
 
-    @NotNull(message = "the bank code must not be null")
-    @Length(min = 5, max = 5, message = "the bank code must contain 5 integers")
-    private String bankCode;
-
-    @NotNull(message = "the branch code must not be null")
-    @Length(min = 5, max = 5, message = "the branch code must contain 5 integers")
-    private String branchCode;
-
-    @NotNull(message = "the account number must not be null")
-    @Length(min = 11, max = 11, message = "the account number must contain 11 integers")
-    private String accountNumber;
-
-    @NotNull(message = "the rib key must not be null")
-    @Length(min = 2, max = 2, message = "the rib-key must contain 2 integers")
-    private String ribKey;
 
     @NotBlank(message = "the iban must not be null or empty")
     @Length(min = 38, max = 38, message = "the iban must contains 31 characters")

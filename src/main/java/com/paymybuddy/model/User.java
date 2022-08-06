@@ -75,14 +75,14 @@ public class User implements Serializable {
   @OneToMany(fetch = FetchType.EAGER, mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
   private Set<OAuth2Provider> oauth2Identifiers = new HashSet<>();
 
-  @ManyToMany(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH})
+  @ManyToMany(cascade = { CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH})
   @JoinTable(name = "connection_user", joinColumns = @JoinColumn(name = "user_id", table = "user"), inverseJoinColumns = @JoinColumn(name = "user_connection_id", table = "connection_user"))
   private Set<User> connectionUsers = new HashSet<>();
 
-  @OneToMany(mappedBy = "sender", cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.REMOVE})
+  @OneToMany(mappedBy = "sender", cascade = { CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.REMOVE})
   private Set<ApplicationTransaction> senderTransactions = new HashSet<>();
 
-  @OneToMany(mappedBy = "receiver", cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH})
+  @OneToMany(mappedBy = "receiver", cascade = { CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH})
   private Set<ApplicationTransaction> receiverTransactions = new HashSet<>();
 
   @ManyToOne(cascade = CascadeType.ALL)
@@ -136,6 +136,24 @@ public class User implements Serializable {
    */
   public void addRole(Role role) {
     this.roles.add(role);
+  }
+
+  /**
+   * method to add senderTransaction to user.
+   */
+  public void addSenderTransaction(ApplicationTransaction senderTransaction) {
+    if (senderTransaction != null) {
+      this.senderTransactions.add(senderTransaction);
+    }
+  }
+
+  /**
+   * method to add senderTransaction to user.
+   */
+  public void addReceiverTransaction(ApplicationTransaction transaction) {
+    if (transaction != null) {
+      this.senderTransactions.add(transaction);
+    }
   }
 
   /**

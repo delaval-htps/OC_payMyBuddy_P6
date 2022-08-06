@@ -12,6 +12,7 @@ import java.util.stream.Stream;
 import com.paymybuddy.UtilService;
 import com.paymybuddy.exceptions.ApplicationAccountException;
 import com.paymybuddy.exceptions.UserNotFoundException;
+import com.paymybuddy.model.Account;
 import com.paymybuddy.model.ApplicationAccount;
 import com.paymybuddy.model.User;
 import com.paymybuddy.repository.ApplicationAccountRepository;
@@ -32,7 +33,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 @TestMethodOrder(OrderAnnotation.class)
-public class ApplicationAccountServiceTest {
+public class ApplicationAccountServiceImplTest {
 
     @Mock
     private ApplicationAccountRepository appAccountRepository;
@@ -41,7 +42,7 @@ public class ApplicationAccountServiceTest {
     private UtilService utilService;
 
     @InjectMocks
-    private ApplicationAccountService cut;
+    private ApplicationAccountServiceImpl cut;
 
     static private ApplicationAccount appAccount = new ApplicationAccount();
     static private User user = new User();
@@ -108,7 +109,7 @@ public class ApplicationAccountServiceTest {
 
         when(appAccountRepository.save(Mockito.any(ApplicationAccount.class))).thenReturn(appAccount);
 
-        ApplicationAccount result = cut.save(appAccount);
+        Account result = cut.save(appAccount);
 
         assertThat(result).isEqualTo(appAccount);
     }

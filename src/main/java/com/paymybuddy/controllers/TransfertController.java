@@ -38,20 +38,23 @@ public class TransfertController {
   private ModelMapper modelMapper;
 
   /**
-   * return view of transfert.
+   * return view of transfert.No possiblity to go to transfert if user doesn't have a bank account
+   * registred.
    *
    * @param authentication authentication of connected user.
    * @param model model to send informations for the view
-   * @return view of transfert.
+   * @return view of transfert or view Profile to complete bank Account information to proceed a
+   *         transfert.
    */
   @GetMapping("")
-  public String getTransfert(Authentication authentication, Model model) {
+  public String getTransfert(Authentication authentication,RedirectAttributes redirectAttrs, Model model) {
     Optional<User> user = userService.findByEmail(authentication.getName());
 
     if (user.isPresent()) {
 
       User existedUser = user.get();
 
+      // No transaction can be procced if user has not a bankAccount
       if (existedUser.getBankAccount() != null) {
 
         // retrieve all connected user for user and create connectedUserDto
@@ -69,8 +72,9 @@ public class TransfertController {
         }
 
         // update list of all transactions for the user and display them in table
-        List<ApplicationTransaction> userAppTransactions = appTransactionService.findBySender(user.get());
+        List<ApplicationTransaction> userAppTransactions = appTransactionService.findBySender(existedUser);
         List<ApplicationTransactionDto> userTransactionsDto = new ArrayList<>();
+
         for (ApplicationTransaction userTransaction : userAppTransactions) {
           ApplicationTransactionDto appTransactionDto = modelMapper.map(userTransaction, ApplicationTransactionDto.class);
           appTransactionDto.setSenderEmail(userTransaction.getSender().getEmail());
@@ -84,6 +88,7 @@ public class TransfertController {
         return "transfert";
 
       } else {
+        redirectAttrs.addFlashAttribute("error", "Your's bank account is not registred so you can't proceed to a transfert now, Please fill in informations bank account first !");
         return "redirect:/profile";
       }
 
@@ -92,38 +97,70 @@ public class TransfertController {
     }
   }
 
+  /**
+   * Endpoint to add user to his connected user list.
+   * 
+   * @param email email of connected user we want to add for authenticated user
+   * @param redirectAttrs allows to send success, warning & error messages.
+   * @param auth authentication to retreive information of user
+   * @return redirectedUrl to /transfert if no problems
+   * @throws UserNotFoundException if authenticated user is not found in bdd.
+   */
   @PostMapping("/connection")
   public String saveConnectionUser(@Valid String email, RedirectAttributes redirectAttrs, Authentication auth) {
 
-    Optional<User> existedUser = userService.findByEmail(email);
+    Optional<User> connectedUser = userService.findByEmail(email);
     Optional<User> authenticatedUser = userService.findByEmail(auth.getName());
 
     if (authenticatedUser.isPresent()) {
+
       User user = authenticatedUser.get();
 
-      if (existedUser.isPresent()) {
-        User connectionUser = existedUser.get();
+      if (connectedUser.isPresent()) {
+
+        User connectionUser = connectedUser.get();
         List<User> connectedUsers = userService.findConnectedUserByEmail(user.getEmail());
 
         if (connectedUsers.contains(connectionUser)) {
+
           redirectAttrs.addFlashAttribute("warning", "the user with this email " + email + " already connected with you!");
+
         } else {
+
           user.addConnectionUser(connectionUser);
           userService.save(user);
           redirectAttrs.addFlashAttribute("success", "the user with this email " + email + " was registred!");
         }
+
       } else {
         log.error("Not be able to add connectionUser with email: {} cause of not found in database.", email);
         redirectAttrs.addFlashAttribute("error", "the user with this email " + email + " is not registred in application!");
+
       }
+      return "redirect:/transfert";
+
     } else {
       throw new UserNotFoundException("the user is not authenticated.");
     }
-    return "redirect:/transfert";
+
   }
 
+  /**
+   * endpoint to send money between authenticated user and connected user. a transactionDto is send
+   * with all informations.
+   * 
+   * @param transactionDto to retrieve informations to create a transaction between users
+   * @param bindingResult if fields are not correctly validated for transaction
+   * @param authentication authentication to retreive information of user
+   * @param redirectAttributes allows to send success, warning & error message and resend
+   *        transactionDto and bindigResult to transfert view if errors.
+   * @return redirectedUrl to transfert page with message
+   * @throws UserNotFoundException if users are not found in database
+   */
   @PostMapping("/sendmoneyto")
-  public String sendMoneyTo(@Valid @ModelAttribute(value = "transaction") ApplicationTransactionDto transactionDto, BindingResult bindingResult, Authentication authentication, Model model, RedirectAttributes redirectAttributes) {
+  public String sendMoneyTo(@Valid @ModelAttribute(value = "transaction") ApplicationTransactionDto transactionDto, BindingResult bindingResult, Authentication authentication,
+      RedirectAttributes redirectAttributes) {
+
     Optional<User> user = userService.findByEmail(authentication.getName());
 
     // in case of validation errors for transactionDto
@@ -138,7 +175,7 @@ public class TransfertController {
       return "redirect:/transfert";
     }
 
-    if (user.isPresent() && user.get().getEmail().equalsIgnoreCase(transactionDto.getSenderEmail())) {
+    if (user.isPresent() && user.get().getEmail().trim().equalsIgnoreCase(transactionDto.getSenderEmail())) {
       User sender = user.get();
 
       ApplicationTransaction transaction = modelMapper.map(transactionDto, ApplicationTransaction.class);
@@ -152,12 +189,11 @@ public class TransfertController {
         redirectAttributes.addFlashAttribute("success", "Transaction of " + succeededTransaction.getAmount() + "€ " + "to " + receiver.getFullName() + " was successfull!");
 
       } else {
-        log.error("Not be able to find connectionUser with email: {} during transaction cause of not found in database.", transactionDto.getReceiverEmail());
-        redirectAttributes.addFlashAttribute("error", "the receiver doesn't not exist!");
+        throw new UserNotFoundException("this receiver is not authenticated !");
       }
 
     } else {
-      throw new UserNotFoundException("this user is not authenticated or user account not corresponds with sender.email");
+      throw new UserNotFoundException("this sender is not authenticated or user account not corresponds with sender.email");
     }
 
     return ("redirect:/transfert");

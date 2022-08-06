@@ -22,7 +22,10 @@ import lombok.Setter;
 @Entity
 @Table(name = "transaction")
 public class ApplicationTransaction implements Serializable {
-
+   
+    public  enum TransactionType {
+        WIHTDRAW, CREDIT
+    }
 
     public static final double COMMISSIONPERCENT = 0.05d;
 
@@ -34,16 +37,18 @@ public class ApplicationTransaction implements Serializable {
 
     private String description;
 
+    private TransactionType type;
+
     private double amount;
 
     private double amountCommission;
 
 
-    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
+    @ManyToOne(cascade = { CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
     @JoinColumn(name = "sender_id")
     private User sender;
 
-    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
+    @ManyToOne(cascade = { CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
     @JoinColumn(name = "receiver_id")
     private User receiver;
 

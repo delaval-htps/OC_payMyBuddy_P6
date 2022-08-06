@@ -102,9 +102,9 @@ public class ApplicationControllerTest {
 
         // And we create for him a bankAccount only for missing branch coverage
         BankAccount bankAccount = new BankAccount();
-        bankAccount.setAccountNumber(123);
+        bankAccount.setIban("iban_test");
         bankAccount.setBalance(100d);
-        bankAccount.setBankCode(123);
+        
 
         existedUser.setBankAccount(bankAccount);
 
