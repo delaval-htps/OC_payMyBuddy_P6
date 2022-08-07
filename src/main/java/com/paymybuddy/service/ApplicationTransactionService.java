@@ -5,17 +5,11 @@ import java.math.RoundingMode;
 import java.util.Date;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.paymybuddy.model.ApplicationTransaction;
 import com.paymybuddy.model.User;
 import com.paymybuddy.model.ApplicationTransaction.TransactionType;
-import com.paymybuddy.pagination.Paged;
-import com.paymybuddy.pagination.Paging;
 import com.paymybuddy.repository.ApplicationTransactionRepository;
 
 @Service
@@ -41,14 +35,6 @@ public class ApplicationTransactionService {
             return appTransactionRepository.findBySender(user);
         } else
             throw new IllegalArgumentException("In method " + this.getClass().getName() + "." + this.getClass().getEnclosingMethod() + "() , user must be not null");
-    }
-
-    public Paged<ApplicationTransaction> getPageOfTranscation(User user, int pageNumber, int size) {
-        if (user != null) {
-           
-            Page<ApplicationTransaction> appTransactionsPage = appTransactionRepository.findAllByUser(user,PageRequest.of(pageNumber, size, Direction.ASC, "id"));
-            return new Paged<>(appTransactionsPage, Paging.of(appTransactionsPage.getTotalPages(), pageNumber, size));
-        }
     }
 
     /**
