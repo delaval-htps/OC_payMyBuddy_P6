@@ -46,7 +46,8 @@ public class ApplicationTransactionService {
 
     public Paged<ApplicationTransaction> getPageOfTransaction(User user, int pageNumber, int size) {
         if (user != null) {
-            Page<ApplicationTransaction> appTransactionsPage = appTransactionRepository.findAllByUser(user,
+            
+            Page<ApplicationTransaction> appTransactionsPage = appTransactionRepository.findAllBySender(user,
             PageRequest.of(pageNumber, size, Direction.ASC, "id"));
             
             return new Paged<>(appTransactionsPage, Paging.of(appTransactionsPage.getTotalPages(), pageNumber, size));

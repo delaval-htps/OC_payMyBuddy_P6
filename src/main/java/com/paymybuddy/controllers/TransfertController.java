@@ -1,21 +1,12 @@
 package com.paymybuddy.controllers;
 
-import com.paymybuddy.dto.ApplicationTransactionDto;
-import com.paymybuddy.dto.ConnectedUserDto;
-import com.paymybuddy.exceptions.UserNotFoundException;
-import com.paymybuddy.model.ApplicationTransaction;
-import com.paymybuddy.model.User;
-import com.paymybuddy.pagination.Paged;
-import com.paymybuddy.service.ApplicationTransactionService;
-import com.paymybuddy.service.UserService;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import javax.validation.Valid;
-import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.jaxb.SpringDataJaxb.PageDto;
+import org.springframework.data.domain.Page;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -26,6 +17,15 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import com.paymybuddy.dto.ApplicationTransactionDto;
+import com.paymybuddy.dto.ConnectedUserDto;
+import com.paymybuddy.exceptions.UserNotFoundException;
+import com.paymybuddy.model.ApplicationTransaction;
+import com.paymybuddy.model.User;
+import com.paymybuddy.pagination.Paged;
+import com.paymybuddy.service.ApplicationTransactionService;
+import com.paymybuddy.service.UserService;
+import lombok.extern.log4j.Log4j2;
 
 @Controller
 @RequestMapping("/transfert")
@@ -82,8 +82,7 @@ public class TransfertController {
         // update list of all transactions for the user and display them in table
         // List<ApplicationTransaction> userAppTransactions = appTransactionService.findBySender(existedUser);
         // List<ApplicationTransactionDto> userTransactionsDto = new ArrayList<>();
-        Paged<ApplicationTransaction> pageUserTransaction = appTransactionService.getPageOfTransaction(existedUser,
-            pageNumber, size);
+        Paged<ApplicationTransaction> pageUserTransaction = appTransactionService.getPageOfTransaction(existedUser, pageNumber, size);
 
         // for (ApplicationTransaction userTransaction : userAppTransactions) {
         //   ApplicationTransactionDto appTransactionDto = modelMapper.map(userTransaction,ApplicationTransactionDto.class);
@@ -91,10 +90,14 @@ public class TransfertController {
         //   appTransactionDto.setReceiverEmail(userTransaction.getReceiver().getEmail());
         //   userTransactionsDto.add(appTransactionDto);
         // }
-        Paged<ApplicationTransactionDto> pageUserTransactionDto = new Paged<>();
-        modelMapper.map(pageUserTransaction, pageUserTransactionDto);
 
+        Page<ApplicationTransactionDto> pageTransactionDto =pageUserTransaction.getPage().map(x -> modelMapper.map(x, ApplicationTransactionDto.class));
+        Paged<ApplicationTransactionDto> pageUserTransactionDto = new Paged<>(pageTransactionDto, pageUserTransaction.getPaging());
         model.addAttribute("userTransactions", pageUserTransactionDto);
+        for (ApplicationTransaction transaction : pageUserTransaction.getPage()) {
+          System.out.println("Transaction:" + transaction.getAmount());
+        }
+        
 
         model.addAttribute("userEmail", user.get().getEmail());
 

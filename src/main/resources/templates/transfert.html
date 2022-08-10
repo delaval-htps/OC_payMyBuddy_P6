@@ -99,7 +99,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr th:each="transaction :${userTransactions}">
+                                <tr th:each="transaction :${userTransactions.page}">
                                     <td th:text="${transaction.receiverEmail}"></td>
                                     <td th:text="${transaction.description}"></td>
                                     <td th:text="${transaction.amount} +' €'"></td>

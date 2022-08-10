@@ -20,6 +20,7 @@ public interface ApplicationTransactionRepository extends JpaRepository<Applicat
 
     @Query(value = "select at from ApplicationTransaction at where at.receiver=?1")
     List<ApplicationTransaction> findByReceiver(User reciever);
-
-    Page<ApplicationTransaction> findAllByUser(User user, Pageable pageable);
+    
+    @Query(value = "select at from ApplicationTransaction at where at.sender= ?1")
+    Page<ApplicationTransaction> findAllBySender(User user, Pageable pageable);
 }
