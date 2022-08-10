@@ -52,9 +52,8 @@ public class TransfertController {
    */
   @GetMapping("")
   public String getTransfert(
-      @RequestParam(value = "pageNumber", required = false, defaultValue = "1") int pageNumber,
-      @RequestParam(value = "size", required = false, defaultValue = "5") int size,
-      Authentication authentication,RedirectAttributes redirectAttrs,Model model) {
+     
+      Authentication authentication, RedirectAttributes redirectAttrs, Model model) {
 
     Optional<User> user = userService.findByEmail(authentication.getName());
 
@@ -80,34 +79,58 @@ public class TransfertController {
         }
 
         // update list of all transactions for the user and display them in table
-        // List<ApplicationTransaction> userAppTransactions = appTransactionService.findBySender(existedUser);
-        // List<ApplicationTransactionDto> userTransactionsDto = new ArrayList<>();
-        Paged<ApplicationTransaction> pageUserTransaction = appTransactionService.getPageOfTransaction(existedUser, pageNumber, size);
 
-        // for (ApplicationTransaction userTransaction : userAppTransactions) {
-        //   ApplicationTransactionDto appTransactionDto = modelMapper.map(userTransaction,ApplicationTransactionDto.class);
-        //   appTransactionDto.setSenderEmail(userTransaction.getSender().getEmail());
-        //   appTransactionDto.setReceiverEmail(userTransaction.getReceiver().getEmail());
-        //   userTransactionsDto.add(appTransactionDto);
-        // }
+        if (!model.containsAttribute("userTransactions")) {
 
-        Page<ApplicationTransactionDto> pageTransactionDto =pageUserTransaction.getPage().map(x -> modelMapper.map(x, ApplicationTransactionDto.class));
-        Paged<ApplicationTransactionDto> pageUserTransactionDto = new Paged<>(pageTransactionDto, pageUserTransaction.getPaging());
-        model.addAttribute("userTransactions", pageUserTransactionDto);
-        for (ApplicationTransaction transaction : pageUserTransaction.getPage()) {
-          System.out.println("Transaction:" + transaction.getAmount());
+          Paged<ApplicationTransaction> pageUserTransaction = appTransactionService.getPageOfTransaction(existedUser, 0,
+              5);
+
+          Page<ApplicationTransactionDto> pageTransactionDto = pageUserTransaction.getPage()
+              .map(x -> modelMapper.map(x, ApplicationTransactionDto.class));
+
+          Paged<ApplicationTransactionDto> pageUserTransactionDto = new Paged<>(pageTransactionDto,
+              pageUserTransaction.getPaging());
+
+          model.addAttribute("userTransactions", pageUserTransactionDto);
         }
         
-
+        //add user email to model
         model.addAttribute("userEmail", user.get().getEmail());
 
         return "transfert";
 
       } else {
+        
+        // redirection to profile if user doesn't have a bankAccount.
         redirectAttrs.addFlashAttribute("error",
-        "Your's bank account is not registred so you can't proceed to a transfert now, Please fill in informations bank account first !");
+            "Your's bank account is not registred so you can't proceed to a transfert now, Please fill in informations bank account first !");
         return "redirect:/profile";
       }
+
+    } else {
+      throw new UserNotFoundException("this user is not authenticated!");
+    }
+  }
+
+  @PostMapping("/paging")
+  public String getPageTransaction ( @RequestParam(value = "pageNumber", required = false, defaultValue = "1") int pageNumber,
+      @RequestParam(value = "size", required = false, defaultValue = "5") int size, Authentication authentication) {
+
+    Optional<User> user = userService.findByEmail(authentication.getName());
+    if (user.isPresent()) {
+
+      User existedUser = user.get();
+
+      Paged<ApplicationTransaction> pageUserTransaction = appTransactionService.getPageOfTransaction(existedUser, pageNumber, size);
+
+      Page<ApplicationTransactionDto> pageTransactionDto = pageUserTransaction.getPage()
+          .map(x -> modelMapper.map(x, ApplicationTransactionDto.class));
+
+      Paged<ApplicationTransactionDto> pageUserTransactionDto = new Paged<>(pageTransactionDto,
+          pageUserTransaction.getPaging());
+
+      return "redirect:/transfert";
+      
     } else {
       throw new UserNotFoundException("this user is not authenticated!");
     }

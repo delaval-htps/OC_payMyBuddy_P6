@@ -106,6 +106,19 @@
                                 </tr>
                             </tbody>
                         </table>
+                        <nav aria-label="page-navigation" class="paging">
+                            <ul class="pagination" th:if="${userTransactions.page.totalPages >0}">
+                                <li class="page-item" th:classappend="${!userTransactions.paging.isPreviousEnable?'disabled':''}">
+                                    <a th:href="@{'/paging?pageNumber='+ ${userTransactions.paging.pageNumber-1}}" class="page-link">Previous</a>
+                                </li>
+                                <th:block th:each="item:${userTransactions.paging.getItems()}">
+                                    <li class="page-item" th:classappend="${item.index == userTransactions.paging.pageNumber?'active':''}"
+                                    th:if="${item.pageItemType.name == 'PAGE'}">
+                                        <a class="page_link" th:href="@{'/paging?pageNumber='+ ${item.index}}" th:text="${item.index}"></a>
+                                    </li>
+                                </th:block>
+                            </ul>
+                        </nav>
                     </div>
                 </div>
             </article>
