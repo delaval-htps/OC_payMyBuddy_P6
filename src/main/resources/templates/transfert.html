@@ -106,17 +106,23 @@
                                 </tr>
                             </tbody>
                         </table>
-                        <nav aria-label="page-navigation" class="paging">
+                        <nav aria-label="Page navigation" >
                             <ul class="pagination" th:if="${userTransactions.page.totalPages >0}">
                                 <li class="page-item" th:classappend="${!userTransactions.paging.isPreviousEnable?'disabled':''}">
-                                    <a th:href="@{'/paging?pageNumber='+ ${userTransactions.paging.pageNumber-1}}" class="page-link">Previous</a>
+                                    <a th:href="@{'/transfert/paging?pageNumber='+ ${userTransactions.paging.pageNumber-1}}" class="page-link" tabindex="-1">Previous</a>
                                 </li>
                                 <th:block th:each="item:${userTransactions.paging.getItems()}">
                                     <li class="page-item" th:classappend="${item.index == userTransactions.paging.pageNumber?'active':''}"
                                     th:if="${item.pageItemType.name == 'PAGE'}">
-                                        <a class="page_link" th:href="@{'/paging?pageNumber='+ ${item.index}}" th:text="${item.index}"></a>
+                                        <a class="page-link" th:href="@{'/transfert/paging?pageNumber='+ ${item.index}}" th:text="${item.index}"></a>
+                                    </li>
+                                    <li class="page-item" th:if="${item.pageItemType.name == 'DOTS'}">
+                                        <a class="page-link">...</a>
                                     </li>
                                 </th:block>
+                                <li class="page-item" th:classappend="${!userTransactions.paging.isNextEnable?'disabled':''}">
+                                    <a th:href="@{'/transfert/paging?pageNumber='+ ${userTransactions.paging.pageNumber+1}}" class="page-link">Next</a>
+                                </li>
                             </ul>
                         </nav>
                     </div>

@@ -112,9 +112,11 @@ public class TransfertController {
     }
   }
 
-  @PostMapping("/paging")
-  public String getPageTransaction ( @RequestParam(value = "pageNumber", required = false, defaultValue = "1") int pageNumber,
-      @RequestParam(value = "size", required = false, defaultValue = "5") int size, Authentication authentication) {
+  @GetMapping("/paging")
+  public String getPageTransaction(
+                @RequestParam(value = "pageNumber", required = false, defaultValue = "1") int pageNumber,
+                @RequestParam(value = "size", required = false, defaultValue = "5") int size,
+                Authentication authentication,RedirectAttributes redirectAttrs) {
 
     Optional<User> user = userService.findByEmail(authentication.getName());
     if (user.isPresent()) {
@@ -128,7 +130,8 @@ public class TransfertController {
 
       Paged<ApplicationTransactionDto> pageUserTransactionDto = new Paged<>(pageTransactionDto,
           pageUserTransaction.getPaging());
-
+      System.out.println(pageUserTransactionDto);
+      redirectAttrs.addFlashAttribute("userTransactions", pageUserTransactionDto);
       return "redirect:/transfert";
       
     } else {
