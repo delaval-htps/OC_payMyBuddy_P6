@@ -32,6 +32,12 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class TransfertController {
 
+  private static final String REDIRECT_TRANSFERT = "redirect:/transfert";
+  private static final String ERROR_MESSAGE = "error";
+  private static final String SUCCESS_MESSAGE = "success";
+  private static final String TRANSACTION = "transaction";
+  private static final String USER_TRANSACTIONS = "userTransactions";
+
   @Autowired
   private UserService userService;
 
@@ -47,13 +53,10 @@ public class TransfertController {
    *
    * @param authentication authentication of connected user.
    * @param model          model to send informations for the view
-   * @return view of transfert or view Profile to complete bank Account information to 
-   * proceed a transfert.
+   * @return view of transfert or view Profile to complete bank account information to proceed a transfert.
    */
   @GetMapping("")
-  public String getTransfert(
-     
-      Authentication authentication, RedirectAttributes redirectAttrs, Model model) {
+  public String getTransfert(Authentication authentication, RedirectAttributes redirectAttrs, Model model) {
 
     Optional<User> user = userService.findByEmail(authentication.getName());
 
@@ -67,42 +70,43 @@ public class TransfertController {
         // retrieve all connected user for user and create connectedUserDto
         List<User> connectedUsers = userService.findConnectedUserByEmail(existedUser.getEmail());
         List<ConnectedUserDto> connectedUsersDto = new ArrayList<>();
+    
         for (User connectedUser : connectedUsers) {
           connectedUsersDto.add(modelMapper.map(connectedUser, ConnectedUserDto.class));
         }
         model.addAttribute("connectedUsers", connectedUsersDto);
 
         // creation of TransactionDto to fill form for sendMoneyTo
-        if (!model.containsAttribute("transaction")) {
+        if (!model.containsAttribute(TRANSACTION)) {
+
           ApplicationTransactionDto transactionDto = new ApplicationTransactionDto();
-          model.addAttribute("transaction", transactionDto);
+          model.addAttribute(TRANSACTION, transactionDto);
         }
 
         // update list of all transactions for the user and display them in table
 
-        if (!model.containsAttribute("userTransactions")) {
+        if (!model.containsAttribute(USER_TRANSACTIONS)) {
 
           Paged<ApplicationTransaction> pageUserTransaction = appTransactionService.getPageOfTransaction(existedUser, 0,
               5);
 
           Page<ApplicationTransactionDto> pageTransactionDto = pageUserTransaction.getPage()
-              .map(x -> modelMapper.map(x, ApplicationTransactionDto.class));
+          .map(x -> modelMapper.map(x, ApplicationTransactionDto.class));
 
-          Paged<ApplicationTransactionDto> pageUserTransactionDto = new Paged<>(pageTransactionDto,
-              pageUserTransaction.getPaging());
+          Paged<ApplicationTransactionDto> pageUserTransactionDto = new Paged<>(pageTransactionDto,pageUserTransaction.getPaging());
 
-          model.addAttribute("userTransactions", pageUserTransactionDto);
+          model.addAttribute(USER_TRANSACTIONS, pageUserTransactionDto);
         }
-        
-        //add user email to model
+
+        // add user email to model
         model.addAttribute("userEmail", user.get().getEmail());
 
         return "transfert";
 
       } else {
-        
+
         // redirection to profile if user doesn't have a bankAccount.
-        redirectAttrs.addFlashAttribute("error",
+        redirectAttrs.addFlashAttribute(ERROR_MESSAGE,
             "Your's bank account is not registred so you can't proceed to a transfert now, Please fill in informations bank account first !");
         return "redirect:/profile";
       }
@@ -114,26 +118,26 @@ public class TransfertController {
 
   @GetMapping("/paging")
   public String getPageTransaction(
-                @RequestParam(value = "pageNumber", required = false, defaultValue = "1") int pageNumber,
-                @RequestParam(value = "size", required = false, defaultValue = "5") int size,
-                Authentication authentication,RedirectAttributes redirectAttrs) {
+      @RequestParam(value = "pageNumber", required = false, defaultValue = "1") int pageNumber,
+      @RequestParam(value = "size", required = false, defaultValue = "5") int size,
+      Authentication authentication, RedirectAttributes redirectAttrs) {
 
     Optional<User> user = userService.findByEmail(authentication.getName());
+    
     if (user.isPresent()) {
 
       User existedUser = user.get();
 
-      Paged<ApplicationTransaction> pageUserTransaction = appTransactionService.getPageOfTransaction(existedUser, pageNumber, size);
+      Paged<ApplicationTransaction> pageUserTransaction = appTransactionService.getPageOfTransaction(existedUser,pageNumber, size);
 
       Page<ApplicationTransactionDto> pageTransactionDto = pageUserTransaction.getPage()
           .map(x -> modelMapper.map(x, ApplicationTransactionDto.class));
 
-      Paged<ApplicationTransactionDto> pageUserTransactionDto = new Paged<>(pageTransactionDto,
-          pageUserTransaction.getPaging());
-      System.out.println(pageUserTransactionDto);
-      redirectAttrs.addFlashAttribute("userTransactions", pageUserTransactionDto);
-      return "redirect:/transfert";
-      
+      Paged<ApplicationTransactionDto> pageUserTransactionDto = new Paged<>(pageTransactionDto,pageUserTransaction.getPaging());
+
+      redirectAttrs.addFlashAttribute(USER_TRANSACTIONS, pageUserTransactionDto);
+      return REDIRECT_TRANSFERT;
+
     } else {
       throw new UserNotFoundException("this user is not authenticated!");
     }
@@ -142,7 +146,8 @@ public class TransfertController {
   /**
    * Endpoint to add user to his connected user list.
    *
-   * @param email         email of connected user we want to add for authenticated user
+   * @param email         email of connected user we want to add for authenticated
+   *                      user
    * @param redirectAttrs allows to send success, warning & error messages.
    * @param auth          authentication to retreive information of user
    * @return redirectedUrl to /transfert if no problems
@@ -155,38 +160,52 @@ public class TransfertController {
     Optional<User> authenticatedUser = userService.findByEmail(auth.getName());
 
     if (authenticatedUser.isPresent()) {
+
       User user = authenticatedUser.get();
 
       if (connectedUser.isPresent()) {
+
         User connectionUser = connectedUser.get();
         List<User> connectedUsers = userService.findConnectedUserByEmail(user.getEmail());
 
         if (connectedUsers.contains(connectionUser)) {
-          redirectAttrs.addFlashAttribute("warning","the user with this email " + email + " already connected with you!");
+
+          redirectAttrs.addFlashAttribute("warning",
+              "the user with this email " + email + " already connected with you!");
+          
         } else {
+
           user.addConnectionUser(connectionUser);
           userService.save(user);
-          redirectAttrs.addFlashAttribute("success","the user with this email " + email + " was registred!");
+          redirectAttrs.addFlashAttribute(SUCCESS_MESSAGE, "the user with this email " + email + " was registred!");
+        
         }
       } else {
-        log.error("Not be able to add connectionUser with email: {} cause of not found in database.",email);
-        redirectAttrs.addFlashAttribute("error","the user with this email " + email +" is not registred in application!");
+        
+        log.error("Not be able to add connectionUser with email: {} cause of not found in database.", email);
+        redirectAttrs.addFlashAttribute(ERROR_MESSAGE,"the user with this email " + email + " is not registred in application!");
       }
-      return "redirect:/transfert";
+      return REDIRECT_TRANSFERT;
+
     } else {
       throw new UserNotFoundException("the user is not authenticated.");
     }
   }
 
   /**
-   * endpoint to send money between authenticated user and connected user. a transactionDto is send
+   * endpoint to send money between authenticated user and connected user. a
+   * transactionDto is send
    * with all informations.
    *
-   * @param transactionDto     to retrieve informations to create a transaction between users
-   * @param bindingResult      if fields are not correctly validated for transaction
+   * @param transactionDto     to retrieve informations to create a transaction
+   *                           between users
+   * @param bindingResult      if fields are not correctly validated for
+   *                           transaction
    * @param authentication     authentication to retreive information of user
-   * @param redirectAttributes allows to send success, warning & error message and resend
-   *                           transactionDto and bindigResult to transfert view if errors.
+   * @param redirectAttributes allows to send success, warning & error message and
+   *                           resend
+   *                           transactionDto and bindigResult to transfert view
+   *                           if errors.
    * @return redirectedUrl to transfert page with message
    * @throws UserNotFoundException if users are not found in database
    */
@@ -199,14 +218,14 @@ public class TransfertController {
 
     // in case of validation errors for transactionDto
     if (bindingResult.hasErrors()) {
-      redirectAttributes.addFlashAttribute("error","a problem has occured in transaction, please check red fields!");
+      redirectAttributes.addFlashAttribute(ERROR_MESSAGE, "a problem has occured in transaction, please check red fields!");
 
       // Add bindingResult and ModelAttribute transactionDto to redirectAttribute for redirection
       // see in @GetMapping condition on creation of new transactionDto
       redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.transaction", bindingResult);
 
-      redirectAttributes.addFlashAttribute("transaction", transactionDto);
-      return "redirect:/transfert";
+      redirectAttributes.addFlashAttribute(TRANSACTION, transactionDto);
+    
     }
 
     if (user.isPresent() && user.get().getEmail().trim().equalsIgnoreCase(transactionDto.getSenderEmail())) {
@@ -220,18 +239,25 @@ public class TransfertController {
         User receiver = receiverUser.get();
 
         // proceed transaction beetween sender and receiver
-        ApplicationTransaction succeededTransaction = appTransactionService.proceedBetweenUsers(transaction, sender, receiver);
-        redirectAttributes.addFlashAttribute("success", "Transaction of "
-            + succeededTransaction.getAmount() + "€ " + "to " + receiver.getFullName() + " was successfull!");
+        try {
+          ApplicationTransaction succeededTransaction = appTransactionService.proceedBetweenUsers(transaction, sender,receiver);
+          
+          redirectAttributes.addFlashAttribute(SUCCESS_MESSAGE, "Transaction of "
+              + succeededTransaction.getAmount() + "€ " + "to " + receiver.getFullName() + " was successfull!");
+
+        } catch (Exception e) {
+          redirectAttributes.addFlashAttribute(ERROR_MESSAGE, "A problem occured with transaction , it was not executed: " +e.getMessage()+". Please retry it or contact us from more information.");
+        }
 
       } else {
         throw new UserNotFoundException("this receiver is not authenticated !");
       }
 
     } else {
-      throw new UserNotFoundException("this sender is not authenticated or user account not corresponds with sender.email");
+      throw new UserNotFoundException(
+          "this sender is not authenticated or user account not corresponds with sender.email");
     }
 
-    return ("redirect:/transfert");
+    return REDIRECT_TRANSFERT;
   }
 }

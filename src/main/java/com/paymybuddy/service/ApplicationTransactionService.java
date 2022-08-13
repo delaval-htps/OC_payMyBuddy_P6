@@ -109,8 +109,6 @@ public class ApplicationTransactionService {
     @Transactional(rollbackFor = { RuntimeException.class, Exception.class })
     public ApplicationTransaction proceedBetweenUsers(ApplicationTransaction transaction, User sender, User receiver) {
 
-        ApplicationTransaction result = new ApplicationTransaction();
-
         transaction.setTransactionDate(new Date());
         transaction.setSender(sender);
         transaction.setReceiver(receiver);
@@ -121,16 +119,23 @@ public class ApplicationTransactionService {
                 (transaction.getAmount() + transaction.getAmountCommission()));
         appAccountService.credit(transaction.getReceiver().getApplicationAccount(), transaction.getAmount());
 
-        result = appTransactionRepository.save(transaction);
-
-        return result;
+        return appTransactionRepository.save(transaction);
     }
 
+    /**
+     * proceed and create and save a transaction between user and his bank. the
+     * application accounts of user will be credited/withdrawed with amount of saved
+     * transaction.
+     * Arguments of method are not null because verified by controller before.
+     * 
+     * @param transaction application transaction with amount to send , commission's
+     *                    amount, description and date.Amount of transaction must pe
+     *                    positive.
+     * @param bankAccountOwner      owner of bank account
+     * @return the transaction saved with all updated field.
+     */
     @Transactional(rollbackFor = RuntimeException.class)
-    public ApplicationTransaction proceedBankTransaction(ApplicationTransaction bankTransaction,
-            User bankAccountOwner) {
-
-        ApplicationTransaction result = new ApplicationTransaction();
+    public ApplicationTransaction proceedBankTransaction(ApplicationTransaction bankTransaction,User bankAccountOwner) {
 
         bankTransaction.setTransactionDate(new Date());
         bankTransaction.setSender(bankAccountOwner);
@@ -154,9 +159,7 @@ public class ApplicationTransactionService {
             default:
 
         }
-
-        result = appTransactionRepository.save(bankTransaction);
-        return result;
+        return appTransactionRepository.save(bankTransaction);
     }
 
 }
