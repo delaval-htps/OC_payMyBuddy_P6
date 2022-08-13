@@ -354,7 +354,7 @@
 									</div>
 									<div th:if="!${user.bankAccountRegistred}"
 										class="row mt-5 justify-content-evenly my-4">
-										<input class="col-2 btn btn-success custom-shadow " id="valider" type="submit"
+										<input class="col-2 btn btn-	 custom-shadow " id="valider" type="submit"
 											value="enregistrer">
 									</div>
 								</div>
@@ -410,6 +410,8 @@
 	var editionProfile = /*[[${user.editionProfile}]]*/ 'false';
 	var bankAccountRegistred = /*[[${user.bankAccountRegistred}]]*/ 'false';
 	var errorMessage = /*[[${error}]]*/'null';
+	var successMessage = /*[[${success}]]*/'null';
+	var warningMessage = /*[[${warning}]]*/'null';
 
 	function showProfile() {
 		if (!editionProfile) {
@@ -445,7 +447,7 @@
 	$(document).ready(function () {
 
 		if (editionProfile) { editProfile(); }
-		if (errorMessage) { $('#liveToast').toast('show'); }
+		if (errorMessage || successMessage || warningMessage) { $('#liveToast').toast('show'); }
 
 	});
 
