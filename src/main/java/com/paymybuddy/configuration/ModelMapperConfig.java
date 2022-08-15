@@ -59,7 +59,7 @@ public class ModelMapperConfig {
 
   @Bean
   public Converter<String, TransactionType> convertStringToEnum() {
-    return context -> context.getSource().equalsIgnoreCase("CREDIT") ? TransactionType.CREDIT : TransactionType.WIHTDRAW;
+    return context -> context.getSource().equalsIgnoreCase("CREDIT") ? TransactionType.CREDIT : TransactionType.WITHDRAW;
   }
 
   PropertyMap<BankCardDto, BankCard> bankCardMap = new PropertyMap<BankCardDto, BankCard>() {

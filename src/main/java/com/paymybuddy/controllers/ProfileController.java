@@ -181,7 +181,7 @@ public class ProfileController {
                         // save of bank account and bankCard of user
                         bankAccount.setBankCard(bankCard);
                         bankAccount.addUser(currentUser);
-                        BankAccount userBankAccount = (BankAccount) bankAccountService.save(bankAccount);
+                        BankAccount userBankAccount =  bankAccountService.save(bankAccount);
 
                         // send of user's bank account
                         redirectAttributes.addFlashAttribute("success", "your bank account was correctly registred.");
@@ -240,7 +240,7 @@ public class ProfileController {
                         ApplicationTransaction executedBankTransaction = appTransactionService
                                         .proceedBankTransaction(bankTransaction, existedUser);
 
-                        String messageTransaction = executedBankTransaction.getType().equals(TransactionType.WIHTDRAW)
+                        String messageTransaction = executedBankTransaction.getType().equals(TransactionType.WITHDRAW)
                                         ? "from your application account to your bank account"
                                         : "from your bank account to your application account";
                        

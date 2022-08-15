@@ -113,7 +113,7 @@ public class ApplicationTransactionService {
         transaction.setSender(sender);
         transaction.setReceiver(receiver);
         transaction.setAmountCommission(this.calculateAmountCommission(transaction.getAmount()));
-        transaction.setType(TransactionType.WIHTDRAW);
+        transaction.setType(TransactionType.WITHDRAW);
 
         appAccountService.withdraw(transaction.getSender().getApplicationAccount(),
                 (transaction.getAmount() + transaction.getAmountCommission()));
@@ -143,7 +143,7 @@ public class ApplicationTransactionService {
 
         switch (bankTransaction.getType()) {
 
-            case WIHTDRAW:
+            case WITHDRAW:
                 appAccountService.withdraw(bankTransaction.getSender().getApplicationAccount(),
                         (bankTransaction.getAmount() + bankTransaction.getAmountCommission()));
                 bankAccountService.credit(bankTransaction.getSender().getBankAccount(), bankTransaction.getAmount());

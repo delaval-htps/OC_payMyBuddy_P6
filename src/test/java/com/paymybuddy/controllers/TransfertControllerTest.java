@@ -298,7 +298,7 @@ public class TransfertControllerTest {
         // create a validated applicationTransactionDto 
         ApplicationTransactionDto appTransactionDto = new ApplicationTransactionDto();
         appTransactionDto.setAmount(BigDecimal.TEN);
-        appTransactionDto.setType("WIHTDRAW");
+        appTransactionDto.setType(TransactionType.WITHDRAW.toString());
         appTransactionDto.setDescription("test");
         appTransactionDto.setReceiverEmail(connectedUser.getEmail());
         appTransactionDto.setSenderEmail(existedUser.getEmail());
@@ -317,7 +317,7 @@ public class TransfertControllerTest {
         // create a validated applicationTransactionDto but with sender'email different to existedUser 
         ApplicationTransactionDto appTransactionDto = new ApplicationTransactionDto();
         appTransactionDto.setAmount(BigDecimal.TEN);
-        appTransactionDto.setType("WIHTDRAW");
+        appTransactionDto.setType(TransactionType.WITHDRAW.toString());
         appTransactionDto.setDescription("test");
         appTransactionDto.setReceiverEmail(connectedUser.getEmail());
         appTransactionDto.setSenderEmail(connectedUser.getEmail());
@@ -336,7 +336,7 @@ public class TransfertControllerTest {
         // create a validated applicationTransactionDto 
         ApplicationTransactionDto appTransactionDto = new ApplicationTransactionDto();
         appTransactionDto.setAmount(BigDecimal.TEN);
-        appTransactionDto.setType("WIHTDRAW");
+        appTransactionDto.setType(TransactionType.WITHDRAW.toString());
         appTransactionDto.setDescription("test");
         appTransactionDto.setReceiverEmail(connectedUser.getEmail());
         appTransactionDto.setSenderEmail(existedUser.getEmail());
@@ -359,7 +359,7 @@ public class TransfertControllerTest {
          applicationTransaction.setAmount(10d);
          applicationTransaction.setDescription("test_transaction");
          applicationTransaction.setReceiver(connectedUser);
-         applicationTransaction.setType(TransactionType.WIHTDRAW);
+         applicationTransaction.setType(TransactionType.WITHDRAW);
          applicationTransaction.setSender(existedUser);
          applicationTransaction.setTransactionDate(new Date());
          applicationTransaction.setAmountCommission(5d);

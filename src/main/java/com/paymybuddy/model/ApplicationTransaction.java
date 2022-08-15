@@ -28,7 +28,7 @@ import lombok.ToString;
 public class ApplicationTransaction implements Serializable {
    
     public  enum TransactionType {
-        WIHTDRAW, CREDIT
+        WITHDRAW, CREDIT
     }
 
     public static final double COMMISSIONPERCENT = 0.05d;

@@ -39,10 +39,14 @@
 						<fieldset id="profileForm" class=" mb-4  shadow  p-3  bg-white rounded "
 							th:classappend="${user.bankAccountRegistred} ? '':'special-fieldset'">
 
-							<legend class="float-none w-auto lead bg-white mx-2 px-2"><h3 class="d-inline">
-								<img src="/images/icons8-utilisateur-50.png" alt="user image"/>Personal
-								Information</h3></legend>
-								<h4  class="mb-5 text-center text-success">Here your personnal information, you can edit them by clicking on the pencil in the right</h4>
+							<legend class="float-none w-auto lead bg-white mx-2 px-2">
+								<h3 class="d-inline">
+									<img src="/images/icons8-utilisateur-50.png" alt="user image" />Personal
+									Information
+								</h3>
+							</legend>
+							<h4 class="mb-5 text-center text-success">Here your personnal information, you can edit them
+								by clicking on the pencil in the right</h4>
 
 							<div class="row  justify-content-evenly ">
 								<div class="col-6 col-md-5 col-sm-12 ">
@@ -105,8 +109,9 @@
 												class="fas fa-phone-alt mr-0"></i></label>
 										<div class="col-sm-11 mb-2">
 											<input type="text" class="col-12 form-control no-border bg-white" readonly
-												th:field="*{phone}" th:classappend="${#fields.hasErrors('phone')? 'is-invalid':''}"/>
-											
+												th:field="*{phone}"
+												th:classappend="${#fields.hasErrors('phone')? 'is-invalid':''}" />
+
 											<div class="invalid-feedback">
 												<p th:each="error:${#fields.errors('phone')}" th:text="${error}"></p>
 											</div>
@@ -118,12 +123,12 @@
 											<i class="fas fa-map-marker-alt"></i></label>
 										<div class="col-sm-11 mb-2">
 											<input type="text" class="col-12  form-control no-border bg-white" readonly
-												th:field="*{address}" th:classappend="${#fields.hasErrors('address')? 'is-invalid':''}"/>
-												<div class="invalid-feedback">
-													<p th:each="error:${#fields.errors('address')}"
-														th:text="${error}">
-													</p>
-												</div>
+												th:field="*{address}"
+												th:classappend="${#fields.hasErrors('address')? 'is-invalid':''}" />
+											<div class="invalid-feedback">
+												<p th:each="error:${#fields.errors('address')}" th:text="${error}">
+												</p>
+											</div>
 										</div>
 									</div>
 									<div class="row mb-2 ">
@@ -131,22 +136,21 @@
 										<div class="col-sm-11 mb-3">
 											<input type="number" th:field="*{zip}" readonly
 												class=" col-12 form-control no-border bg-white" />
-												<div class="invalid-feedback">
-													<p th:each="error:${#fields.errors('zip')}"
-														th:text="${error}">
-													</p>
-												</div>
+											<div class="invalid-feedback">
+												<p th:each="error:${#fields.errors('zip')}" th:text="${error}">
+												</p>
+											</div>
 										</div>
 
 										<label class=" col-md-1 col-form-label" for="city">City:</label>
 										<div class="col-sm-11 mb-2">
 											<input type="text" class="col-12 form-control no-border bg-white" readonly
-												th:field="*{city}" th:classappend="${#fields.hasErrors('city')? 'is-invalid':''}"/>
-												<div class="invalid-feedback">
-													<p th:each="error:${#fields.errors('city')}"
-														th:text="${error}">
-													</p>
-												</div>
+												th:field="*{city}"
+												th:classappend="${#fields.hasErrors('city')? 'is-invalid':''}" />
+											<div class="invalid-feedback">
+												<p th:each="error:${#fields.errors('city')}" th:text="${error}">
+												</p>
+											</div>
 										</div>
 									</div>
 									<div class="row justify-content-evenly mb-2 " id="submit-profile"
@@ -172,32 +176,34 @@
 							<fieldset class="mb-3 shadow p-2 bg-white rounded">
 								<legend class="float-none w-auto lead bg-white ms-3 px-2"> <img
 										src="/images/icons8-bank-64.png" style="width:50px;" class="card-img-top m-1"
-										alt="..."> <h3 class="d-inline">Account transaction: withdraw/credit</h3>
+										alt="...">
+									<h3 class="d-inline">Account transaction: withdraw/credit</h3>
 								</legend>
-								<h4  class="mb-5 text-center text-success">Here you can withdraw or credit your account: just please choose the type of transaction , fill in a amount and save it</h4>
+								<h4 class="mb-5 text-center text-success">Here you can withdraw or credit your account:
+									just please choose the type of transaction , fill in a amount and save it</h4>
 
-								<input type="hidden" th:value="${user.email}" name="senderEmail"/>
-								<input type="hidden" th:value="${user.email}"name="receiverEmail"/>
-								<input type="hidden" th:value="Bank-Transaction" name="description"/>
+								<input type="hidden" th:value="${user.email}" name="senderEmail" />
+								<input type="hidden" th:value="${user.email}" name="receiverEmail" />
+								<input type="hidden" th:value="Bank-Transaction" name="description" />
 
-								<div class="col-md-6 m-auto text-center" th:classappend="${#fields.hasErrors('type')? 'is-invalid':''}">
+								<div class="col-md-6 m-auto text-center"
+									th:classappend="${#fields.hasErrors('type')? 'is-invalid':''}">
 									<div class="row justify-content-center">
-										<div class="form-check form-check-inline col-auto " >
-											<input class="form-check-input" type="radio" id="widthdraw-transaction" name="type"
-												th:field="*{type}" value="withdraw" th:checked="checked"/>
+										<div class="form-check form-check-inline col-auto ">
+											<input class="form-check-input" type="radio" id="widthdraw-transaction"
+												name="type" th:field="*{type}" value="withdraw" th:checked="checked" />
 											<label class="form-check-label d-inline "
 												for="widthdraw-transaction">Withdraw from your account</label>
 										</div>
 										<div class="col-md-1"></div>
 										<div class=" form-check form-check-inline col-auto">
-											<input class="form-check-input" type="radio" id="credit-transaction" name="type"
-											th:field="*{type}" value="credit" />
+											<input class="form-check-input" type="radio" id="credit-transaction"
+												name="type" th:field="*{type}" value="credit" />
 											<label class="form-check-label d-inline" for="credit-transaction">Credit to
 												your account</label>
 										</div>
 										<div class="invalid-feedback d-block">
-											<p th:each="error: ${#fields.errors('type')}"
-												th:text="${error}">
+											<p th:each="error: ${#fields.errors('type')}" th:text="${error}">
 												<br />
 											</p>
 										</div>
@@ -206,20 +212,19 @@
 								<div class="col-md-3 my-5 form-group text-center m-auto">
 									<label class="form-label d-inline">Amount to transfert</label>
 									<input th:field="*{amount}" type="number" step=".01" min="0" max="99999999.99"
-										class="form-control form-control-sm" 
-										th:classappend="${#fields.hasErrors('amount')? 'is-invalid':''}" >
-										<div class="invalid-feedback d-block text-center">
-											<p th:each="error: ${#fields.errors('amount')}"
-												th:text="${error}">
-												<br />
-											</p>
-										</div>
-								</div>
-								
-								<div class="row  justify-content-center my-4">
-										<input class="btn btn-success custom-shadow col-auto px-5 " id="bank-transaction-submit" type="submit"
-											value="enregistrer">
+										class="form-control form-control-sm"
+										th:classappend="${#fields.hasErrors('amount')? 'is-invalid':''}">
+									<div class="invalid-feedback d-block text-center">
+										<p th:each="error: ${#fields.errors('amount')}" th:text="${error}">
+											<br />
+										</p>
 									</div>
+								</div>
+
+								<div class="row  justify-content-center my-4">
+									<input class="btn btn-success custom-shadow col-auto px-5 "
+										id="bank-transaction-submit" type="submit" value="enregistrer">
+								</div>
 							</fieldset>
 						</div>
 					</form>
@@ -231,12 +236,14 @@
 							<fieldset class=" mb-3 shadow p-2  bg-white rounded ">
 								<legend class="float-none w-auto lead bg-white ms-3 px-3"> <img
 										src="/images/icons8-bank-64.png" style="width:50px;" class="card-img-top m-1"
-										alt="..."><h3 class="d-inline">Bank information</h3>
+										alt="...">
+									<h3 class="d-inline">Bank information</h3>
 								</legend>
 								<h4 th:if="!${user.bankAccountRegistred}" class="mb-3 text-success">Please fill in
 									informations to activate your account!
 								</h4>
-								<h4  th:if="${user.bankAccountRegistred}" class="mb-5 text-center text-success">Here your bank information. If you want to change them, please contact us</h4>
+								<h4 th:if="${user.bankAccountRegistred}" class="mb-5 text-center text-success">Here your
+									bank information. If you want to change them, please contact us</h4>
 
 								<div class="row mb-2 align-items-stretch">
 

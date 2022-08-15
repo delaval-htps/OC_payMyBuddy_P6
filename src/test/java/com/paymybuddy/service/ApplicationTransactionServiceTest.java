@@ -85,7 +85,7 @@ public class ApplicationTransactionServiceTest {
         appTransaction1.setDescription("transaction1");
         appTransaction1.setSender(sender);
         appTransaction1.setReceiver(receiver);
-        appTransaction1.setType(TransactionType.WIHTDRAW);
+        appTransaction1.setType(TransactionType.WITHDRAW);
         appTransaction1.setTransactionDate(date1);
         appTransaction1.setAmount(100d);
 
