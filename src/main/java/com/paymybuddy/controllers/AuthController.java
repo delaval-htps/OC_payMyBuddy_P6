@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class AuthController {
 
 
-  @GetMapping("/loginPage")
+  @GetMapping(value = { "/", "/loginPage" })
   public String showLoginPage(Authentication authentication) {
 
     // mapping to not be able to return on loginPage if user is authenticated
