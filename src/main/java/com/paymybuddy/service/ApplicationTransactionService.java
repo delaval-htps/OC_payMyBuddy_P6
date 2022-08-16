@@ -50,7 +50,7 @@ public class ApplicationTransactionService {
             Page<ApplicationTransaction> appTransactionsPage = appTransactionRepository.findAllBySender(user,
             PageRequest.of(pageNumber, size, Direction.ASC, "id"));
             
-            return new Paged<>(appTransactionsPage, Paging.of(appTransactionsPage.getTotalPages(), pageNumber, size));
+            return new Paged<>(appTransactionsPage, Paging.of(appTransactionsPage.getTotalPages()-1, pageNumber, size));
             
         } else {
             throw new UserNotFoundException("We can provide the list of transaction because user is not found.");
