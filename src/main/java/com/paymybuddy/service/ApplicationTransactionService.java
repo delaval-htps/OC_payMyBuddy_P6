@@ -2,10 +2,14 @@ package com.paymybuddy.service;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
@@ -44,14 +48,27 @@ public class ApplicationTransactionService {
                     + this.getClass().getEnclosingMethod() + "() , user must be not null");
     }
 
+    /**
+     * Return the page with user's transactions.
+     * 
+     * @param user       the user of which we want all transactions.
+     * @param pageNumber the number of page that we want.
+     * @param size       the number of transactions for one page.
+     * @return Paged with the number page and useer's transactions. Return null if no transactions founded.
+     */
     public Paged<ApplicationTransaction> getPageOfTransaction(User user, int pageNumber, int size) {
         if (user != null) {
-            
-            Page<ApplicationTransaction> appTransactionsPage = appTransactionRepository.findAllBySender(user,
-            PageRequest.of(pageNumber, size, Direction.ASC, "id"));
-            
-            return new Paged<>(appTransactionsPage, Paging.of(appTransactionsPage.getTotalPages()-1, pageNumber, size));
-            
+
+            Optional<Page<ApplicationTransaction>> appTransactionsPage = appTransactionRepository.findAllBySender(user,
+                    PageRequest.of(pageNumber, size, Direction.ASC, "id"));
+
+            if (appTransactionsPage.isPresent()) {
+                return new Paged<>(appTransactionsPage.get(),
+                        Paging.of(appTransactionsPage.get().getTotalPages() - 1, pageNumber, size));
+            } else {
+                return null;
+            }
+
         } else {
             throw new UserNotFoundException("We can provide the list of transaction because user is not found.");
         }
@@ -128,14 +145,17 @@ public class ApplicationTransactionService {
      * transaction.
      * Arguments of method are not null because verified by controller before.
      * 
-     * @param transaction application transaction with amount to send , commission's
-     *                    amount, description and date.Amount of transaction must pe
-     *                    positive.
-     * @param bankAccountOwner      owner of bank account
+     * @param transaction      application transaction with amount to send ,
+     *                         commission's
+     *                         amount, description and date.Amount of transaction
+     *                         must pe
+     *                         positive.
+     * @param bankAccountOwner owner of bank account
      * @return the transaction saved with all updated field.
      */
     @Transactional(rollbackFor = RuntimeException.class)
-    public ApplicationTransaction proceedBankTransaction(ApplicationTransaction bankTransaction,User bankAccountOwner) {
+    public ApplicationTransaction proceedBankTransaction(ApplicationTransaction bankTransaction,
+            User bankAccountOwner) {
 
         bankTransaction.setTransactionDate(new Date());
         bankTransaction.setSender(bankAccountOwner);

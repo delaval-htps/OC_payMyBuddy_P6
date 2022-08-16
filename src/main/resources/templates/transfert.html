@@ -101,7 +101,7 @@
                                     <th>Amount</th>
                                 </tr>
                             </thead>
-                            <tbody>
+                            <tbody th:if="${userTransactions}" >
                                 <tr th:each="transaction :${userTransactions.page}">
                                     <td th:text="${transaction.receiverEmail}"></td>
                                     <td th:text="${transaction.description}"></td>
@@ -111,7 +111,7 @@
                                 </tr>
                             </tbody>
                         </table>
-                        <nav aria-label="Page navigation">
+                        <nav th:if="${userTransactions}" aria-label="Page navigation">
                             <ul class="pagination" th:if="${userTransactions.page.totalPages >0}">
                                 <li class="page-item"
                                     th:classappend="${!userTransactions.paging.isPreviousEnable?'disabled':''}">

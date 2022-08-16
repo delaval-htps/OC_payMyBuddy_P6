@@ -2,6 +2,7 @@ package com.paymybuddy.controllers;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -35,6 +36,7 @@ import com.paymybuddy.model.ApplicationTransaction;
 import com.paymybuddy.model.BankAccount;
 import com.paymybuddy.model.User;
 import com.paymybuddy.model.ApplicationTransaction.TransactionType;
+import com.paymybuddy.pagination.Paged;
 import com.paymybuddy.security.oauth2.components.CustomOAuth2SuccessHandler;
 import com.paymybuddy.security.oauth2.services.CustomOAuth2UserService;
 import com.paymybuddy.security.services.CustomUserDetailsService;
@@ -118,8 +120,9 @@ public class TransfertControllerTest {
     }
 
     /**
-     * Test when user is registred with a bankAccount and Model doesn't contain a transaction. Case when
-     * user arrive on transfert page for first time to make a transaction
+     * Test when user is registred with a bankAccount and Model doesn't contain a
+     * transaction. Case when user arrive on transfert page for first time to make a
+     * transaction
      * 
      * @throws Exception
      */
@@ -150,21 +153,23 @@ public class TransfertControllerTest {
 
         when(userService.findConnectedUserByEmail(Mockito.anyString())).thenReturn(Arrays.asList(connectedUser));
 
-        // mock of applicationTransfertService
-        List<ApplicationTransaction> appTransactions = new ArrayList<>();
-        appTransactions.add(applicationTransaction);
+        // mock of pagination
 
-        when(applicationTransactionService.findBySender(Mockito.any(User.class))).thenReturn(appTransactions);
+        when(applicationTransactionService.getPageOfTransaction(existedUser, 0, 5)).thenReturn(null);
 
         mockMvc.perform(get("/transfert")).andExpect(status().isOk()).andDo(print());
 
-        verify(applicationTransactionService, times(1)).findBySender(Mockito.any(User.class));
+        verify(applicationTransactionService, times(1)).getPageOfTransaction(Mockito.any(User.class), anyInt(),
+                anyInt());
     }
 
     /**
-     * Test with existed User with bankAccount but model already contain a transaction between him and
-     * his connectedUser. Case : when he just make a transaction and controller return to "/transfert"
-     * because of bindingResult with errors (bindingResult is redirect to /transfert with
+     * Test with existed User with bankAccount but model already contain a
+     * transaction between him and
+     * his connectedUser. Case : when he just make a transaction and controller
+     * return to "/transfert"
+     * because of bindingResult with errors (bindingResult is redirect to /transfert
+     * with
      * addFlashAttribute and transaction too for display field with errors)
      * 
      * @throws Exception
@@ -174,7 +179,6 @@ public class TransfertControllerTest {
     void getTransfert_whenModelAlreadyContainsTransaction_thenReturnTransfert() throws Exception {
 
         // given : exited user with bank account
-
 
         // we create a mock BankAccount for user
 
@@ -192,7 +196,8 @@ public class TransfertControllerTest {
         applicationTransaction.setSender(existedUser);
         applicationTransaction.setTransactionDate(new Date());
         applicationTransaction.setAmountCommission(5d);
-        ApplicationTransactionDto appTransactionDto = modelMapper.map(applicationTransaction, ApplicationTransactionDto.class);
+        ApplicationTransactionDto appTransactionDto = modelMapper.map(applicationTransaction,
+                ApplicationTransactionDto.class);
 
         existedUser.addSenderTransaction(applicationTransaction);
         connectedUser.addReceiverTransaction(applicationTransaction);
@@ -208,7 +213,8 @@ public class TransfertControllerTest {
 
         when(applicationTransactionService.findBySender(Mockito.any(User.class))).thenReturn(appTransactions);
 
-        mockMvc.perform(get("/transfert").flashAttr("transaction", appTransactionDto)).andExpect(status().isOk()).andDo(print());
+        mockMvc.perform(get("/transfert").flashAttr("transaction", appTransactionDto)).andExpect(status().isOk())
+                .andDo(print());
 
         verify(applicationTransactionService, times(1)).findBySender(Mockito.any(User.class));
     }
@@ -216,26 +222,29 @@ public class TransfertControllerTest {
     @Test
     @WithMockUser
     void testSaveConnectionUser_whenAuthenticatedUserNotfound_thenThrowsUserNotFoundException() throws Exception {
-       
+
         // first connectedUser is found but not existedUser
         when(userService.findByEmail(Mockito.anyString())).thenReturn(Optional.of(connectedUser), Optional.empty());
-        
+
         mockMvc.perform(post("/transfert/connection").param("email", connectedUser.getEmail()).with(csrf()))
-        .andExpect(status().isNotFound()).andDo(print());
+                .andExpect(status().isNotFound()).andDo(print());
 
     }
-   
+
     @Test
     @WithMockUser(value = "existedUser")
     void testSaveConnectionUser_whenConnectedUserNotFound_thenRedirectWithErrorMessage() throws Exception {
-        
-        // first  existedUser is found but connectedUser is not found
-        when(userService.findByEmail(Mockito.anyString())).thenReturn(Optional.empty(),Optional.of(existedUser));
 
-        MvcResult result = mockMvc.perform(post("/transfert/connection").param("email", connectedUser.getEmail()).with(csrf())).andExpect(redirectedUrl("/transfert")).andDo(print()).andReturn();
+        // first existedUser is found but connectedUser is not found
+        when(userService.findByEmail(Mockito.anyString())).thenReturn(Optional.empty(), Optional.of(existedUser));
+
+        MvcResult result = mockMvc
+                .perform(post("/transfert/connection").param("email", connectedUser.getEmail()).with(csrf()))
+                .andExpect(redirectedUrl("/transfert")).andDo(print()).andReturn();
 
         assertTrue(result.getFlashMap().containsKey("error"));
-        assertTrue(result.getFlashMap().containsValue("the user with this email "+connectedUser.getEmail()+" is not registred in application!"));
+        assertTrue(result.getFlashMap().containsValue(
+                "the user with this email " + connectedUser.getEmail() + " is not registred in application!"));
     }
 
     @Test
@@ -243,59 +252,70 @@ public class TransfertControllerTest {
     void testSaveConnectionUser_whenConnectedUserAlreadyConnected_thenRedirectWithWarningMessage() throws Exception {
 
         // both user are registred and connectedUser already connect with existedUser
-        when(userService.findByEmail(Mockito.anyString())).thenReturn(Optional.of(connectedUser), Optional.of(existedUser));
+        when(userService.findByEmail(Mockito.anyString())).thenReturn(Optional.of(connectedUser),
+                Optional.of(existedUser));
 
         // connectedUser already connected with user
         List<User> connectedUsers = new ArrayList<>();
         connectedUsers.add(connectedUser);
         when(userService.findConnectedUserByEmail(Mockito.anyString())).thenReturn(connectedUsers);
 
-
-        MvcResult result = mockMvc.perform(post("/transfert/connection").param("email", connectedUser.getEmail()).with(csrf())).andExpect(redirectedUrl("/transfert")).andDo(print()).andReturn();
+        MvcResult result = mockMvc
+                .perform(post("/transfert/connection").param("email", connectedUser.getEmail()).with(csrf()))
+                .andExpect(redirectedUrl("/transfert")).andDo(print()).andReturn();
 
         assertTrue(result.getFlashMap().containsKey("warning"));
-        assertTrue(result.getFlashMap().containsValue("the user with this email connectedUser@gmail.com already connected with you!"));
+        assertTrue(result.getFlashMap()
+                .containsValue("the user with this email connectedUser@gmail.com already connected with you!"));
     }
-    
+
     @Test
     @WithMockUser(value = "existedUser")
-    void testSaveConnectionUser_whenConnectedUserNotConnectedWithExistedUser_thenRedirectWithSuccessMessage() throws Exception {
+    void testSaveConnectionUser_whenConnectedUserNotConnectedWithExistedUser_thenRedirectWithSuccessMessage()
+            throws Exception {
 
-       // both user are registred and connectedUser already connect with existedUser
-        when(userService.findByEmail(Mockito.anyString())).thenReturn(Optional.of(connectedUser),Optional.of(existedUser));
+        // both user are registred and connectedUser already connect with existedUser
+        when(userService.findByEmail(Mockito.anyString())).thenReturn(Optional.of(connectedUser),
+                Optional.of(existedUser));
 
         // connectedUser already connected with user
         when(userService.findConnectedUserByEmail(Mockito.anyString())).thenReturn(new ArrayList<>());
 
-        MvcResult result = mockMvc.perform(post("/transfert/connection").param("email",connectedUser.getEmail()).with(csrf())).andExpect(redirectedUrl("/transfert")).andDo(print()).andReturn();
+        MvcResult result = mockMvc
+                .perform(post("/transfert/connection").param("email", connectedUser.getEmail()).with(csrf()))
+                .andExpect(redirectedUrl("/transfert")).andDo(print()).andReturn();
 
         assertTrue(result.getFlashMap().containsKey("success"));
-        assertTrue(result.getFlashMap().containsValue("the user with this email " + connectedUser.getEmail() + " was registred!"));
+        assertTrue(result.getFlashMap()
+                .containsValue("the user with this email " + connectedUser.getEmail() + " was registred!"));
     }
 
-
     @Test
-    @WithMockUser
+    @WithMockUser(value = "existedUser")
     void testSendMoneyTo_whenBindingErrors_thenRedirectToTransfert() throws Exception {
 
-        // create a applicationTransactionDto but set description to empty to not be validated by javax
+        // create a applicationTransactionDto but set description to empty to not be
+        // validated by javax
         ApplicationTransactionDto appTransactionDto = new ApplicationTransactionDto();
         appTransactionDto.setAmount(BigDecimal.TEN);
         appTransactionDto.setDescription("");
 
-        MvcResult result = mockMvc.perform(post("/transfert/sendmoneyto", appTransactionDto).flashAttr("transaction", appTransactionDto).with(csrf())).andExpect(redirectedUrl("/transfert")).andDo(print()).andReturn();
+        MvcResult result = mockMvc.perform(post("/transfert/sendmoneyto", appTransactionDto)
+                .flashAttr("transaction", appTransactionDto).with(csrf())).andExpect(redirectedUrl("/transfert"))
+                .andDo(print()).andReturn();
 
         assertThat(result.getFlashMap().size()).isEqualTo(3);
-        assertThat(result.getFlashMap().get("error")).isEqualTo("a problem has occured in transaction, please check red fields!");
+        assertThat(result.getFlashMap().get("error"))
+                .isEqualTo("a problem has occured in transaction, please check red fields!");
         assertTrue(result.getFlashMap().containsKey("transaction"));
         assertTrue(result.getFlashMap().containsKey("org.springframework.validation.BindingResult.transaction"));
     }
-    
+
     @Test
     @WithMockUser
     void testSendMoneyTo_whenExistedUserNotFound_thenThrowsNotFoundException() throws Exception {
 
-        // create a validated applicationTransactionDto 
+        // create a validated applicationTransactionDto
         ApplicationTransactionDto appTransactionDto = new ApplicationTransactionDto();
         appTransactionDto.setAmount(BigDecimal.TEN);
         appTransactionDto.setType(TransactionType.WITHDRAW.toString());
@@ -303,10 +323,11 @@ public class TransfertControllerTest {
         appTransactionDto.setReceiverEmail(connectedUser.getEmail());
         appTransactionDto.setSenderEmail(existedUser.getEmail());
 
-        //existed user is not found in bdd
+        // existed user is not found in bdd
         when(userService.findByEmail(Mockito.anyString())).thenReturn(Optional.empty());
 
-        mockMvc.perform(post("/transfert/sendmoneyto").flashAttr("transaction", appTransactionDto).with(csrf())).andExpect(status().isNotFound()).andDo(print());
+        mockMvc.perform(post("/transfert/sendmoneyto").flashAttr("transaction", appTransactionDto).with(csrf()))
+                .andExpect(status().isNotFound()).andDo(print());
 
     }
 
@@ -314,7 +335,8 @@ public class TransfertControllerTest {
     @WithMockUser
     void testSendMoneyTo_whenExistedUserWithNoValidMailOfTransaction_thenThrowsNotFoundException() throws Exception {
 
-        // create a validated applicationTransactionDto but with sender'email different to existedUser 
+        // create a validated applicationTransactionDto but with sender'email different
+        // to existedUser
         ApplicationTransactionDto appTransactionDto = new ApplicationTransactionDto();
         appTransactionDto.setAmount(BigDecimal.TEN);
         appTransactionDto.setType(TransactionType.WITHDRAW.toString());
@@ -322,18 +344,19 @@ public class TransfertControllerTest {
         appTransactionDto.setReceiverEmail(connectedUser.getEmail());
         appTransactionDto.setSenderEmail(connectedUser.getEmail());
 
-        //existed user is not found in bdd
+        // existed user is not found in bdd
         when(userService.findByEmail(Mockito.anyString())).thenReturn(Optional.of(existedUser));
 
-        mockMvc.perform(post("/transfert/sendmoneyto").flashAttr("transaction", appTransactionDto).with(csrf())).andExpect(status().isNotFound()).andDo(print());
+        mockMvc.perform(post("/transfert/sendmoneyto").flashAttr("transaction", appTransactionDto).with(csrf()))
+                .andExpect(status().isNotFound()).andDo(print());
 
     }
-    
+
     @Test
     @WithMockUser
     void testSendMoneyTo_whenExistedUserAndNoExistedConnectedUser_thenThrowsNotFoundException() throws Exception {
 
-        // create a validated applicationTransactionDto 
+        // create a validated applicationTransactionDto
         ApplicationTransactionDto appTransactionDto = new ApplicationTransactionDto();
         appTransactionDto.setAmount(BigDecimal.TEN);
         appTransactionDto.setType(TransactionType.WITHDRAW.toString());
@@ -341,39 +364,46 @@ public class TransfertControllerTest {
         appTransactionDto.setReceiverEmail(connectedUser.getEmail());
         appTransactionDto.setSenderEmail(existedUser.getEmail());
 
-        //existed user is  found in bdd but not for receiver 
+        // existed user is found in bdd but not for receiver
         when(userService.findByEmail(Mockito.anyString())).thenReturn(Optional.of(existedUser), Optional.empty());
 
-        mockMvc.perform(post("/transfert/sendmoneyto").flashAttr("transaction", appTransactionDto).with(csrf())).andExpect(status().isNotFound()).andDo(print());
+        mockMvc.perform(post("/transfert/sendmoneyto").flashAttr("transaction", appTransactionDto).with(csrf()))
+                .andExpect(status().isNotFound()).andDo(print());
 
     }
-    
+
     @Test
     @WithMockUser
     void testSendMoneyTo_whenTransactionOk_thenRedirectToTransfert() throws Exception {
-       
+
         connectedUser.setFirstName("delaval");
         connectedUser.setLastName("dorian");
-        
-        // create a validated applicationTransactionDto 
-         applicationTransaction.setAmount(10d);
-         applicationTransaction.setDescription("test_transaction");
-         applicationTransaction.setReceiver(connectedUser);
-         applicationTransaction.setType(TransactionType.WITHDRAW);
-         applicationTransaction.setSender(existedUser);
-         applicationTransaction.setTransactionDate(new Date());
-         applicationTransaction.setAmountCommission(5d);
-         ApplicationTransactionDto appTransactionDto = modelMapper.map(applicationTransaction, ApplicationTransactionDto.class);
-    
-        //receiver and sender existed 
-        when(userService.findByEmail(Mockito.anyString())).thenReturn(Optional.of(existedUser), Optional.of(connectedUser));
-        
-        //appTransaction success 
-        when(applicationTransactionService.proceedBetweenUsers(Mockito.any(ApplicationTransaction.class), Mockito.any(User.class), Mockito.any(User.class))).thenReturn(applicationTransaction);
 
-        MvcResult result = mockMvc.perform(post("/transfert/sendmoneyto").flashAttr("transaction", appTransactionDto).with(csrf())).andExpect(redirectedUrl("/transfert")).andDo(print()).andReturn();
-       
+        // create a validated applicationTransactionDto
+        applicationTransaction.setAmount(10d);
+        applicationTransaction.setDescription("test_transaction");
+        applicationTransaction.setReceiver(connectedUser);
+        applicationTransaction.setType(TransactionType.WITHDRAW);
+        applicationTransaction.setSender(existedUser);
+        applicationTransaction.setTransactionDate(new Date());
+        applicationTransaction.setAmountCommission(5d);
+        ApplicationTransactionDto appTransactionDto = modelMapper.map(applicationTransaction,
+                ApplicationTransactionDto.class);
+
+        // receiver and sender existed
+        when(userService.findByEmail(Mockito.anyString())).thenReturn(Optional.of(existedUser),
+                Optional.of(connectedUser));
+
+        // appTransaction success
+        when(applicationTransactionService.proceedBetweenUsers(Mockito.any(ApplicationTransaction.class),
+                Mockito.any(User.class), Mockito.any(User.class))).thenReturn(applicationTransaction);
+
+        MvcResult result = mockMvc
+                .perform(post("/transfert/sendmoneyto").flashAttr("transaction", appTransactionDto).with(csrf()))
+                .andExpect(redirectedUrl("/transfert")).andDo(print()).andReturn();
+
         assertThat(result.getFlashMap().size()).isEqualTo(1);
-        assertThat(result.getFlashMap().get("success")).isEqualTo("Transaction of " + appTransactionDto.getAmount() + "€ " + "to " + connectedUser.getFullName() + " was successfull!");
+        assertThat(result.getFlashMap().get("success")).isEqualTo("Transaction of " + appTransactionDto.getAmount()
+                + "€ " + "to " + connectedUser.getFullName() + " was successfull!");
     }
 }

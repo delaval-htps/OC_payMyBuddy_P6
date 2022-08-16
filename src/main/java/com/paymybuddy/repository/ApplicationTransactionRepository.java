@@ -1,6 +1,8 @@
 package com.paymybuddy.repository;
 
 import java.util.List;
+import java.util.Optional;
+
 import com.paymybuddy.model.ApplicationTransaction;
 import com.paymybuddy.model.User;
 import org.springframework.data.domain.Page;
@@ -22,5 +24,5 @@ public interface ApplicationTransactionRepository extends JpaRepository<Applicat
     List<ApplicationTransaction> findByReceiver(User reciever);
     
     @Query(value = "select at from ApplicationTransaction at where at.sender= ?1")
-    Page<ApplicationTransaction> findAllBySender(User user, Pageable pageable);
+    Optional<Page<ApplicationTransaction>> findAllBySender(User user, Pageable pageable);
 }

@@ -53,7 +53,8 @@ public class TransfertController {
    *
    * @param authentication authentication of connected user.
    * @param model          model to send informations for the view
-   * @return view of transfert or view Profile to complete bank account information to proceed a transfert.
+   * @return view of transfert or view Profile to complete bank account
+   *         information to proceed a transfert.
    */
   @GetMapping("")
   public String getTransfert(Authentication authentication, RedirectAttributes redirectAttrs, Model model) {
@@ -70,7 +71,7 @@ public class TransfertController {
         // retrieve all connected user for user and create connectedUserDto
         List<User> connectedUsers = userService.findConnectedUserByEmail(existedUser.getEmail());
         List<ConnectedUserDto> connectedUsersDto = new ArrayList<>();
-    
+
         for (User connectedUser : connectedUsers) {
           connectedUsersDto.add(modelMapper.map(connectedUser, ConnectedUserDto.class));
         }
@@ -90,12 +91,20 @@ public class TransfertController {
           Paged<ApplicationTransaction> pageUserTransaction = appTransactionService.getPageOfTransaction(existedUser, 0,
               5);
 
-          Page<ApplicationTransactionDto> pageTransactionDto = pageUserTransaction.getPage()
-          .map(x -> modelMapper.map(x, ApplicationTransactionDto.class));
+          if (pageUserTransaction != null) {
 
-          Paged<ApplicationTransactionDto> pageUserTransactionDto = new Paged<>(pageTransactionDto,pageUserTransaction.getPaging());
+            Page<ApplicationTransactionDto> pageTransactionDto = pageUserTransaction.getPage()
+                .map(x -> modelMapper.map(x, ApplicationTransactionDto.class));
 
-          model.addAttribute(USER_TRANSACTIONS, pageUserTransactionDto);
+            Paged<ApplicationTransactionDto> pageUserTransactionDto = new Paged<>(pageTransactionDto,
+                pageUserTransaction.getPaging());
+            model.addAttribute(USER_TRANSACTIONS, pageUserTransactionDto);
+
+          } else {
+
+            model.addAttribute(USER_TRANSACTIONS, pageUserTransaction);
+          }
+
         }
 
         // add user email to model
@@ -123,17 +132,19 @@ public class TransfertController {
       Authentication authentication, RedirectAttributes redirectAttrs) {
 
     Optional<User> user = userService.findByEmail(authentication.getName());
-    
+
     if (user.isPresent()) {
 
       User existedUser = user.get();
 
-      Paged<ApplicationTransaction> pageUserTransaction = appTransactionService.getPageOfTransaction(existedUser,pageNumber, size);
+      Paged<ApplicationTransaction> pageUserTransaction = appTransactionService.getPageOfTransaction(existedUser,
+          pageNumber, size);
 
       Page<ApplicationTransactionDto> pageTransactionDto = pageUserTransaction.getPage()
           .map(x -> modelMapper.map(x, ApplicationTransactionDto.class));
 
-      Paged<ApplicationTransactionDto> pageUserTransactionDto = new Paged<>(pageTransactionDto,pageUserTransaction.getPaging());
+      Paged<ApplicationTransactionDto> pageUserTransactionDto = new Paged<>(pageTransactionDto,
+          pageUserTransaction.getPaging());
 
       redirectAttrs.addFlashAttribute(USER_TRANSACTIONS, pageUserTransactionDto);
       return REDIRECT_TRANSFERT;
@@ -172,18 +183,19 @@ public class TransfertController {
 
           redirectAttrs.addFlashAttribute("warning",
               "the user with this email " + email + " already connected with you!");
-          
+
         } else {
 
           user.addConnectionUser(connectionUser);
           userService.save(user);
           redirectAttrs.addFlashAttribute(SUCCESS_MESSAGE, "the user with this email " + email + " was registred!");
-        
+
         }
       } else {
-        
+
         log.error("Not be able to add connectionUser with email: {} cause of not found in database.", email);
-        redirectAttrs.addFlashAttribute(ERROR_MESSAGE,"the user with this email " + email + " is not registred in application!");
+        redirectAttrs.addFlashAttribute(ERROR_MESSAGE,
+            "the user with this email " + email + " is not registred in application!");
       }
       return REDIRECT_TRANSFERT;
 
@@ -218,20 +230,22 @@ public class TransfertController {
 
     // in case of validation errors for transactionDto
     if (bindingResult.hasErrors()) {
-      redirectAttributes.addFlashAttribute(ERROR_MESSAGE, "a problem has occured in transaction, please check red fields!");
+      redirectAttributes.addFlashAttribute(ERROR_MESSAGE,
+          "a problem has occured in transaction, please check red fields!");
 
-      // Add bindingResult and ModelAttribute transactionDto to redirectAttribute for redirection
+      // Add bindingResult and ModelAttribute transactionDto to redirectAttribute for
+      // redirection
       // see in @GetMapping condition on creation of new transactionDto
       redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.transaction", bindingResult);
 
       redirectAttributes.addFlashAttribute(TRANSACTION, transactionDto);
-    
-    }
 
-    if (user.isPresent() && user.get().getEmail().trim().equalsIgnoreCase(transactionDto.getSenderEmail())) {
+    } else if (user.isPresent() && user.get().getEmail().trim().equalsIgnoreCase(transactionDto.getSenderEmail())) {
+
       User sender = user.get();
 
       ApplicationTransaction transaction = modelMapper.map(transactionDto, ApplicationTransaction.class);
+      
       Optional<User> receiverUser = userService.findByEmail(transactionDto.getReceiverEmail());
 
       if (receiverUser.isPresent()) {
@@ -240,13 +254,16 @@ public class TransfertController {
 
         // proceed transaction beetween sender and receiver
         try {
-          ApplicationTransaction succeededTransaction = appTransactionService.proceedBetweenUsers(transaction, sender,receiver);
-          
+          ApplicationTransaction succeededTransaction = appTransactionService.proceedBetweenUsers(transaction, sender,
+              receiver);
+
           redirectAttributes.addFlashAttribute(SUCCESS_MESSAGE, "Transaction of "
               + succeededTransaction.getAmount() + "€ " + "to " + receiver.getFullName() + " was successfull!");
 
         } catch (Exception e) {
-          redirectAttributes.addFlashAttribute(ERROR_MESSAGE, "A problem occured with transaction , it was not executed: " +e.getMessage()+". Please retry it or contact us from more information.");
+          redirectAttributes.addFlashAttribute(ERROR_MESSAGE,
+              "A problem occured with transaction , it was not executed: " + e.getMessage()
+                  + ". Please retry it or contact us from more information.");
         }
 
       } else {
