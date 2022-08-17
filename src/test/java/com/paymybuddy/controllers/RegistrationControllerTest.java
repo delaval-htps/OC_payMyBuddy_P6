@@ -182,6 +182,8 @@ public class RegistrationControllerTest {
         mockUserDto.setEmail("test@gmail.com");
         mockUserDto.setFirstName("test");
         mockUserDto.setLastName("test");
+        mockUserDto.setPassword("password");
+        mockUserDto.setMatchingPassword("password");
 
         User mockUser = new User();
         mockUser.setEmail("test@gmail.com");
@@ -203,7 +205,8 @@ public class RegistrationControllerTest {
         mockUserDto.setEmail("test@gmail.com");
         mockUserDto.setFirstName("test");
         mockUserDto.setLastName("test");
-        mockUserDto.setPassword("testPassword");
+        mockUserDto.setPassword("password");
+        mockUserDto.setMatchingPassword("password");
 
         // mock UserDetails
         SimpleGrantedAuthority simpleGrantedAuthority = new SimpleGrantedAuthority("ROLE_USER");
@@ -234,7 +237,8 @@ public class RegistrationControllerTest {
         mockUserDto.setEmail("delaval.htps@gmail.com");
         mockUserDto.setFirstName("dorian");
         mockUserDto.setLastName("delaval");
-       
+        mockUserDto.setPassword("password");
+        mockUserDto.setMatchingPassword("password");
 
         // mock UserDetails
         SimpleGrantedAuthority simpleGrantedAuthority = new SimpleGrantedAuthority("ROLE_USER");
