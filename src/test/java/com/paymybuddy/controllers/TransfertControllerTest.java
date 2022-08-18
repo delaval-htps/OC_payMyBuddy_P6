@@ -37,6 +37,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
 import com.paymybuddy.dto.ApplicationTransactionDto;
+import com.paymybuddy.exceptions.UserNotFoundException;
 import com.paymybuddy.model.ApplicationTransaction;
 import com.paymybuddy.model.ApplicationTransaction.TransactionType;
 import com.paymybuddy.model.BankAccount;
@@ -106,7 +107,14 @@ public class TransfertControllerTest {
 
                 when(userService.findByEmail(Mockito.anyString())).thenReturn(Optional.empty());
 
-                mockMvc.perform(get("/transfert")).andExpect(status().isNotFound()).andDo(print());
+                mockMvc.perform(get("/transfert"))
+                                .andExpect(result -> {
+                                        assertTrue(result.getResolvedException() instanceof UserNotFoundException);
+                                })
+                                .andExpect(result -> {
+                                        assertThat(result.getResolvedException().getMessage())
+                                                        .isEqualTo("this user is not authenticated!");
+                                }).andDo(print());
         }
 
         /**
@@ -522,5 +530,83 @@ public class TransfertControllerTest {
                 assertThat(result.getFlashMap().get("success"))
                                 .isEqualTo("Transaction of " + appTransactionDto.getAmount()
                                                 + "€ " + "to " + connectedUser.getFullName() + " was successfull!");
+        }
+
+        @Test
+        @WithMockUser
+        void sendMoneyTo_whenTransactionKO_thenRedirectWithErrorMessage() throws Exception {
+
+                connectedUser.setFirstName("delaval");
+                connectedUser.setLastName("dorian");
+
+                // create a validated applicationTransactionDto
+                applicationTransaction.setAmount(10d);
+                applicationTransaction.setDescription("test_transaction");
+                applicationTransaction.setReceiver(connectedUser);
+                applicationTransaction.setType(TransactionType.WITHDRAW);
+                applicationTransaction.setSender(existedUser);
+                applicationTransaction.setTransactionDate(new Date());
+                applicationTransaction.setAmountCommission(5d);
+                ApplicationTransactionDto appTransactionDto = modelMapper.map(applicationTransaction,
+                                ApplicationTransactionDto.class);
+
+                // receiver and sender existed
+                when(userService.findByEmail(Mockito.anyString()))
+                                .thenReturn(Optional.of(existedUser), Optional.of(connectedUser));
+
+                // appTransaction KO
+                when(applicationTransactionService.proceedBetweenUsers(Mockito.any(ApplicationTransaction.class),
+                                Mockito.any(User.class), Mockito.any(User.class))).thenThrow(RuntimeException.class);
+
+                MvcResult result = mockMvc.perform(post("/transfert/sendmoneyto")
+                                .flashAttr("transaction", appTransactionDto).with(csrf()))
+                                .andExpect(redirectedUrl("/transfert")).andDo(print()).andReturn();
+
+                
+                assertThat(result.getFlashMap().get("error")).isNotNull();
+        }
+
+        @Test
+        @WithMockUser
+        void getPageTransaction_whenUserNotfound_throwsException() throws Exception {
+                when(userService.findByEmail(Mockito.anyString())).thenReturn(Optional.empty());
+
+                mockMvc.perform(get("/transfert/paging"))
+                                .andExpect(result -> {
+                                        assertTrue(result.getResolvedException() instanceof UserNotFoundException);
+                                }).andExpect(result -> {
+                                        assertThat(result.getResolvedException().getMessage())
+                                                        .isEqualTo("this user is not authenticated!");
+                                }).andDo(print());
+        }
+
+        @Test
+        @WithMockUser
+        void getPageTransaction_whenUserExisted_then() throws Exception {
+
+                // mock userService
+                when(userService.findByEmail(Mockito.anyString())).thenReturn(Optional.of(existedUser));
+
+                // applicationTransaction mock
+                applicationTransaction.setAmount(10d);
+                applicationTransaction.setDescription("test_transaction");
+                applicationTransaction.setReceiver(connectedUser);
+                applicationTransaction.setSender(existedUser);
+                applicationTransaction.setTransactionDate(new Date());
+                applicationTransaction.setAmountCommission(5d);
+
+                Paged<ApplicationTransaction> paged = new Paged<>();
+                paged.setPage(new PageImpl<>(Arrays.asList(applicationTransaction)));
+                paged.setPaging(new Paging(1, 5, false, false,
+                                Arrays.asList(new PageItem(PageItemType.PAGE, 1, true))));
+
+                // mock of pagination return Paged<ApplicationTransaction>
+                when(applicationTransactionService.getPageOfTransaction(Mockito.any(User.class), Mockito.anyInt(),
+                                Mockito.anyInt())).thenReturn(paged);
+
+                MvcResult result = mockMvc.perform(get("/transfert/paging")).andExpect(redirectedUrl("/transfert"))
+                                .andDo(print())
+                                .andReturn();
+                assertThat(result.getFlashMap().get("userTransactions")).isNotNull();
         }
 }
