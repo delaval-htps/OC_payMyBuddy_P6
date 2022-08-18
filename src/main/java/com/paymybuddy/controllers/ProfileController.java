@@ -181,7 +181,7 @@ public class ProfileController {
                         // save of bank account and bankCard of user
                         bankAccount.setBankCard(bankCard);
                         bankAccount.addUser(currentUser);
-                        BankAccount userBankAccount =  bankAccountService.save(bankAccount);
+                        BankAccount userBankAccount = bankAccountService.save(bankAccount);
 
                         // send of user's bank account
                         redirectAttributes.addFlashAttribute("success", "your bank account was correctly registred.");
@@ -212,6 +212,12 @@ public class ProfileController {
                         @Valid @ModelAttribute(name = "bankTransaction") ApplicationTransactionDto applicationTransactionDto,
                         BindingResult bindingResult, RedirectAttributes redirectAttributes) {
 
+                Optional<User> user = userService.findByEmail(applicationTransactionDto.getSenderEmail());
+
+                if (user.isEmpty()) {
+                        throw new UserNotFoundException("the user was not found, transaction was cancel!");
+                }
+
                 if (bindingResult.hasErrors()) {
                         redirectAttributes.addFlashAttribute("error",
                                         "a problem has occured in transaction, please check red fields!");
@@ -221,14 +227,10 @@ public class ProfileController {
                         // see in @GetMapping condition on creation of new transactionDto
                         redirectAttributes.addFlashAttribute(
                                         "org.springframework.validation.BindingResult.bankTransaction", bindingResult);
+
                         redirectAttributes.addFlashAttribute("bankTransaction", applicationTransactionDto);
+                        
                         return "redirect:/profile";
-                }
-
-                Optional<User> user = userService.findByEmail(applicationTransactionDto.getSenderEmail());
-
-                if (user.isEmpty()) {
-                        throw new UserNotFoundException("the user was not found, transaction was cancel!");
                 }
 
                 User existedUser = user.get();
@@ -243,13 +245,12 @@ public class ProfileController {
                         String messageTransaction = executedBankTransaction.getType().equals(TransactionType.WITHDRAW)
                                         ? "from your application account to your bank account"
                                         : "from your bank account to your application account";
-                       
+
                         redirectAttributes.addFlashAttribute("success",
                                         "the " + executedBankTransaction.getType().toString().toLowerCase()
                                                         + " of "
                                                         + executedBankTransaction.getAmount()
                                                         + "€ was correctly realised " + messageTransaction);
-                                                        
 
                 } catch (Exception e) {
                         redirectAttributes.addFlashAttribute("error",
