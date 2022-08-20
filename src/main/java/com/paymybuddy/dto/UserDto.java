@@ -15,7 +15,7 @@ import lombok.Setter;
 
 public class UserDto {
 
-  private boolean bankAccountRegistred = false;
+
   private String fullName;
 
   @NotBlank(message = "The lastname must be not null or empty")
@@ -48,5 +48,5 @@ public class UserDto {
   private String matchingPassword ;
 
   private boolean duplicatedUser = false;
-  private boolean editionProfile = false;
+
 }

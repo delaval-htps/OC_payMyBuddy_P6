@@ -226,7 +226,7 @@ public class TransfertControllerTest {
 
                 // then
                 assertThat(result.getModelAndView().getModel()).containsKey("transaction");
-                assertThat(result.getModelAndView().getModel().get("transaction")).isEqualTo(appTransactionDto);
+                assertThat(result.getModelAndView().getModel()).containsEntry("transaction",appTransactionDto);
                 verify(applicationTransactionService, times(1))
                                 .getPageOfTransaction(Mockito.any(User.class), anyInt(), anyInt());
         }
@@ -275,7 +275,7 @@ public class TransfertControllerTest {
                 // then
                 assertThat(result.getModelAndView().getModel()).containsKey("userTransactions");
 
-                assertThat(result.getModelAndView().getModel().get("userTransactions")).isEqualTo(paged);
+                assertThat(result.getModelAndView().getModel()).containsEntry("userTransactions",paged);
                 verify(applicationTransactionService, never())
                                 .getPageOfTransaction(Mockito.any(User.class), anyInt(), anyInt());
         }
@@ -325,7 +325,7 @@ public class TransfertControllerTest {
                 // then
                 assertThat(result.getModelAndView().getModel()).containsKey("userTransactions");
 
-                assertThat(result.getModelAndView().getModel().get("userTransactions")).isNotEqualTo(paged);
+                assertThat(result.getModelAndView().getModel()).doesNotContainEntry("userTransactions",paged);
 
                 verify(applicationTransactionService, times(1))
                                 .getPageOfTransaction(Mockito.any(User.class), anyInt(), anyInt());

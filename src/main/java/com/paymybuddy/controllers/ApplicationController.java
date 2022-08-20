@@ -2,7 +2,7 @@ package com.paymybuddy.controllers;
 
 import java.util.Optional;
 import com.paymybuddy.dto.ApplicationAccountDto;
-import com.paymybuddy.dto.UserDto;
+import com.paymybuddy.dto.ProfileUserDto;
 import com.paymybuddy.model.User;
 import com.paymybuddy.service.UserService;
 import org.modelmapper.ModelMapper;
@@ -35,12 +35,12 @@ public class ApplicationController {
 
     if (user.isPresent()) {
       User currentUser = user.get();
-      UserDto userDto = modelMapper.map(currentUser, UserDto.class);
+      ProfileUserDto profileUserDto = modelMapper.map(currentUser, ProfileUserDto.class);
 
-      userDto.setBankAccountRegistred(currentUser.getBankAccount() != null);
-      userDto.setFullName(currentUser.getFullName());
+      profileUserDto.setBankAccountRegistred(currentUser.getBankAccount() != null);
+      profileUserDto.setFullName(currentUser.getFullName());
 
-      model.addAttribute("user", userDto);
+      model.addAttribute("user", profileUserDto);
       model.addAttribute("applicationAccount", modelMapper.map(currentUser.getApplicationAccount(), ApplicationAccountDto.class));
       return "home";
     } else {

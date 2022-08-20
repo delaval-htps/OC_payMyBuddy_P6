@@ -2,7 +2,9 @@ package com.paymybuddy.controllers;
 
 import java.security.NoSuchAlgorithmException;
 import java.util.Optional;
+
 import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -18,6 +20,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+
 import com.paymybuddy.dto.UserDto;
 import com.paymybuddy.exceptions.ApplicationAccountException;
 import com.paymybuddy.model.Role;
@@ -28,6 +31,7 @@ import com.paymybuddy.service.ApplicationAccountServiceImpl;
 import com.paymybuddy.service.OAuth2ProviderService;
 import com.paymybuddy.service.RoleService;
 import com.paymybuddy.service.UserService;
+
 import lombok.extern.log4j.Log4j2;
 
 @Controller

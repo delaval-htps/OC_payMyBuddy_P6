@@ -17,7 +17,7 @@ import com.paymybuddy.dto.ApplicationAccountDto;
 import com.paymybuddy.dto.ApplicationTransactionDto;
 import com.paymybuddy.dto.BankAccountDto;
 import com.paymybuddy.dto.BankCardDto;
-import com.paymybuddy.dto.UserDto;
+import com.paymybuddy.dto.ProfileUserDto;
 import com.paymybuddy.exceptions.UserNotFoundException;
 import com.paymybuddy.model.ApplicationTransaction;
 import com.paymybuddy.model.BankAccount;
@@ -44,9 +44,13 @@ public class ProfileController {
         private ModelMapper modelMapper;
 
         /**
-         * @param authentication
-         * @param model
-         * @return
+         * return view with profile and bankAccount's' information of user.
+         * If bankAccount information are not defined -> user can fill form to perform
+         * it.
+         * 
+         * @param authentication authentication of user
+         * @param model          model to add attributes
+         * @return the view of profile
          */
         @GetMapping("")
         public String getProfil(Authentication authentication, Model model) {
@@ -57,18 +61,19 @@ public class ProfileController {
                         User currentUser = user.get();
 
                         // send of userDto of currentUser
-                        UserDto userDto = modelMapper.map(currentUser, UserDto.class);
+                        ProfileUserDto profileUserDto = modelMapper.map(currentUser, ProfileUserDto.class);
 
-                        userDto.setBankAccountRegistred(currentUser.getBankAccount() != null);
-                        userDto.setFullName(currentUser.getFullName());
+                        profileUserDto.setBankAccountRegistred(currentUser.getBankAccount() != null);
+                        profileUserDto.setFullName(currentUser.getFullName());
 
                         if (!model.containsAttribute("user")) {
-                                model.addAttribute("user", userDto);
+                                model.addAttribute("user", profileUserDto);
                         }
 
                         // send of ApplicationAccount of user (already existed)
-                        model.addAttribute("applicationAccount", modelMapper.map(currentUser.getApplicationAccount(),
-                                        ApplicationAccountDto.class));
+                        model.addAttribute("applicationAccount",
+                                        modelMapper.map(currentUser.getApplicationAccount(),
+                                                        ApplicationAccountDto.class));
 
                         // send bankTransaction
                         if (!model.containsAttribute("bankTransaction")) {
@@ -76,13 +81,13 @@ public class ProfileController {
                         }
 
                         // send bankAccount of user
-                        BankAccountDto bankAccountDto = currentUser.getBankAccount() != null
+                        BankAccountDto bankAccountDto = (currentUser.getBankAccount() != null)
                                         ? modelMapper.map(currentUser.getBankAccount(), BankAccountDto.class)
                                         : new BankAccountDto();
                         model.addAttribute("bankAccount", bankAccountDto);
 
                         // send bankCard of user
-                        BankCardDto bankCardDto = currentUser.getBankAccount() != null
+                        BankCardDto bankCardDto = (currentUser.getBankAccount() != null)
                                         ? modelMapper.map(currentUser.getBankAccount().getBankCard(), BankCardDto.class)
                                         : new BankCardDto();
                         model.addAttribute("bankCard", bankCardDto);
@@ -95,31 +100,48 @@ public class ProfileController {
                 }
         }
 
+        /**
+         * method to update profile of user, only personnal information about him.
+         * Generally, his already have a applicationAccount, a bankAccount and a
+         * bankcard because edit the profile need to fill in form of this attributes.
+         * 
+         * @param profileUserDto the Dto of connected user
+         * @param bindingResult  the binding result if there is errors when fill in form
+         *                       of profile
+         * @param model          model to put again user's attributes before return
+         *                       profile
+         * @param authentication authentication of user
+         * @return the view of profile.
+         */
         @PostMapping("/user")
-        public String editUserProfile(@Valid @ModelAttribute(value = "user") UserDto userDto,
-                        BindingResult bindingResult, RedirectAttributes redirectAttributes, Model model,
+        public String editUserProfile(@Valid @ModelAttribute(value = "user") ProfileUserDto profileUserDto,
+                        BindingResult bindingResult,
+                        RedirectAttributes redirectAttributes,
                         Authentication authentication) {
 
                 Optional<User> user = userService.findByEmail(authentication.getName());
 
+                if (bindingResult.hasErrors()) {
+                        redirectAttributes.addFlashAttribute("error",
+                                        "a problem has occured when editing profile, please check red fields!");
+
+                        redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.user",
+                                        bindingResult);
+
+                        profileUserDto.setBankAccountRegistred(user.get().getBankAccount() != null);
+                        profileUserDto.setFullName(user.get().getFullName());
+
+                        // for keep on profile form
+                        profileUserDto.setEditionProfile(true);
+
+                        redirectAttributes.addFlashAttribute("user", profileUserDto);
+                }
+                
                 if (user.isPresent()) {
 
                         User existedUser = user.get();
 
-                        model.addAttribute("applicationAccount", modelMapper.map(existedUser.getApplicationAccount(),
-                                        ApplicationAccountDto.class));
-                        model.addAttribute("bankAccount",
-                                        modelMapper.map(existedUser.getBankAccount(), BankAccountDto.class));
-                        model.addAttribute("bankCard",
-                                        modelMapper.map(existedUser.getBankAccount().getBankCard(), BankCard.class));
-
-                        if (bindingResult.hasErrors()) {
-
-                                userDto.setEditionProfile(true);
-                                return "/profile";
-                        }
-
-                        User userToUpdate = modelMapper.map(userDto, User.class);
+                        User userToUpdate = modelMapper.map(profileUserDto, User.class);
 
                         existedUser.setFirstName(userToUpdate.getFirstName());
                         existedUser.setLastName(userToUpdate.getLastName());
@@ -129,15 +151,14 @@ public class ProfileController {
                         existedUser.setZip(userToUpdate.getZip());
                         existedUser.setCity(userToUpdate.getCity());
 
-                        User updatedUser = userService.save(existedUser);
+                        userService.save(existedUser);
 
-                        model.addAttribute("user", updatedUser);
-
-                        return "redirect:/profile";
                 } else {
                         throw new UserNotFoundException("this user with email " + authentication.getName()
                                         + " is not registred in application!");
                 }
+
+                return "redirect:/profile";
         }
 
         @PostMapping("/bankaccount")
@@ -156,7 +177,7 @@ public class ProfileController {
 
                         // case of errors in form
                         if (bindingResultBankAccount.hasErrors() || bindingResultBankCard.hasErrors()) {
-                                model.addAttribute("user", modelMapper.map(currentUser, UserDto.class));
+                                model.addAttribute("user", modelMapper.map(currentUser, ProfileUserDto.class));
                                 model.addAttribute("applicationAccount",
                                                 modelMapper.map(currentUser.getApplicationAccount(),
                                                                 ApplicationAccountDto.class));
@@ -188,7 +209,7 @@ public class ProfileController {
                         model.addAttribute("bankAccount", modelMapper.map(userBankAccount, BankAccountDto.class));
 
                         // send of user
-                        UserDto userDto = modelMapper.map(currentUser, UserDto.class);
+                        ProfileUserDto userDto = modelMapper.map(currentUser, ProfileUserDto.class);
                         userDto.setBankAccountRegistred(true);
                         userDto.setFullName(currentUser.getFullName());
 
@@ -229,7 +250,7 @@ public class ProfileController {
                                         "org.springframework.validation.BindingResult.bankTransaction", bindingResult);
 
                         redirectAttributes.addFlashAttribute("bankTransaction", applicationTransactionDto);
-                        
+
                         return "redirect:/profile";
                 }
 

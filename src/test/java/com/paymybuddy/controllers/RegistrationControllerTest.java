@@ -1,6 +1,7 @@
 package com.paymybuddy.controllers;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.oauth2Login;
@@ -95,11 +96,11 @@ public class RegistrationControllerTest {
 
         MvcResult result = mockMvc.perform(get("/registration")).andExpect(status().isOk()).andDo(print()).andReturn();
 
-        assertThat(result.getModelAndView().getModel().size()).isEqualTo(2);
+        assertThat(result.getModelAndView().getModel()).hasSize(2);
         assertThat(result.getModelAndView().getModel().get("user")).isInstanceOf(UserDto.class);
         Object attribute = result.getModelAndView().getModelMap().getAttribute("user");
-        assertThat(attribute instanceof UserDto);
-        assertThat(attribute).hasAllNullFieldsOrPropertiesExcept("zip", "duplicatedUser", "editionProfile", "password", "matchingPassword", "bankAccountRegistred");
+        assertTrue(attribute instanceof UserDto);
+        assertThat(attribute).hasAllNullFieldsOrPropertiesExcept("zip", "duplicatedUser", "editionProfile", "password", "matchingPassword");
     }
 
     /**
@@ -139,7 +140,7 @@ public class RegistrationControllerTest {
 
         Object attribute = result.getModelAndView().getModelMap().getAttribute("user");
 
-        assertThat(attribute instanceof UserDto);
+        assertTrue(attribute instanceof UserDto);
         UserDto attributeDto = (UserDto) attribute;
 
         assertThat(attributeDto.getEmail()).isEqualTo("delaval.htps@gmail.com");
@@ -154,7 +155,7 @@ public class RegistrationControllerTest {
 
         Object attribute = result.getModelAndView().getModelMap().getAttribute("user");
 
-        assertThat(attribute instanceof UserDto);
+        assertTrue(attribute instanceof UserDto);
         UserDto attributeDto = (UserDto) attribute;
 
         assertThat(attributeDto.getEmail()).isNull();
