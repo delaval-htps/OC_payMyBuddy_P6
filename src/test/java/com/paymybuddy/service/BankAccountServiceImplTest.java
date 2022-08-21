@@ -2,16 +2,28 @@ package com.paymybuddy.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import java.util.Optional;
+import java.util.stream.Stream;
+
+import com.paymybuddy.exceptions.BankAccountException;
 import com.paymybuddy.model.Account;
 import com.paymybuddy.model.BankAccount;
 import com.paymybuddy.repository.BankAccountRepository;
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -27,13 +39,19 @@ public class BankAccountServiceImplTest {
     @InjectMocks
     private BankAccountServiceImpl cut;
 
-    @Test
-    @Order(1)
-    void saveBankAccount_whenBankAccountExists_thenReturnBankAccount() {
+    private static BankAccount bankAccount;
 
-        BankAccount bankAccount = new BankAccount();
-        bankAccount.setIban("iban_test");
+    @BeforeAll
+    static void init() {
+        bankAccount = new BankAccount();
+        bankAccount.setIban("TESTACOS");
         bankAccount.setBalance(1000d);
+        bankAccount.setId(1L);
+    }
+
+    @Test
+
+    void saveBankAccount_whenBankAccountExists_thenReturnBankAccount() {
 
         when(bankAccountRepository.save(Mockito.any(BankAccount.class))).thenReturn(bankAccount);
 
@@ -43,7 +61,7 @@ public class BankAccountServiceImplTest {
     }
 
     @Test
-    @Order(2)
+
     void saveBankAccount_whenBankAccountNull_thenReturnBankAccount() {
 
         BankAccount bankAccount = null;
@@ -56,31 +74,82 @@ public class BankAccountServiceImplTest {
     }
 
     @Test
-    @Order(3)
-    void findByIban_whenIbanExisted_thenReturnLinkedBankAccount() {
 
-        BankAccount bankAccount = new BankAccount();
-        bankAccount.setBalance(1000d);
-        bankAccount.setIban("numberOfIban");
+    void findByIban_whenIbanExisted_thenReturnLinkedBankAccount() {
 
         when(bankAccountRepository.findByIban(Mockito.anyString())).thenReturn(Optional.of(bankAccount));
 
-        Optional<BankAccount> savedBankAccount = cut.findByIban("numberOfIban");
+        Optional<BankAccount> existedBankAccount = cut.findByIban("TESTACOS");
 
-        assertThat(savedBankAccount.get()).isNotNull();
-        assertThat(savedBankAccount).contains(bankAccount);
+        assertThat(existedBankAccount.get()).isNotNull();
+        assertThat(existedBankAccount).contains(bankAccount);
     }
 
     @Test
-    @Order(4)
     void findByIban_whenIbanNotExisted_thenReturnEmptyOptional() {
 
         when(bankAccountRepository.findByIban(Mockito.anyString())).thenReturn(Optional.empty());
 
-        Optional<BankAccount> savedBankAccount = cut.findByIban("numberOfIbanNotExisted");
+        Optional<BankAccount> existedBankAccount = cut.findByIban("numberOfIbanNotExisted");
 
-        assertThat(savedBankAccount).isEmpty();
+        assertThat(existedBankAccount).isEmpty();
     }
 
+    @Test
+    void findById_whenIdExisted_thenReturnLinkedBankAccount() {
 
+        when(bankAccountRepository.findById(Mockito.anyLong())).thenReturn(Optional.of(bankAccount));
+
+        Optional<BankAccount> existedBankAccount = cut.findById(1L);
+
+        assertThat(existedBankAccount.get()).isNotNull();
+        assertThat(existedBankAccount).contains(bankAccount);
+    }
+
+    @Test
+    void findByIban_whenIdNotExisted_thenReturnEmptyOptional() {
+
+        when(bankAccountRepository.findById(Mockito.anyLong())).thenReturn(Optional.empty());
+
+        Optional<BankAccount> existedBankAccount = cut.findById(2L);
+
+        assertThat(existedBankAccount).isEmpty();
+    }
+
+    private static Stream<Arguments> withdrawArgumentsCorrectResult() {
+
+        return Stream.of(Arguments.of(bankAccount, 100d), Arguments.of(bankAccount, 900d));
+    }
+
+    @ParameterizedTest
+    @MethodSource("withdrawArgumentsCorrectResult")
+    @Order(10)
+    void testWithdraw_whenBankAccountBalanceGreaterThanOrEqualToAmount(BankAccount bankAccount, double amount) {
+        double expectedResult = bankAccount.getBalance() - amount;
+
+        cut.withdraw(bankAccount, amount);
+
+        ArgumentCaptor<BankAccount> bankAccountCaptor = ArgumentCaptor.forClass(BankAccount.class);
+        verify(bankAccountRepository, times(1)).save(bankAccountCaptor.capture());
+
+        assertThat(bankAccountCaptor.getValue().getBalance()).isEqualTo(expectedResult);
+
+    }
+
+    private static Stream<Arguments> withdrawArgumentsThrowException() {
+
+        return Stream.of(Arguments.of(bankAccount, 1100d));
+    }
+
+    @ParameterizedTest
+    @MethodSource("withdrawArgumentsThrowException")
+    @Order(11)
+    void testWithdraw_whenAppAccountBalanceLessThanAmount_thenTrowException(BankAccount bankAccount, double amount) {
+
+        assertThrows(BankAccountException.class, () -> {
+            cut.withdraw(bankAccount, amount);
+        });
+
+        verify(bankAccountRepository, never()).save(Mockito.any(BankAccount.class));
+    }
 }
