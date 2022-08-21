@@ -25,7 +25,7 @@ public class BankAccountDto {
 
     @NotBlank(message = "the bic must not be null or empty")
     @Size(min = 8, max = 8, message = "the bic must only contain 8 characters")
-    @Pattern(regexp = "[A-Z]{8}", message = "the bic must only contain 8 characters")
+    @Pattern(regexp = "[A-Z]{8}", message = "the bic must contain 8 characters")
     private String bic;
 
 

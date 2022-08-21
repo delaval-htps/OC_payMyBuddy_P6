@@ -114,7 +114,7 @@ public class TransfertControllerTest {
                                 .andExpect(result -> {
                                         assertThat(result.getResolvedException().getMessage())
                                                         .isEqualTo("this user is not authenticated!");
-                                }).andDo(print());
+                                });
         }
 
         /**
@@ -131,7 +131,7 @@ public class TransfertControllerTest {
                 existedUser.setBankAccount(null);
                 when(userService.findByEmail(Mockito.anyString())).thenReturn(Optional.of(existedUser));
 
-                mockMvc.perform(get("/transfert")).andExpect(redirectedUrl("/profile")).andDo(print());
+                mockMvc.perform(get("/transfert")).andExpect(redirectedUrl("/profile"));
 
         }
 
@@ -165,7 +165,7 @@ public class TransfertControllerTest {
                 when(applicationTransactionService.getPageOfTransaction(existedUser, 0, 5)).thenReturn(null);
 
                 // when
-                mockMvc.perform(get("/transfert")).andExpect(status().isOk()).andDo(print());
+                mockMvc.perform(get("/transfert")).andExpect(status().isOk());
 
                 // then
                 verify(applicationTransactionService, times(1))
@@ -222,7 +222,7 @@ public class TransfertControllerTest {
 
                 // when
                 MvcResult result = mockMvc.perform(get("/transfert").flashAttr("transaction", appTransactionDto))
-                                .andExpect(status().isOk()).andDo(print()).andReturn();
+                                .andExpect(status().isOk()).andReturn();
 
                 // then
                 assertThat(result.getModelAndView().getModel()).containsKey("transaction");
@@ -270,7 +270,7 @@ public class TransfertControllerTest {
 
                 // when
                 MvcResult result = mockMvc.perform(get("/transfert").flashAttr("userTransactions", paged))
-                                .andExpect(status().isOk()).andDo(print()).andReturn();
+                                .andExpect(status().isOk()).andReturn();
 
                 // then
                 assertThat(result.getModelAndView().getModel()).containsKey("userTransactions");
@@ -320,7 +320,7 @@ public class TransfertControllerTest {
 
                 // when
                 MvcResult result = mockMvc.perform(get("/transfert"))
-                                .andExpect(status().isOk()).andDo(print()).andReturn();
+                                .andExpect(status().isOk()).andReturn();
 
                 // then
                 assertThat(result.getModelAndView().getModel()).containsKey("userTransactions");
@@ -340,7 +340,7 @@ public class TransfertControllerTest {
                                 .thenReturn(Optional.of(connectedUser), Optional.empty());
 
                 mockMvc.perform(post("/transfert/connection").param("email", connectedUser.getEmail()).with(csrf()))
-                                .andExpect(status().isNotFound()).andDo(print());
+                                .andExpect(status().isNotFound());
 
         }
 
@@ -355,7 +355,7 @@ public class TransfertControllerTest {
                 MvcResult result = mockMvc
                                 .perform(post("/transfert/connection").param("email", connectedUser.getEmail())
                                                 .with(csrf()))
-                                .andExpect(redirectedUrl("/transfert")).andDo(print()).andReturn();
+                                .andExpect(redirectedUrl("/transfert")).andReturn();
 
                 assertTrue(result.getFlashMap().containsKey("error"));
                 assertTrue(result.getFlashMap().containsValue(
@@ -380,7 +380,7 @@ public class TransfertControllerTest {
                 MvcResult result = mockMvc
                                 .perform(post("/transfert/connection")
                                                 .param("email", connectedUser.getEmail()).with(csrf()))
-                                .andExpect(redirectedUrl("/transfert")).andDo(print()).andReturn();
+                                .andExpect(redirectedUrl("/transfert")).andReturn();
 
                 assertTrue(result.getFlashMap().containsKey("warning"));
                 assertTrue(result.getFlashMap()
@@ -402,7 +402,7 @@ public class TransfertControllerTest {
                 MvcResult result = mockMvc
                                 .perform(post("/transfert/connection").param("email", connectedUser.getEmail())
                                                 .with(csrf()))
-                                .andExpect(redirectedUrl("/transfert")).andDo(print()).andReturn();
+                                .andExpect(redirectedUrl("/transfert")).andReturn();
 
                 assertTrue(result.getFlashMap().containsKey("success"));
                 assertTrue(result.getFlashMap()
@@ -423,7 +423,7 @@ public class TransfertControllerTest {
                 MvcResult result = mockMvc.perform(post("/transfert/sendmoneyto", appTransactionDto)
                                 .flashAttr("transaction", appTransactionDto).with(csrf()))
                                 .andExpect(redirectedUrl("/transfert"))
-                                .andDo(print()).andReturn();
+                                .andReturn();
 
                 assertThat(result.getFlashMap().size()).isEqualTo(3);
                 assertThat(result.getFlashMap().get("error"))
@@ -449,7 +449,7 @@ public class TransfertControllerTest {
                 when(userService.findByEmail(Mockito.anyString())).thenReturn(Optional.empty());
 
                 mockMvc.perform(post("/transfert/sendmoneyto").flashAttr("transaction", appTransactionDto).with(csrf()))
-                                .andExpect(status().isNotFound()).andDo(print());
+                                .andExpect(status().isNotFound());
 
         }
 
@@ -471,7 +471,7 @@ public class TransfertControllerTest {
                 when(userService.findByEmail(Mockito.anyString())).thenReturn(Optional.of(existedUser));
 
                 mockMvc.perform(post("/transfert/sendmoneyto").flashAttr("transaction", appTransactionDto).with(csrf()))
-                                .andExpect(status().isNotFound()).andDo(print());
+                                .andExpect(status().isNotFound());
 
         }
 
@@ -492,7 +492,7 @@ public class TransfertControllerTest {
                                 .thenReturn(Optional.of(existedUser), Optional.empty());
 
                 mockMvc.perform(post("/transfert/sendmoneyto").flashAttr("transaction", appTransactionDto).with(csrf()))
-                                .andExpect(status().isNotFound()).andDo(print());
+                                .andExpect(status().isNotFound());
 
         }
 
@@ -524,7 +524,7 @@ public class TransfertControllerTest {
 
                 MvcResult result = mockMvc.perform(post("/transfert/sendmoneyto")
                                 .flashAttr("transaction", appTransactionDto).with(csrf()))
-                                .andExpect(redirectedUrl("/transfert")).andDo(print()).andReturn();
+                                .andExpect(redirectedUrl("/transfert")).andReturn();
 
                 assertThat(result.getFlashMap().size()).isEqualTo(1);
                 assertThat(result.getFlashMap().get("success"))
@@ -560,7 +560,7 @@ public class TransfertControllerTest {
 
                 MvcResult result = mockMvc.perform(post("/transfert/sendmoneyto")
                                 .flashAttr("transaction", appTransactionDto).with(csrf()))
-                                .andExpect(redirectedUrl("/transfert")).andDo(print()).andReturn();
+                                .andExpect(redirectedUrl("/transfert")).andReturn();
 
                 
                 assertThat(result.getFlashMap().get("error")).isNotNull();
@@ -577,7 +577,7 @@ public class TransfertControllerTest {
                                 }).andExpect(result -> {
                                         assertThat(result.getResolvedException().getMessage())
                                                         .isEqualTo("this user is not authenticated!");
-                                }).andDo(print());
+                                });
         }
 
         @Test
@@ -605,7 +605,7 @@ public class TransfertControllerTest {
                                 Mockito.anyInt())).thenReturn(paged);
 
                 MvcResult result = mockMvc.perform(get("/transfert/paging")).andExpect(redirectedUrl("/transfert"))
-                                .andDo(print())
+                                
                                 .andReturn();
                 assertThat(result.getFlashMap().get("userTransactions")).isNotNull();
         }

@@ -10,10 +10,12 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+/**
+ * BankCard can be fill in or not .No need to have a bankcard for user.
+ * 
+ */
 public class BankCardDto {
-    @NotBlank
     private String cardNumber;
-    @NotBlank
     private String cardCode;
     private String expirationDate;
 }

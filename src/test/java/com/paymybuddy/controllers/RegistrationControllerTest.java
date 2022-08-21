@@ -2,6 +2,9 @@ package com.paymybuddy.controllers;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.oauth2Login;
@@ -9,6 +12,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
+import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -94,7 +99,7 @@ public class RegistrationControllerTest {
     @Test
     void testRegister_whenUserNotOauth2Login_thenReturnRegistrationPage() throws Exception {
 
-        MvcResult result = mockMvc.perform(get("/registration")).andExpect(status().isOk()).andDo(print()).andReturn();
+        MvcResult result = mockMvc.perform(get("/registration")).andExpect(status().isOk()).andReturn();
 
         assertThat(result.getModelAndView().getModel()).hasSize(2);
         assertThat(result.getModelAndView().getModel().get("user")).isInstanceOf(UserDto.class);
@@ -136,7 +141,7 @@ public class RegistrationControllerTest {
          */
         CustomOAuth2User mockOauth2User = new CustomOAuth2User(oAuth2User, new GithubUserInfo(userDetails));
 
-        MvcResult result = mockMvc.perform(get("/registration").with(oauth2Login().oauth2User(mockOauth2User))).andExpect(status().isOk()).andDo(print()).andReturn();
+        MvcResult result = mockMvc.perform(get("/registration").with(oauth2Login().oauth2User(mockOauth2User))).andExpect(status().isOk()).andReturn();
 
         Object attribute = result.getModelAndView().getModelMap().getAttribute("user");
 
@@ -151,7 +156,7 @@ public class RegistrationControllerTest {
     @Test
     void testRegister_whenUserOauth2UserNotInstanceOfCustomOauth2User_thenReturnRegistrationPageWithoutFillInNamesAndEmail() throws Exception {
 
-        MvcResult result = mockMvc.perform(get("/registration").with(oauth2Login())).andExpect(status().isOk()).andDo(print()).andReturn();
+        MvcResult result = mockMvc.perform(get("/registration").with(oauth2Login())).andExpect(status().isOk()).andReturn();
 
         Object attribute = result.getModelAndView().getModelMap().getAttribute("user");
 
@@ -171,7 +176,7 @@ public class RegistrationControllerTest {
         // when userDto has errors -> all fields are null
         UserDto mockUserDto = new UserDto();
 
-        MvcResult result = mockMvc.perform(post("/registration").flashAttr("user", mockUserDto).with(csrf())).andDo(print()).andReturn();
+        MvcResult result = mockMvc.perform(post("/registration").flashAttr("user", mockUserDto).with(csrf())).andReturn();
 
         assertThat(result.getModelAndView().getViewName()).isEqualTo("registration");
     }
@@ -191,7 +196,7 @@ public class RegistrationControllerTest {
         when(userService.findByEmail(Mockito.anyString())).thenReturn(Optional.of(mockUser));
 
         MvcResult result =
-                mockMvc.perform(post("/registration").flashAttr("user", mockUserDto).with(csrf())).andExpect(model().attributeHasFieldErrors("user", "duplicatedUser")).andDo(print()).andReturn();
+                mockMvc.perform(post("/registration").flashAttr("user", mockUserDto).with(csrf())).andExpect(model().attributeHasFieldErrors("user", "duplicatedUser")).andReturn();
 
         assertThat(result.getModelAndView().getViewName()).isEqualTo("registration");
 
@@ -221,13 +226,56 @@ public class RegistrationControllerTest {
         when(userService.findByEmail(Mockito.anyString())).thenReturn(Optional.empty());
         when(userService.save(Mockito.any(User.class))).thenReturn(mockUser);
         when(customUserDetailsService.loadUserByUsername(Mockito.anyString()))
-                .thenReturn(new org.springframework.security.core.userdetails.User(mockUserDto.getEmail(), "testPassword", grantedAuthority));
+                .thenReturn(new org.springframework.security.core.userdetails.User(mockUserDto.getEmail(),
+                        "testPassword", grantedAuthority));
 
+        mockMvc.perform(post("/registration").flashAttr("user", mockUserDto).with(csrf()))
+                .andExpect(redirectedUrl("/home")).andReturn();
 
-        mockMvc.perform(post("/registration").flashAttr("user", mockUserDto).with(csrf())).andExpect(redirectedUrl("/home")).andDo(print()).andReturn();
-
-
+        verify(oAuth2ProviderService, never()).saveOAuth2ProviderForUser(Mockito.any(CustomOAuth2User.class),
+                Mockito.any(User.class));
+        verify(userService, times(1)).save(Mockito.any(User.class));
+        verify(userService, times(1)).save(Mockito.any(User.class));
     }
+
+    @Test
+    void testSaveNewUser_whenAccountForUSerNotCreated_thenThrowException() throws Exception {
+
+        //mock of userDto
+        UserDto mockUserDto = new UserDto();
+        mockUserDto.setEmail("test@gmail.com");
+        mockUserDto.setFirstName("test");
+        mockUserDto.setLastName("test");
+        mockUserDto.setPassword("password");
+        mockUserDto.setMatchingPassword("password");
+
+        // mock UserDetails
+        SimpleGrantedAuthority simpleGrantedAuthority = new SimpleGrantedAuthority("ROLE_USER");
+        Set<GrantedAuthority> grantedAuthority = new HashSet<>();
+        grantedAuthority.add(simpleGrantedAuthority);
+
+        //mockUser
+        User mockUser = new User();
+        mockUser.setEmail("test@gmail.com");
+
+        when(userService.findByEmail(Mockito.anyString())).thenReturn(Optional.empty());
+        when(userService.save(Mockito.any(User.class))).thenReturn(mockUser);
+        when(customUserDetailsService.loadUserByUsername(Mockito.anyString()))
+                .thenReturn(new org.springframework.security.core.userdetails.User(mockUserDto.getEmail(),
+                        "testPassword", grantedAuthority));
+        NoSuchAlgorithmException e = new NoSuchAlgorithmException();      
+        when(appAccountService.createAccountforUser(Mockito.any(User.class))).thenThrow(e);
+
+
+        mockMvc.perform(post("/registration").flashAttr("user", mockUserDto).with(csrf()))
+                .andExpect(status().isInternalServerError());
+
+        verify(oAuth2ProviderService, never()).saveOAuth2ProviderForUser(Mockito.any(CustomOAuth2User.class),
+                Mockito.any(User.class));
+        verify(userService, never()).save(Mockito.any(User.class));
+       
+    }
+
 
     @Test
    
@@ -273,7 +321,12 @@ public class RegistrationControllerTest {
         when(customUserDetailsService.loadUserByUsername(Mockito.anyString()))
                 .thenReturn(new org.springframework.security.core.userdetails.User(mockUser.getEmail(), "testPassword", grantedAuthority));
 
-        MvcResult result = mockMvc.perform(post("/registration").flashAttr("user", mockUserDto).with(oauth2Login().oauth2User(mockOauth2User)).with(csrf())).andExpect(redirectedUrl("/home")).andDo(print()).andReturn();
+        MvcResult result = mockMvc
+                .perform(post("/registration").flashAttr("user", mockUserDto)
+                        .with(oauth2Login().oauth2User(mockOauth2User)).with(csrf()))
+                .andExpect(redirectedUrl("/home")).andReturn();
 
+                verify(oAuth2ProviderService, times(1)).saveOAuth2ProviderForUser(Mockito.any(CustomOAuth2User.class),
+                Mockito.any(User.class));
     }
 }

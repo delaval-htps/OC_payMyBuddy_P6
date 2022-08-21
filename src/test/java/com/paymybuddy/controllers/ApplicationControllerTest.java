@@ -52,7 +52,7 @@ public class ApplicationControllerTest {
     @WithMockUser
     void testGetHome_whenUserNotFound_whenRedirectLogout() throws Exception {
         when(userService.findByEmail(Mockito.anyString())).thenReturn(Optional.empty());
-        mockMvc.perform(get("/home")).andExpect(status().isFound()).andExpect(redirectedUrl("/logout")).andDo(print());
+        mockMvc.perform(get("/home")).andExpect(status().isFound()).andExpect(redirectedUrl("/logout"));
 
     }
 
@@ -60,7 +60,7 @@ public class ApplicationControllerTest {
     @WithAnonymousUser
     void testGetHome_whenNoAuthentication_whenRedirectLogout() throws Exception {
 
-        mockMvc.perform(get("/home")).andExpect(status().isFound()).andExpect(redirectedUrl("http://localhost/loginPage")).andDo(print());
+        mockMvc.perform(get("/home")).andExpect(status().isFound()).andExpect(redirectedUrl("http://localhost/loginPage"));
 
     }
 
@@ -86,7 +86,7 @@ public class ApplicationControllerTest {
 
         when(userService.findByEmail(Mockito.anyString())).thenReturn(Optional.of(existedUser));
 
-        mockMvc.perform(get("/home")).andExpect(status().isOk()).andDo(print());
+        mockMvc.perform(get("/home")).andExpect(status().isOk());
 
     }
 
@@ -119,7 +119,7 @@ public class ApplicationControllerTest {
 
         when(userService.findByEmail(Mockito.anyString())).thenReturn(Optional.of(existedUser));
 
-        mockMvc.perform(get("/home")).andExpect(status().isOk()).andDo(print());
+        mockMvc.perform(get("/home")).andExpect(status().isOk());
 
     }
 

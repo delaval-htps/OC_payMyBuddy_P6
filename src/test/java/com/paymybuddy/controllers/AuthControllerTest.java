@@ -5,6 +5,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.*;
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -46,7 +47,7 @@ public class AuthControllerTest {
     @WithAnonymousUser
     void testShowLoginPage() throws Exception {
 
-        MvcResult result = mockMvc.perform(get("/loginPage")).andExpect(status().isOk()).andDo(print()).andReturn();
+        MvcResult result = mockMvc.perform(get("/loginPage")).andExpect(status().isOk()).andReturn();
 
         assertThat(result.getModelAndView().getViewName()).isEqualTo("login");
     }
@@ -56,17 +57,24 @@ public class AuthControllerTest {
     @WithMockUser
     void testShowLoginPage_whenAuthenticationOk() throws Exception {
 
-        MvcResult result = mockMvc.perform(get("/loginPage")).andExpect(status().isFound()).andExpect(redirectedUrl("/home")).andDo(print()).andReturn();
+        MvcResult result = mockMvc.perform(get("/loginPage")).andExpect(status().isFound()).andExpect(redirectedUrl("/home")).andReturn();
 
         assertThat(result.getModelAndView().getViewName()).isEqualTo("redirect:/home");
     }
     @Test
     @Order(3)
+    void testShowLoginPage_whenAnonymous() throws Exception {
+
+        MvcResult result = mockMvc.perform(get("/loginPage").with(anonymous())).andExpect(status().isOk()).andReturn();
+
+        assertThat(result.getModelAndView().getViewName()).isEqualTo("login");
+    }
+    
+    @Test
+    @Order(4)
     void testShowLoginPage_whenAuthenticationNull() throws Exception {
         
-        // when(customUserDetailsService.loadUserByUsername(Mockito.anyString())).thenReturn(null);
-        authentication = null;
-                MvcResult result = mockMvc.perform(get("/loginPage")).andExpect(status().isOk()).andDo(print()).andReturn();
+                MvcResult result = mockMvc.perform(get("/loginPage").with(authentication(null))).andExpect(status().isOk()).andReturn();
 
         assertThat(result.getModelAndView().getViewName()).isEqualTo("login");
     }
