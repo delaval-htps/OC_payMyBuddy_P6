@@ -173,7 +173,7 @@ public class ApplicationTransactionServiceIT {
         output(transactionTable).toConsole();
 
         // when: we proceed transaction
-        cut.proceedBetweenUsers(mockAppTransaction,
+        cut.proceedTransactionBetweenUsers(mockAppTransaction,
                 userService.findByEmail("delaval.htps@gmail.com").get(),
                 userService.findByEmail("emilie.baudouin@gmail.com").get());
 
@@ -224,7 +224,7 @@ public class ApplicationTransactionServiceIT {
        
        // when
         assertThrows(ApplicationAccountException.class, () -> {
-            cut.proceedBetweenUsers(mockAppTransaction, sender,receiver);
+            cut.proceedTransactionBetweenUsers(mockAppTransaction, sender,receiver);
         });
         
         changes.setEndPointNow();
@@ -261,7 +261,7 @@ public class ApplicationTransactionServiceIT {
        
        // when
         assertThrows(ApplicationAccountException.class, () -> {
-            cut.proceedBetweenUsers(mockAppTransaction, sender,receiver);
+            cut.proceedTransactionBetweenUsers(mockAppTransaction, sender,receiver);
         });
         
         changes.setEndPointNow();

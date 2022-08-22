@@ -519,7 +519,7 @@ public class TransfertControllerTest {
                                 .thenReturn(Optional.of(existedUser), Optional.of(connectedUser));
 
                 // appTransaction success
-                when(applicationTransactionService.proceedBetweenUsers(Mockito.any(ApplicationTransaction.class),
+                when(applicationTransactionService.proceedTransactionBetweenUsers(Mockito.any(ApplicationTransaction.class),
                                 Mockito.any(User.class), Mockito.any(User.class))).thenReturn(applicationTransaction);
 
                 MvcResult result = mockMvc.perform(post("/transfert/sendmoneyto")
@@ -555,7 +555,7 @@ public class TransfertControllerTest {
                                 .thenReturn(Optional.of(existedUser), Optional.of(connectedUser));
 
                 // appTransaction KO
-                when(applicationTransactionService.proceedBetweenUsers(Mockito.any(ApplicationTransaction.class),
+                when(applicationTransactionService.proceedTransactionBetweenUsers(Mockito.any(ApplicationTransaction.class),
                                 Mockito.any(User.class), Mockito.any(User.class))).thenThrow(RuntimeException.class);
 
                 MvcResult result = mockMvc.perform(post("/transfert/sendmoneyto")

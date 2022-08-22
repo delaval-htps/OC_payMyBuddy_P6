@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort.Direction;
@@ -27,10 +28,12 @@ public class ApplicationTransactionService {
     private ApplicationTransactionRepository appTransactionRepository;
 
     @Autowired
-    private ApplicationAccountServiceImpl appAccountService;
+    @Qualifier(value = "ApplicationAccountServiceImpl")
+    private AccountService appAccountService;
 
     @Autowired
-    private BankAccountServiceImpl bankAccountService;
+    @Qualifier(value = "BankAccountServiceImpl")
+    private AccountService bankAccountService;
 
     /**
      * return application transactions of a user by his id. user must not be null
@@ -52,7 +55,8 @@ public class ApplicationTransactionService {
      * @param user       the user of which we want all transactions.
      * @param pageNumber the number of page that we want.
      * @param size       the number of transactions for one page.
-     * @return Paged with the number page and useer's transactions. Return null if no transactions founded.
+     * @return Paged with the number page and useer's transactions. Return null if
+     *         no transactions founded.
      */
     public Paged<ApplicationTransaction> getPageOfTransaction(User user, int pageNumber, int size) {
         if (user != null) {
@@ -122,7 +126,8 @@ public class ApplicationTransactionService {
      * @return the transaction saved with all updated field.
      */
     @Transactional(rollbackFor = { RuntimeException.class, Exception.class })
-    public ApplicationTransaction proceedBetweenUsers(ApplicationTransaction transaction, User sender, User receiver) {
+    public ApplicationTransaction proceedTransactionBetweenUsers(ApplicationTransaction transaction, User sender,
+            User receiver) {
 
         transaction.setTransactionDate(new Date());
         transaction.setSender(sender);
@@ -158,18 +163,25 @@ public class ApplicationTransactionService {
         bankTransaction.setTransactionDate(new Date());
         bankTransaction.setSender(bankAccountOwner);
         bankTransaction.setReceiver(bankAccountOwner);
+        bankTransaction.setAmountCommission(this.calculateAmountCommission(bankTransaction.getAmount()));
 
         switch (bankTransaction.getType()) {
 
             case WITHDRAW:
+                // application account is withdrawed with amount+ commission and bank account is
+                // credited
                 appAccountService.withdraw(bankTransaction.getSender().getApplicationAccount(),
-                        (bankTransaction.getAmount() + bankTransaction.getAmountCommission()));
+                        this.calculateAmountCommission(bankTransaction.getAmount()));
+
                 bankAccountService.credit(bankTransaction.getSender().getBankAccount(), bankTransaction.getAmount());
                 break;
 
             case CREDIT:
+                // application account is credited with amount and bank account is withdrawed
+                // with amount + commission
                 bankAccountService.withdraw(bankTransaction.getSender().getBankAccount(),
-                        (bankTransaction.getAmount() + bankTransaction.getAmountCommission()));
+                        this.calculateAmountCommission(bankTransaction.getAmount()));
+
                 appAccountService.credit(bankTransaction.getSender().getApplicationAccount(),
                         bankTransaction.getAmount());
                 break;

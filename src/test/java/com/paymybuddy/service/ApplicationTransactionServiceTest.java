@@ -1,21 +1,18 @@
 package com.paymybuddy.service;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import com.paymybuddy.model.ApplicationAccount;
-import com.paymybuddy.model.ApplicationTransaction;
-import com.paymybuddy.model.User;
-import com.paymybuddy.model.ApplicationTransaction.TransactionType;
-import com.paymybuddy.repository.ApplicationTransactionRepository;
+
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 import org.junit.jupiter.api.Order;
@@ -29,6 +26,13 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import com.paymybuddy.model.ApplicationAccount;
+import com.paymybuddy.model.ApplicationTransaction;
+import com.paymybuddy.model.ApplicationTransaction.TransactionType;
+import com.paymybuddy.model.BankAccount;
+import com.paymybuddy.model.User;
+import com.paymybuddy.repository.ApplicationTransactionRepository;
 
 @ExtendWith(MockitoExtension.class)
 @TestMethodOrder(OrderAnnotation.class)
@@ -58,6 +62,8 @@ public class ApplicationTransactionServiceTest {
     static List<ApplicationTransaction> appReceiverTransactions = new ArrayList<>();
     static Date date1 = new Date();
     static Date date2 = new Date();
+    static BankAccount bankAccount = new BankAccount();
+    static ApplicationTransaction bankTransaction = new ApplicationTransaction();
 
     @BeforeAll
     public static void setUp() {
@@ -101,6 +107,10 @@ public class ApplicationTransactionServiceTest {
 
         appSenderTransactions.add(appTransaction1);
         appReceiverTransactions.add(appTransaction2);
+
+        bankAccount.setBalance(1000d);
+        bankAccount.setIban("1234-1234-1234-1324-1234-1234-1234-1234-12");
+        bankAccount.setBic("TESTACOS");
     }
 
     @Test
@@ -199,16 +209,18 @@ public class ApplicationTransactionServiceTest {
 
     @Test
     @Order(8)
-    void proceedTransactionTest() {
+    void proceedTransactionBetweenUsersTest() {
 
-         cut.proceedBetweenUsers(appTransaction1, sender, receiver);
+        cut.proceedTransactionBetweenUsers(appTransaction1, sender, receiver);
 
-        ArgumentCaptor<ApplicationTransaction> appTransactionCaptor = ArgumentCaptor.forClass(ApplicationTransaction.class);
+        ArgumentCaptor<ApplicationTransaction> appTransactionCaptor = ArgumentCaptor
+                .forClass(ApplicationTransaction.class);
         verify(appTransactionRepository, times(1)).save(appTransactionCaptor.capture());
         assertThat(appTransactionCaptor.getValue().getTransactionDate()).isAfter(date1);
         assertThat(appTransactionCaptor.getValue().getSender()).isEqualTo(sender);
         assertThat(appTransactionCaptor.getValue().getReceiver()).isEqualTo(receiver);
-        assertThat(appTransactionCaptor.getValue().getAmountCommission()).isEqualTo(100d * ApplicationTransaction.COMMISSIONPERCENT);
+        assertThat(appTransactionCaptor.getValue().getAmountCommission())
+                .isEqualTo(100d * ApplicationTransaction.COMMISSIONPERCENT);
 
         ArgumentCaptor<ApplicationAccount> appAccountCaptor = ArgumentCaptor.forClass(ApplicationAccount.class);
         verify(appAccountService, times(1)).withdraw(appAccountCaptor.capture(), Mockito.anyDouble());
@@ -218,5 +230,77 @@ public class ApplicationTransactionServiceTest {
         verify(appAccountService, times(1)).credit(appAccountCaptor.capture(), Mockito.anyDouble());
         assertThat(appAccountCaptor.getValue().getUser()).isEqualTo(receiver);
         assertThat(appAccountCaptor.getValue().getBalance()).isEqualTo(1000d);
+    }
+    
+    @Test
+    @Order(9)
+    void proceedBankTransaction_whenWithdraw_thenOK() {
+
+        User owner = sender;
+      
+        bankTransaction.setAmount(100d);
+        bankTransaction.setDescription("bankTransaction");
+        bankTransaction.setReceiver(owner);
+        bankTransaction.setSender(owner);
+        bankTransaction.setTransactionDate(date1);
+        bankTransaction.setType(TransactionType.WITHDRAW);
+        
+        bankAccount.addUser(owner);
+
+        cut.proceedBankTransaction(bankTransaction, owner);
+
+        ArgumentCaptor<ApplicationTransaction> appTransactionCaptor = ArgumentCaptor
+                .forClass(ApplicationTransaction.class);
+        verify(appTransactionRepository, times(1)).save(appTransactionCaptor.capture());
+        assertThat(appTransactionCaptor.getValue().getTransactionDate()).isAfter(date1);
+        assertThat(appTransactionCaptor.getValue().getSender()).isEqualTo(owner);
+        assertThat(appTransactionCaptor.getValue().getReceiver()).isEqualTo(owner);
+        assertThat(appTransactionCaptor.getValue().getAmountCommission())
+                .isEqualTo(100d * ApplicationTransaction.COMMISSIONPERCENT);
+
+        ArgumentCaptor<ApplicationAccount> appAccountCaptor = ArgumentCaptor.forClass(ApplicationAccount.class);
+        verify(appAccountService, times(1)).withdraw(appAccountCaptor.capture(), Mockito.anyDouble());
+        assertThat(appAccountCaptor.getValue().getUser()).isEqualTo(owner);
+        assertThat(appAccountCaptor.getValue().getBalance()).isEqualTo(1000d);
+       
+        ArgumentCaptor<BankAccount> bankAccountCaptor = ArgumentCaptor.forClass(BankAccount.class);
+        verify(bankAccountService, times(1)).credit(bankAccountCaptor.capture(), Mockito.anyDouble());
+        assertThat(bankAccountCaptor.getValue().getUsers()).containsExactlyInAnyOrder(owner);
+        assertThat(bankAccountCaptor.getValue().getBalance()).isEqualTo(1000d);
+    }
+
+    @Test
+    @Order(9)
+    void proceedBankTransaction_whenCredit_thenOK() {
+
+        User owner = sender;
+        ApplicationTransaction bankTransaction = new ApplicationTransaction();
+        bankTransaction.setAmount(100d);
+        bankTransaction.setDescription("bankTransaction");
+        bankTransaction.setReceiver(owner);
+        bankTransaction.setSender(owner);
+        bankTransaction.setTransactionDate(date1);
+        bankTransaction.setType(TransactionType.CREDIT);
+
+        bankAccount.addUser(owner);
+
+         cut.proceedBankTransaction(bankTransaction, owner);
+
+        ArgumentCaptor<ApplicationTransaction> appTransactionCaptor = ArgumentCaptor.forClass(ApplicationTransaction.class);
+        verify(appTransactionRepository, times(1)).save(appTransactionCaptor.capture());
+        assertThat(appTransactionCaptor.getValue().getTransactionDate()).isAfter(date1);
+        assertThat(appTransactionCaptor.getValue().getSender()).isEqualTo(owner);
+        assertThat(appTransactionCaptor.getValue().getReceiver()).isEqualTo(owner);
+        assertThat(appTransactionCaptor.getValue().getAmountCommission()).isEqualTo(100d * ApplicationTransaction.COMMISSIONPERCENT);
+
+        ArgumentCaptor<ApplicationAccount> appAccountCaptor = ArgumentCaptor.forClass(ApplicationAccount.class);
+        verify(appAccountService, times(1)).credit(appAccountCaptor.capture(), Mockito.anyDouble());
+        assertThat(appAccountCaptor.getValue().getUser()).isEqualTo(owner);
+        assertThat(appAccountCaptor.getValue().getBalance()).isEqualTo(1000d);
+
+        ArgumentCaptor<BankAccount> bankAccountCaptor = ArgumentCaptor.forClass(BankAccount.class);
+        verify(bankAccountService, times(1)).withdraw(bankAccountCaptor.capture(), Mockito.anyDouble());
+        assertThat(bankAccountCaptor.getValue().getUsers()).containsExactlyInAnyOrder(owner);
+        assertThat(bankAccountCaptor.getValue().getBalance()).isEqualTo(1000d);
     }
 }

@@ -48,9 +48,7 @@ public class BankAccountServiceImpl implements AccountService {
     @Transactional(rollbackFor  = { RuntimeException.class})
     public void withdraw(Account bankAccount, double amount) {
        
-            retrieveBalance(bankAccount);
-       
-        if (bankAccount.getBalance() >= amount) {
+        if (connectionAndCheckBankAccount(bankAccount)) {
 
             bankAccount.setBalance(bankAccount.getBalance() - amount);
            
@@ -69,10 +67,14 @@ public class BankAccountServiceImpl implements AccountService {
         bankAccountRepository.save((BankAccount) bankAccount);
     }
     
-    
-    private void retrieveBalance(Account bankAccount) {
-        //TODO create a method to retrieve balance of bank Account of user using IBAN & SWIFT code(BIC)
-        //bu default, we put 1000€ on each bankAccount
-        bankAccount.setBalance(1000d);
+    /**
+     * method to connect to bank Account of user using IBAN & SWIFT code(BIC)
+     * and to check i fbalance of bankAccount >= amount.
+     * @param bankAccount user bank Account {@link BankAccount}
+     * @return  always true cause we mock this behaviour
+     */
+    private static boolean connectionAndCheckBankAccount(Account bankAccount) {
+        return true;
+
     }
 }

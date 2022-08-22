@@ -27,6 +27,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
@@ -39,11 +40,11 @@ public class BankAccountServiceImplTest {
     @InjectMocks
     private BankAccountServiceImpl cut;
 
-    private static BankAccount bankAccount;
+    private static BankAccount bankAccount = new BankAccount();
 
-    @BeforeAll
-    static void init() {
-        bankAccount = new BankAccount();
+    @BeforeEach
+    public void init() {
+
         bankAccount.setIban("TESTACOS");
         bankAccount.setBalance(1000d);
         bankAccount.setId(1L);
@@ -107,7 +108,27 @@ public class BankAccountServiceImplTest {
     }
 
     @Test
-    void findByIban_whenIdNotExisted_thenReturnEmptyOptional() {
+    void findByEmail_whenEmailNotExisted_thenReturnEmptyOptional() {
+
+        when(bankAccountRepository.findByEmail(Mockito.anyString())).thenReturn(Optional.empty());
+
+        Optional<BankAccount> existedBankAccount = cut.findByEmail("test@gmail.com");
+
+        assertThat(existedBankAccount).isEmpty();
+    }
+    @Test
+    void findByEmail_whenIEmailExisted_thenReturnLinkedBankAccount() {
+
+        when(bankAccountRepository.findByEmail(Mockito.anyString())).thenReturn(Optional.of(bankAccount));
+
+        Optional<BankAccount> existedBankAccount = cut.findByEmail("test@gmail.com");
+
+        assertThat(existedBankAccount.get()).isNotNull();
+        assertThat(existedBankAccount).contains(bankAccount);
+    }
+
+    @Test
+    void findById_whenIdNotExisted_thenReturnEmptyOptional() {
 
         when(bankAccountRepository.findById(Mockito.anyLong())).thenReturn(Optional.empty());
 
@@ -116,14 +137,15 @@ public class BankAccountServiceImplTest {
         assertThat(existedBankAccount).isEmpty();
     }
 
-    private static Stream<Arguments> withdrawArgumentsCorrectResult() {
 
-        return Stream.of(Arguments.of(bankAccount, 100d), Arguments.of(bankAccount, 900d));
+    private static Stream<Arguments> withdrawArgumentsCorrectResult() {
+        return Stream.of(
+                Arguments.of(bankAccount, 100d),
+                Arguments.of(bankAccount, 900d));
     }
 
     @ParameterizedTest
     @MethodSource("withdrawArgumentsCorrectResult")
-    @Order(10)
     void testWithdraw_whenBankAccountBalanceGreaterThanOrEqualToAmount(BankAccount bankAccount, double amount) {
         double expectedResult = bankAccount.getBalance() - amount;
 
@@ -136,20 +158,15 @@ public class BankAccountServiceImplTest {
 
     }
 
-    private static Stream<Arguments> withdrawArgumentsThrowException() {
-
-        return Stream.of(Arguments.of(bankAccount, 1100d));
+    @Test
+    void credit_thenSaveBankAccountWithNewBalance() {
+        double amount = 100d;
+        double expectedResult = bankAccount.getBalance() + amount;
+        cut.credit(bankAccount, amount);
+        assertThat(bankAccount.getBalance()).isEqualTo(expectedResult);
     }
-
-    @ParameterizedTest
-    @MethodSource("withdrawArgumentsThrowException")
-    @Order(11)
-    void testWithdraw_whenAppAccountBalanceLessThanAmount_thenTrowException(BankAccount bankAccount, double amount) {
-
-        assertThrows(BankAccountException.class, () -> {
-            cut.withdraw(bankAccount, amount);
-        });
-
-        verify(bankAccountRepository, never()).save(Mockito.any(BankAccount.class));
-    }
+    
+ 
 }
+
+

@@ -1,6 +1,5 @@
 package com.paymybuddy.dto;
 
-import javax.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

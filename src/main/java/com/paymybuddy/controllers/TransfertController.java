@@ -254,7 +254,7 @@ public class TransfertController {
 
         // proceed transaction beetween sender and receiver
         try {
-          ApplicationTransaction succeededTransaction = appTransactionService.proceedBetweenUsers(transaction, sender,
+          ApplicationTransaction succeededTransaction = appTransactionService.proceedTransactionBetweenUsers(transaction, sender,
               receiver);
 
           redirectAttributes.addFlashAttribute(SUCCESS_MESSAGE, "Transaction of "
