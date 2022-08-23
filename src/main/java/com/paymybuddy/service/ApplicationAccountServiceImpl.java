@@ -2,9 +2,11 @@ package com.paymybuddy.service;
 
 import java.security.NoSuchAlgorithmException;
 import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+
 import com.paymybuddy.UtilService;
 import com.paymybuddy.exceptions.ApplicationAccountException;
 import com.paymybuddy.exceptions.UserNotFoundException;
@@ -13,7 +15,7 @@ import com.paymybuddy.model.ApplicationAccount;
 import com.paymybuddy.model.User;
 import com.paymybuddy.repository.ApplicationAccountRepository;
 
-@Service
+@Component(value="ApplicationAccountService")
 public class ApplicationAccountServiceImpl implements AccountService {
 
   @Autowired

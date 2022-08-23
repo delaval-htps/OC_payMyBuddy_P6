@@ -13,6 +13,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import com.paymybuddy.exceptions.ApplicationTransactionException;
+import com.paymybuddy.exceptions.BankAccountException;
 import com.paymybuddy.exceptions.UserNotFoundException;
 import com.paymybuddy.model.ApplicationTransaction;
 import com.paymybuddy.model.ApplicationTransaction.TransactionType;
@@ -28,11 +31,11 @@ public class ApplicationTransactionService {
     private ApplicationTransactionRepository appTransactionRepository;
 
     @Autowired
-    @Qualifier(value = "ApplicationAccountServiceImpl")
+    @Qualifier(value = "ApplicationAccountService")
     private AccountService appAccountService;
 
     @Autowired
-    @Qualifier(value = "BankAccountServiceImpl")
+    @Qualifier(value = "BankAccountService")
     private AccountService bankAccountService;
 
     /**
@@ -185,8 +188,6 @@ public class ApplicationTransactionService {
                 appAccountService.credit(bankTransaction.getSender().getApplicationAccount(),
                         bankTransaction.getAmount());
                 break;
-
-            default:
 
         }
         return appTransactionRepository.save(bankTransaction);

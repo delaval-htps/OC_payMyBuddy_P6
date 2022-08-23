@@ -5,14 +5,10 @@ import static org.assertj.db.api.Assertions.assertThat;
 import static org.assertj.db.output.Outputs.output;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
+
 import java.text.ParseException;
 import java.util.List;
-import com.paymybuddy.exceptions.ApplicationAccountException;
-import com.paymybuddy.model.ApplicationAccount;
-import com.paymybuddy.model.ApplicationTransaction;
-import com.paymybuddy.model.User;
-import com.paymybuddy.repository.ApplicationAccountRepository;
-import com.paymybuddy.repository.ApplicationTransactionRepository;
+
 import org.assertj.db.type.Changes;
 import org.assertj.db.type.DateTimeValue;
 import org.assertj.db.type.Source;
@@ -25,10 +21,19 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.DirtiesContext.ClassMode;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.paymybuddy.exceptions.ApplicationAccountException;
+import com.paymybuddy.model.ApplicationAccount;
+import com.paymybuddy.model.ApplicationTransaction;
+import com.paymybuddy.model.User;
+import com.paymybuddy.repository.ApplicationAccountRepository;
+import com.paymybuddy.repository.ApplicationTransactionRepository;
 
 @SpringBootTest
 @DirtiesContext(classMode = ClassMode.AFTER_EACH_TEST_METHOD)
@@ -38,14 +43,16 @@ public class ApplicationTransactionServiceIT {
     @Autowired
     private UserService userService;
 
-    @Autowired
-    private ApplicationTransactionRepository appTransactionRepository;
-
     @MockBean
     private ApplicationAccountRepository appAccountRepository;
 
     @Autowired
-    private ApplicationAccountServiceImpl appAccountService;
+    @Qualifier(value = "ApplicationAccountService")
+    private AccountService appAccountService;
+
+    @Autowired
+    @Qualifier(value = "BankAccountService")
+    private AccountService bankAccountService;
 
     @Autowired
     private ApplicationTransactionService cut;
@@ -158,7 +165,7 @@ public class ApplicationTransactionServiceIT {
      */
     @Test
     @Order(9)
-    void proceedTransaction_whenEveryThingOK_thenCommit() throws ParseException {
+    void proceedTransactionBetweenUsers_whenEveryThingOK_thenCommit() throws ParseException {
         ApplicationTransaction mockAppTransaction = new ApplicationTransaction();
         // given: we create a transaction between userId 1 and userId2
         mockAppTransaction.setReceiver(userService.findByEmail("delaval.htps@gmail.com").get());
@@ -203,7 +210,7 @@ public class ApplicationTransactionServiceIT {
 
     @Test
     @Order(10)
-    void proceedTransaction_whenSenderAccountLessThanTransactionAmount_thenRollBack() {
+    void proceedTransactionBetweenUsers_whenSenderAccountLessThanTransactionAmount_thenRollBack() {
 
         // given: we create a transaction between userId 1 and userId2
         // sender's Account balance < transaction's' amount => appAccountService throws ApplicationAccountException
@@ -237,8 +244,9 @@ public class ApplicationTransactionServiceIT {
     }
 
     @Test
+    @Transactional
     @Order (11)
-    void proceedTransaction_whenApplicationAccountThrowsIllegalArgumentException_thenRollBack() {
+    void proceedTransactionBetweenUsers_whenApplicationAccountThrowsIllegalArgumentException_thenRollBack() {
 
       // given: we create a transaction between userId 1 and userId2
       // sender's Account balance < transaction's' amount => appAccountService throws ApplicationAccountException

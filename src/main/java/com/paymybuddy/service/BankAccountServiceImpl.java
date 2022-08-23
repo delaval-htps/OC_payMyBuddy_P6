@@ -1,16 +1,18 @@
 package com.paymybuddy.service;
 
 import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+
 import com.paymybuddy.exceptions.BankAccountException;
 import com.paymybuddy.model.Account;
 import com.paymybuddy.model.BankAccount;
 import com.paymybuddy.repository.BankAccountRepository;
 
 
-@Service
+@Component(value = "BankAccountService")
 public class BankAccountServiceImpl implements AccountService {
 
     @Autowired
