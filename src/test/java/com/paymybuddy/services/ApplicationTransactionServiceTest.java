@@ -1,9 +1,7 @@
-package com.paymybuddy.service;
+package com.paymybuddy.services;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.anyDouble;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -11,9 +9,12 @@ import static org.mockito.Mockito.when;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Stream;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
@@ -22,19 +23,27 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 
+import com.paymybuddy.exceptions.UserNotFoundException;
 import com.paymybuddy.model.ApplicationAccount;
 import com.paymybuddy.model.ApplicationTransaction;
 import com.paymybuddy.model.ApplicationTransaction.TransactionType;
 import com.paymybuddy.model.BankAccount;
 import com.paymybuddy.model.User;
 import com.paymybuddy.repository.ApplicationTransactionRepository;
+import com.paymybuddy.service.ApplicationAccountServiceImpl;
+import com.paymybuddy.service.ApplicationTransactionService;
+import com.paymybuddy.service.BankAccountServiceImpl;
 
 @ExtendWith(MockitoExtension.class)
 @TestMethodOrder(OrderAnnotation.class)
@@ -304,5 +313,47 @@ public class ApplicationTransactionServiceTest {
         assertThat(bankAccountCaptor.getValue().getBalance()).isEqualTo(1000d);
     }
 
-    
+    private static Stream<Arguments> UserNullInput() {
+        return Stream.of(Arguments.of(null, 0, 0));
+    }
+
+    @ParameterizedTest
+    @MethodSource("UserNullInput")
+    void getPageOfTransaction_whenUserNotFound(User user, int input1, int input2) {
+
+        assertThrows(UserNotFoundException.class, () -> {
+            cut.getPageOfTransaction(user, input1, input2);
+        });
+    }
+
+    @Test
+    void getPageOfTransaction_whenNoTransactionPage_thenReturnNull() {
+        when(appTransactionRepository.findAllBySender(Mockito.any(User.class),
+                Mockito.any(org.springframework.data.domain.Pageable.class))).thenReturn(Optional.empty());
+
+        assertThat(cut.getPageOfTransaction(sender, 1, 5)).isNull();
+    }
+
+    @Test
+    void getPageOfTransaction_whenTransactionPage_thenReturnNewPage() {
+
+         // mock of applicationTransactionDto for create Paged
+         ApplicationTransaction applicationTransaction = new ApplicationTransaction();
+         applicationTransaction.setAmount(10d);
+         applicationTransaction.setDescription("test_transaction");
+         applicationTransaction.setReceiver(sender);
+         applicationTransaction.setSender(sender);
+         applicationTransaction.setTransactionDate(new Date());
+         applicationTransaction.setAmountCommission(5d);
+
+         Page<ApplicationTransaction> page = new PageImpl<>(Arrays.asList(applicationTransaction));
+         
+         
+        when(appTransactionRepository.findAllBySender(Mockito.any(User.class),
+                Mockito.any(org.springframework.data.domain.Pageable.class))).thenReturn(Optional.of(page));
+
+        assertThat(cut.getPageOfTransaction(sender, 1, 5)).isNotNull();
+    }
+
+
 }
