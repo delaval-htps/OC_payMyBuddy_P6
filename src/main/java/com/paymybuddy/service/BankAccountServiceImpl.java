@@ -75,7 +75,7 @@ public class BankAccountServiceImpl implements AccountService {
      * @param bankAccount user bank Account {@link BankAccount}
      * @return  always true cause we mock this behaviour
      */
-    private static boolean connectionAndCheckBankAccount(Account bankAccount) {
+    public boolean connectionAndCheckBankAccount(Account bankAccount) {
         return true;
 
     }

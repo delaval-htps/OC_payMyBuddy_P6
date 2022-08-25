@@ -2,13 +2,14 @@ package com.paymybuddy.services;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import java.util.Optional;
 import java.util.stream.Stream;
-
+import javax.swing.text.DefaultEditorKit.CutAction;
 import com.paymybuddy.exceptions.BankAccountException;
 import com.paymybuddy.model.Account;
 import com.paymybuddy.model.BankAccount;
@@ -168,6 +169,17 @@ public class BankAccountServiceImplTest {
         assertThat(bankAccount.getBalance()).isEqualTo(expectedResult);
     }
     
+    @Test
+    void withdraw_alwaysTrue() {
+
+        BankAccountServiceImpl mockBankAccount = Mockito.spy(cut);
+        
+        when(mockBankAccount.connectionAndCheckBankAccount(bankAccount)).thenReturn(false);
+
+        assertThrows(BankAccountException.class,()->{
+            mockBankAccount.withdraw(bankAccount, 12d);
+        });
+    }
  
 }
 
