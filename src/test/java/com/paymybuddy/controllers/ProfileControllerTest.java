@@ -10,6 +10,7 @@ import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.flash;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -32,7 +33,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 
 import com.paymybuddy.dto.ApplicationTransactionDto;
 import com.paymybuddy.dto.BankAccountDto;
@@ -106,7 +106,7 @@ public class ProfileControllerTest {
 
         userBankCard = new BankCard();
         userBankAccount.setBankCard(userBankCard);
-        
+
         appAccount = new ApplicationAccount();
         appAccount.setAccountNumber("12345");
         appAccount.setBalance(1000d);
@@ -208,7 +208,7 @@ public class ProfileControllerTest {
         updatedUser.setEmail(profileUserDto.getEmail());
 
         when(userService.save(Mockito.any(User.class))).thenReturn(updatedUser);
-        MvcResult result = mockMvc.perform(post("/profile/user").flashAttr("user", profileUserDto).with(csrf()))
+        mockMvc.perform(post("/profile/user").flashAttr("user", profileUserDto).with(csrf()))
                 .andExpect(redirectedUrl("/profile"))
                 .andReturn();
         verify(userService, times(1)).save(Mockito.any(User.class));
@@ -243,11 +243,9 @@ public class ProfileControllerTest {
         mapBank.put("bankAccount", bankAccountDto);
 
         mockMvc.perform(post("/profile/bankaccount").flashAttrs(mapBank).with(csrf()))
-                .andExpect(redirectedUrl("/profile")).andExpect(result -> {
-                    assertTrue(result.getFlashMap().keySet().equals(new HashSet<>(Arrays.asList("error",
-                            "org.springframework.validation.BindingResult.bankAccount",
-                            "bankAccount"))));
-                });
+                .andExpect(redirectedUrl("/profile"))
+                .andExpect(flash().attributeExists("error", "org.springframework.validation.BindingResult.bankAccount",
+                        "bankAccount"));
         verify(bankAccountService, never()).save(Mockito.any(BankAccount.class));
 
     }
@@ -265,10 +263,7 @@ public class ProfileControllerTest {
         when(bankAccountService.save(Mockito.any(BankAccount.class))).thenReturn(userBankAccount);
 
         mockMvc.perform(post("/profile/bankaccount").flashAttrs(mapBank).with(csrf()))
-                .andExpect(redirectedUrl("/profile")).andExpect(result -> {
-                    assertTrue(result.getFlashMap().keySet()
-                            .equals(new HashSet<>(Arrays.asList("success", "bankAccount"))));
-                });
+                .andExpect(redirectedUrl("/profile")).andExpect(flash().attributeExists("success", "bankAccount"));
         verify(bankAccountService, times(1)).save(Mockito.any(BankAccount.class));
 
     }
@@ -286,9 +281,8 @@ public class ProfileControllerTest {
         when(bankAccountService.save(Mockito.any(BankAccount.class))).thenReturn(userBankAccount);
 
         mockMvc.perform(post("/profile/bankaccount").flashAttrs(mapBank).with(csrf()))
-                .andExpect(redirectedUrl("/profile")).andExpect(result -> {
-                    assertTrue(result.getFlashMap().keySet().equals(new HashSet<>(Arrays.asList("error"))));
-                });
+                .andExpect(redirectedUrl("/profile")).andExpect(flash().attributeExists("error"));
+
         verify(bankAccountService, never()).save(Mockito.any(BankAccount.class));
 
     }
@@ -321,10 +315,9 @@ public class ProfileControllerTest {
 
         mockMvc.perform(post("/profile/bank_transaction").flashAttr("bankTransaction", appTransactionDto).with(csrf()))
                 .andExpect(redirectedUrl("/profile"))
-                .andExpect((result) -> {
-                    assertTrue(result.getFlashMap().keySet().equals(new HashSet<>(Arrays.asList("error",
-                            "org.springframework.validation.BindingResult.bankTransaction", "bankTransaction"))));
-                });
+                .andExpect(flash().attributeExists("error",
+                            "org.springframework.validation.BindingResult.bankTransaction", "bankTransaction"));
+               
     }
 
     @Test
@@ -354,12 +347,9 @@ public class ProfileControllerTest {
 
         mockMvc.perform(post("/profile/bank_transaction").flashAttr("bankTransaction", appTransactionDto).with(csrf()))
                 .andExpect(redirectedUrl("/profile"))
-                .andExpect(result -> {
-                    assertTrue(result.getFlashMap().containsKey("success"));
-                    assertTrue(result.getFlashMap().get("success").equals("the withdraw of "
-                            + withdrawBankTransaction.getAmount()
-                            + "€ was correctly realised from your application account to your bank account"));
-                });
+                .andExpect(flash().attribute("success", "the withdraw of "
+                + withdrawBankTransaction.getAmount()
+                + "€ was correctly realised from your application account to your bank account"));
 
         verify(appTransactionService, times(1)).proceedBankTransaction(Mockito.any(ApplicationTransaction.class),
                 Mockito.any(User.class));

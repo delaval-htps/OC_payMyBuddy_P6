@@ -2,24 +2,15 @@ package com.paymybuddy.services;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+
 import java.util.Optional;
 import java.util.stream.Stream;
-import javax.swing.text.DefaultEditorKit.CutAction;
-import com.paymybuddy.exceptions.BankAccountException;
-import com.paymybuddy.model.Account;
-import com.paymybuddy.model.BankAccount;
-import com.paymybuddy.repository.BankAccountRepository;
-import com.paymybuddy.service.BankAccountServiceImpl;
 
-import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -30,8 +21,13 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import com.paymybuddy.exceptions.BankAccountException;
+import com.paymybuddy.model.Account;
+import com.paymybuddy.model.BankAccount;
+import com.paymybuddy.repository.BankAccountRepository;
+import com.paymybuddy.service.BankAccountServiceImpl;
 
 @ExtendWith(MockitoExtension.class)
 @TestMethodOrder(OrderAnnotation.class)

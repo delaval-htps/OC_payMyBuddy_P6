@@ -14,8 +14,6 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.paymybuddy.exceptions.ApplicationTransactionException;
-import com.paymybuddy.exceptions.BankAccountException;
 import com.paymybuddy.exceptions.UserNotFoundException;
 import com.paymybuddy.model.ApplicationTransaction;
 import com.paymybuddy.model.ApplicationTransaction.TransactionType;
@@ -27,6 +25,7 @@ import com.paymybuddy.repository.ApplicationTransactionRepository;
 @Service
 public class ApplicationTransactionService {
 
+    private static final String IN_METHOD = "In method ";
     @Autowired
     private ApplicationTransactionRepository appTransactionRepository;
 
@@ -48,7 +47,7 @@ public class ApplicationTransactionService {
         if (user != null) {
             return appTransactionRepository.findBySender(user);
         } else
-            throw new IllegalArgumentException("In method " + this.getClass().getName() + "."
+            throw new IllegalArgumentException(IN_METHOD+ this.getClass().getName() + "."
                     + this.getClass().getEnclosingMethod() + "() , user must be not null");
     }
 
@@ -89,7 +88,7 @@ public class ApplicationTransactionService {
         if (transaction != null) {
             return appTransactionRepository.save(transaction);
         } else
-            throw new IllegalArgumentException("In method " + this.getClass().getName() + "."
+            throw new IllegalArgumentException(IN_METHOD + this.getClass().getName() + "."
                     + this.getClass().getEnclosingMethod() + "() ,transaction must not be null");
     }
 
@@ -108,7 +107,7 @@ public class ApplicationTransactionService {
                     RoundingMode.HALF_UP);
             return result.doubleValue();
         } else {
-            throw new IllegalArgumentException("In method " + this.getClass().getName() + "."
+            throw new IllegalArgumentException(IN_METHOD+ this.getClass().getName() + "."
                     + this.getClass().getEnclosingMethod() + "() ,amount must be positive!");
         }
 
@@ -168,26 +167,23 @@ public class ApplicationTransactionService {
         bankTransaction.setReceiver(bankAccountOwner);
         bankTransaction.setAmountCommission(this.calculateAmountCommission(bankTransaction.getAmount()));
 
-        switch (bankTransaction.getType()) {
+        if (bankTransaction.getType().equals(TransactionType.WITHDRAW)) {
 
-            case WITHDRAW:
-                // application account is withdrawed with amount+ commission and bank account is
-                // credited
-                appAccountService.withdraw(bankTransaction.getSender().getApplicationAccount(),
-                        this.calculateAmountCommission(bankTransaction.getAmount()));
+            // application account is withdrawed with amount+ commission and bank account is
+            // credited
+            appAccountService.withdraw(bankTransaction.getSender().getApplicationAccount(),
+                    this.calculateAmountCommission(bankTransaction.getAmount()));
 
-                bankAccountService.credit(bankTransaction.getSender().getBankAccount(), bankTransaction.getAmount());
-                break;
+            bankAccountService.credit(bankTransaction.getSender().getBankAccount(), bankTransaction.getAmount());
+        } else {
 
-            case CREDIT:
-                // application account is credited with amount and bank account is withdrawed
-                // with amount + commission
-                bankAccountService.withdraw(bankTransaction.getSender().getBankAccount(),
-                        this.calculateAmountCommission(bankTransaction.getAmount()));
+            // application account is credited with amount and bank account is withdrawed
+            // with amount + commission
+            bankAccountService.withdraw(bankTransaction.getSender().getBankAccount(),
+                    this.calculateAmountCommission(bankTransaction.getAmount()));
 
-                appAccountService.credit(bankTransaction.getSender().getApplicationAccount(),
-                        bankTransaction.getAmount());
-                break;
+            appAccountService.credit(bankTransaction.getSender().getApplicationAccount(),
+                    bankTransaction.getAmount());
 
         }
         return appTransactionRepository.save(bankTransaction);

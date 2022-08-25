@@ -31,7 +31,6 @@ public class ApplicationAccount extends Account implements Serializable {
   private String accountNumber;
 
   @Column
-  @Getter(onMethod = @__(@Override))
   private double balance;
 
   @OneToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH}, mappedBy = "applicationAccount")

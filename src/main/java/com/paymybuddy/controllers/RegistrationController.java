@@ -38,6 +38,7 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class RegistrationController {
 
+  private static final String REGISTRATION = "registration";
   @Autowired
   private UserService userService;
 
@@ -78,7 +79,7 @@ public class RegistrationController {
     }
 
     model.addAttribute("user", userDto);
-    return "registration";
+    return REGISTRATION;
   }
 
   /**
@@ -94,7 +95,7 @@ public class RegistrationController {
   public String saveNewUser(Model model, @Valid @ModelAttribute(value = "user") UserDto userDto, BindingResult bindingResult, Authentication authentication) {
 
     if (bindingResult.hasErrors()) {
-      return "registration";
+      return REGISTRATION;
     }
 
     Optional<User> existedUser = userService.findByEmail(userDto.getEmail());
@@ -142,7 +143,7 @@ public class RegistrationController {
       bindingResult.addError(new FieldError("user", "duplicatedUser", "Please chose another names and email because they already use by another user!"));
 
       log.error("user {} {} already existed in database.", userDto.getLastName(), userDto.getFirstName());
-      return "registration";
+      return REGISTRATION;
     }
 
     return "redirect:/home";

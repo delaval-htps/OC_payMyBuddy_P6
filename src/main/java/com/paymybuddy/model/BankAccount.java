@@ -36,7 +36,6 @@ public class BankAccount  extends Account implements  Serializable {
   private String iban;
 
   @Column
-  @Getter(onMethod = @__(@Override))
   private double balance;
 
   // a bank Account can be open for many users ( example a couple)

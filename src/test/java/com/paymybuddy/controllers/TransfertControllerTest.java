@@ -10,10 +10,9 @@ import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.flash;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -226,7 +225,7 @@ public class TransfertControllerTest {
 
                 // then
                 assertThat(result.getModelAndView().getModel()).containsKey("transaction");
-                assertThat(result.getModelAndView().getModel()).containsEntry("transaction",appTransactionDto);
+                assertThat(result.getModelAndView().getModel()).containsEntry("transaction", appTransactionDto);
                 verify(applicationTransactionService, times(1))
                                 .getPageOfTransaction(Mockito.any(User.class), anyInt(), anyInt());
         }
@@ -275,7 +274,7 @@ public class TransfertControllerTest {
                 // then
                 assertThat(result.getModelAndView().getModel()).containsKey("userTransactions");
 
-                assertThat(result.getModelAndView().getModel()).containsEntry("userTransactions",paged);
+                assertThat(result.getModelAndView().getModel()).containsEntry("userTransactions", paged);
                 verify(applicationTransactionService, never())
                                 .getPageOfTransaction(Mockito.any(User.class), anyInt(), anyInt());
         }
@@ -325,7 +324,7 @@ public class TransfertControllerTest {
                 // then
                 assertThat(result.getModelAndView().getModel()).containsKey("userTransactions");
 
-                assertThat(result.getModelAndView().getModel()).doesNotContainEntry("userTransactions",paged);
+                assertThat(result.getModelAndView().getModel()).doesNotContainEntry("userTransactions", paged);
 
                 verify(applicationTransactionService, times(1))
                                 .getPageOfTransaction(Mockito.any(User.class), anyInt(), anyInt());
@@ -333,6 +332,7 @@ public class TransfertControllerTest {
 
         @Test
         @WithMockUser
+        @SuppressWarnings({ "unchecked", "varargs" })
         void saveConnectionUser_whenAuthenticatedUserNotfound_thenThrowsUserNotFoundException() throws Exception {
 
                 // first connectedUser is found but not existedUser
@@ -346,6 +346,7 @@ public class TransfertControllerTest {
 
         @Test
         @WithMockUser(value = "existedUser")
+        @SuppressWarnings({ "unchecked", "varargs" })
         void saveConnectionUser_whenConnectedUserNotFound_thenRedirectWithErrorMessage() throws Exception {
 
                 // first existedUser is found but connectedUser is not found
@@ -365,6 +366,7 @@ public class TransfertControllerTest {
 
         @Test
         @WithMockUser(value = "existedUser")
+        @SuppressWarnings({ "unchecked", "varargs" })
         void saveConnectionUser_whenConnectedUserAlreadyConnected_thenRedirectWithWarningMessage()
                         throws Exception {
 
@@ -389,6 +391,7 @@ public class TransfertControllerTest {
 
         @Test
         @WithMockUser(value = "existedUser")
+        @SuppressWarnings({ "unchecked", "varargs" })
         void saveConnectionUser_whenConnectedUserNotConnectedWithExistedUser_thenRedirectWithSuccessMessage()
                         throws Exception {
 
@@ -412,6 +415,7 @@ public class TransfertControllerTest {
 
         @Test
         @WithMockUser(value = "existedUser")
+
         void sendMoneyTo_whenBindingErrors_thenRedirectToTransfert() throws Exception {
 
                 // create a applicationTransactionDto but set description to empty to not be
@@ -420,17 +424,15 @@ public class TransfertControllerTest {
                 appTransactionDto.setAmount(BigDecimal.TEN);
                 appTransactionDto.setDescription("");
 
-                MvcResult result = mockMvc.perform(post("/transfert/sendmoneyto", appTransactionDto)
+                mockMvc.perform(post("/transfert/sendmoneyto", appTransactionDto)
                                 .flashAttr("transaction", appTransactionDto).with(csrf()))
                                 .andExpect(redirectedUrl("/transfert"))
+                                .andExpect(flash().attribute("error",
+                                                "a problem has occured in transaction, please check red fields!"))
+                                .andExpect(flash().attributeExists("transaction",
+                                                "org.springframework.validation.BindingResult.transaction"))
                                 .andReturn();
 
-                assertThat(result.getFlashMap().size()).isEqualTo(3);
-                assertThat(result.getFlashMap().get("error"))
-                                .isEqualTo("a problem has occured in transaction, please check red fields!");
-                assertTrue(result.getFlashMap().containsKey("transaction"));
-                assertTrue(result.getFlashMap()
-                                .containsKey("org.springframework.validation.BindingResult.transaction"));
         }
 
         @Test
@@ -477,6 +479,7 @@ public class TransfertControllerTest {
 
         @Test
         @WithMockUser
+        @SuppressWarnings({ "unchecked", "varargs" })
         void sendMoneyTo_whenExistedUserAndNoExistedConnectedUser_thenThrowsNotFoundException() throws Exception {
 
                 // create a validated applicationTransactionDto
@@ -498,6 +501,7 @@ public class TransfertControllerTest {
 
         @Test
         @WithMockUser
+        @SuppressWarnings({ "unchecked", "varargs" })
         void sendMoneyTo_whenTransactionOk_thenRedirectToTransfert() throws Exception {
 
                 connectedUser.setFirstName("delaval");
@@ -519,21 +523,22 @@ public class TransfertControllerTest {
                                 .thenReturn(Optional.of(existedUser), Optional.of(connectedUser));
 
                 // appTransaction success
-                when(applicationTransactionService.proceedTransactionBetweenUsers(Mockito.any(ApplicationTransaction.class),
+                when(applicationTransactionService.proceedTransactionBetweenUsers(
+                                Mockito.any(ApplicationTransaction.class),
                                 Mockito.any(User.class), Mockito.any(User.class))).thenReturn(applicationTransaction);
 
-                MvcResult result = mockMvc.perform(post("/transfert/sendmoneyto")
+                mockMvc.perform(post("/transfert/sendmoneyto")
                                 .flashAttr("transaction", appTransactionDto).with(csrf()))
-                                .andExpect(redirectedUrl("/transfert")).andReturn();
+                                .andExpect(redirectedUrl("/transfert"))
+                                .andExpect(flash().attribute("success","Transaction of " + appTransactionDto.getAmount()
+                                + "€ " + "to " + connectedUser.getFullName() + " was successfull!")).andReturn();
 
-                assertThat(result.getFlashMap().size()).isEqualTo(1);
-                assertThat(result.getFlashMap().get("success"))
-                                .isEqualTo("Transaction of " + appTransactionDto.getAmount()
-                                                + "€ " + "to " + connectedUser.getFullName() + " was successfull!");
+             
         }
 
         @Test
         @WithMockUser
+        @SuppressWarnings({ "unchecked", "varargs" })
         void sendMoneyTo_whenTransactionKO_thenRedirectWithErrorMessage() throws Exception {
 
                 connectedUser.setFirstName("delaval");
@@ -555,15 +560,15 @@ public class TransfertControllerTest {
                                 .thenReturn(Optional.of(existedUser), Optional.of(connectedUser));
 
                 // appTransaction KO
-                when(applicationTransactionService.proceedTransactionBetweenUsers(Mockito.any(ApplicationTransaction.class),
+                when(applicationTransactionService.proceedTransactionBetweenUsers(
+                                Mockito.any(ApplicationTransaction.class),
                                 Mockito.any(User.class), Mockito.any(User.class))).thenThrow(RuntimeException.class);
 
-                MvcResult result = mockMvc.perform(post("/transfert/sendmoneyto")
+                mockMvc.perform(post("/transfert/sendmoneyto")
                                 .flashAttr("transaction", appTransactionDto).with(csrf()))
-                                .andExpect(redirectedUrl("/transfert")).andReturn();
+                                .andExpect(redirectedUrl("/transfert")).andExpect(flash().attributeExists("error")).andReturn();
 
-                
-                assertThat(result.getFlashMap().get("error")).isNotNull();
+              
         }
 
         @Test
@@ -605,7 +610,7 @@ public class TransfertControllerTest {
                                 Mockito.anyInt())).thenReturn(paged);
 
                 MvcResult result = mockMvc.perform(get("/transfert/paging")).andExpect(redirectedUrl("/transfert"))
-                                
+
                                 .andReturn();
                 assertThat(result.getFlashMap().get("userTransactions")).isNotNull();
         }

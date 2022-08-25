@@ -33,7 +33,6 @@ import com.paymybuddy.model.ApplicationAccount;
 import com.paymybuddy.model.ApplicationTransaction;
 import com.paymybuddy.model.User;
 import com.paymybuddy.repository.ApplicationAccountRepository;
-import com.paymybuddy.repository.ApplicationTransactionRepository;
 import com.paymybuddy.service.AccountService;
 import com.paymybuddy.service.ApplicationTransactionService;
 import com.paymybuddy.service.UserService;
