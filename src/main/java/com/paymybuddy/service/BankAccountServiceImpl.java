@@ -11,7 +11,9 @@ import com.paymybuddy.model.Account;
 import com.paymybuddy.model.BankAccount;
 import com.paymybuddy.repository.BankAccountRepository;
 
-
+/**
+ * Class that contains services for a bank account.
+ */
 @Component(value = "BankAccountService")
 public class BankAccountServiceImpl implements AccountService {
 
@@ -21,7 +23,7 @@ public class BankAccountServiceImpl implements AccountService {
     /**
      * save a BankAccount.
      * 
-     * @param bankAccount
+     * @param bankAccount the bankAccount to save
      * @return the saved bankAccount if success
      */
     public BankAccount save(BankAccount bankAccount) {
@@ -70,8 +72,8 @@ public class BankAccountServiceImpl implements AccountService {
     }
     
     /**
-     * method to connect to bank Account of user using IBAN & SWIFT code(BIC)
-     * and to check i fbalance of bankAccount >= amount.
+     * method to connect to bank Account of user using IBAN and SWIFT code(BIC)
+     * and to check if balance of bankAccount greater than or equals to amount.
      * @param bankAccount user bank Account {@link BankAccount}
      * @return  always true cause we mock this behaviour
      */

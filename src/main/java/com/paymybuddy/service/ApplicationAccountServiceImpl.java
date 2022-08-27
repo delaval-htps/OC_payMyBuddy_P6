@@ -15,6 +15,9 @@ import com.paymybuddy.model.ApplicationAccount;
 import com.paymybuddy.model.User;
 import com.paymybuddy.repository.ApplicationAccountRepository;
 
+/**
+ * Class that contains services for a application account.
+ */
 @Component(value="ApplicationAccountService")
 public class ApplicationAccountServiceImpl implements AccountService {
 
@@ -49,7 +52,7 @@ public class ApplicationAccountServiceImpl implements AccountService {
   /**
    * save a ApplicationAccount.
    * 
-   * @param appAccount
+   * @param appAccount tha application Account to save.
    * @return the application account saved.
    */
   public ApplicationAccount save(ApplicationAccount appAccount) {
@@ -61,7 +64,7 @@ public class ApplicationAccountServiceImpl implements AccountService {
    * 
    * @param user the new user
    * @return application account initialized.
-   * @throws NoSuchAlgorithmException
+   * @throws NoSuchAlgorithmException in case of a problem when created account.
    */
   public ApplicationAccount createAccountforUser(User user) throws NoSuchAlgorithmException {
 
@@ -84,7 +87,7 @@ public class ApplicationAccountServiceImpl implements AccountService {
   /**
    * Withdraw a amount on applicationAccount (commission included) and save it in bdd.
    * 
-   * @param senderApplicationAccount the application account of sender of amount
+   * @param senderAccount the application account of sender of amount
    * @param amount the amount of transaction ( commission included)
    * @throws ApplicationAccountException extends RuntimeException if amount is greater than balance of
    *         account.
@@ -110,7 +113,7 @@ public class ApplicationAccountServiceImpl implements AccountService {
   /**
    * credit application account with the amount in parameter and save it in bdd.
    * 
-   * @param receiverApplicationAccount application account of receiver of amount
+   * @param receiverAccount application account of receiver of amount
    * @param amount amount to credit
    * @throws IllegalArgumentException extends RuntimeException in case the given
    *         receiverApplicationAccount is null.

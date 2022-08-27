@@ -11,6 +11,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/**
+ * Abstract class representing a Account in application.
+ * it can be a bank or application Account.
+ */
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter

@@ -6,6 +6,9 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import com.paymybuddy.model.ApplicationAccount;
 
+/**
+ * Repository extends {@link JpaRepository} to acces to {@link ApplicationAccount}
+ */
 @Repository
 public interface ApplicationAccountRepository extends JpaRepository<ApplicationAccount,Long>{
 

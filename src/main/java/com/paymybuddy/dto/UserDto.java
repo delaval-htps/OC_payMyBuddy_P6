@@ -8,13 +8,16 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/**
+ * the dto of user : informations contains password and matching password from
+ * the frontend contrary to {@link ProfileUserDto}
+ */
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 
 public class UserDto {
-
 
   private String fullName;
 
@@ -41,11 +44,11 @@ public class UserDto {
 
   @NotBlank(message = "The password must be not null or empty !")
   @Size(min = 8, message = "The password must contains more than 8 characters !")
-  private String password ;
+  private String password;
 
   @NotBlank(message = "The password must be not null or empty !")
   @Size(min = 8, message = "The password must be not null or empty !")
-  private String matchingPassword ;
+  private String matchingPassword;
 
   private boolean duplicatedUser = false;
 

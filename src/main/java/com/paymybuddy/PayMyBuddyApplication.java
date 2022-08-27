@@ -2,7 +2,9 @@ package com.paymybuddy;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-
+/**
+ * Main class for application.
+ */
 @SpringBootApplication
 public class PayMyBuddyApplication {
 

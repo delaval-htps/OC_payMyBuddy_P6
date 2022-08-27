@@ -13,6 +13,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/**
+ * Class that represents a bnak card's of connected user.
+ */
 @Entity
 @Getter
 @Setter

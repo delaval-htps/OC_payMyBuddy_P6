@@ -6,6 +6,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/**
+ * Class represents a item of pagination under the tab of transaction.
+ */
 @Setter
 @Getter
 @Builder

@@ -14,7 +14,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 /**
- * Allow a authenticated user to go to home page. If he is not found , he is redirect to logout =>
+ * Allow a authenticated user to go to home page. If he is not found , he is redirect to logout =
  * /loginPage (cf security configuration)
  */
 @Controller
@@ -26,7 +26,12 @@ public class ApplicationController {
   @Autowired
   private ModelMapper modelMapper;
 
-
+/**
+ * Mapping for view home page.
+ * @param authentication authentication for user
+ * @param model model to return attributes for view 
+ * @return either the home page if user authenticated or logout page if not
+ */
   @PreAuthorize("isAuthenticated()")
   @GetMapping("/home")
   public String getHome(Authentication authentication, Model model) {

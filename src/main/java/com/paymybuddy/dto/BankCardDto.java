@@ -11,7 +11,6 @@ import lombok.Setter;
 @NoArgsConstructor
 /**
  * BankCard can be fill in or not .No need to have a bankcard for user.
- * 
  */
 public class BankCardDto {
     private String cardNumber;

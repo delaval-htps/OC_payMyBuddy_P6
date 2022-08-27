@@ -21,7 +21,9 @@ import com.paymybuddy.model.User;
 import com.paymybuddy.pagination.Paged;
 import com.paymybuddy.pagination.Paging;
 import com.paymybuddy.repository.ApplicationTransactionRepository;
-
+/**
+ * Class that contains services for a transaction.
+ */
 @Service
 public class ApplicationTransactionService {
 
@@ -47,7 +49,7 @@ public class ApplicationTransactionService {
         if (user != null) {
             return appTransactionRepository.findBySender(user);
         } else
-            throw new IllegalArgumentException(IN_METHOD+ this.getClass().getName() + "."
+            throw new IllegalArgumentException(IN_METHOD + this.getClass().getName() + "."
                     + this.getClass().getEnclosingMethod() + "() , user must be not null");
     }
 
@@ -107,7 +109,7 @@ public class ApplicationTransactionService {
                     RoundingMode.HALF_UP);
             return result.doubleValue();
         } else {
-            throw new IllegalArgumentException(IN_METHOD+ this.getClass().getName() + "."
+            throw new IllegalArgumentException(IN_METHOD + this.getClass().getName() + "."
                     + this.getClass().getEnclosingMethod() + "() ,amount must be positive!");
         }
 
@@ -150,13 +152,11 @@ public class ApplicationTransactionService {
      * transaction.
      * Arguments of method are not null because verified by controller before.
      * 
-     * @param transaction      application transaction with amount to send ,
-     *                         commission's
-     *                         amount, description and date.Amount of transaction
-     *                         must pe
-     *                         positive.
+     * @param bankTransaction  application transaction with amount to send ,
+     *                         commission's amount, description and date.Amount of
+     *                         transaction must be positive.
      * @param bankAccountOwner owner of bank account
-     * @return the transaction saved with all updated field.
+     * @return  the transaction saved with all updated field.
      */
     @Transactional(rollbackFor = RuntimeException.class)
     public ApplicationTransaction proceedBankTransaction(ApplicationTransaction bankTransaction,

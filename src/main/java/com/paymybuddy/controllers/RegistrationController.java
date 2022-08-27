@@ -34,6 +34,10 @@ import com.paymybuddy.service.UserService;
 
 import lombok.extern.log4j.Log4j2;
 
+/**
+ * Controller for registration page : registration of user not yet connected and
+ * registred in application.
+ */
 @Controller
 @Log4j2
 public class RegistrationController {
@@ -58,11 +62,13 @@ public class RegistrationController {
   PasswordEncoder passwordEncoder;
 
   /**
-   * display a registration page to register a new user or a Oauth2Login not yet registred. If
-   * Oauth2User is not registred in database , his firstname lastname and email are retrieve to fill
+   * display a registration page to register a new user or a Oauth2Login not yet
+   * registred. If
+   * Oauth2User is not registred in database , his firstname lastname and email
+   * are retrieve to fill
    * in form of registration.
    * 
-   * @param model the model to give to view registration
+   * @param model          the model to give to view registration
    * @param authentication authentication of user in the page registration
    * @return return the view without any restriction.
    */
@@ -85,14 +91,17 @@ public class RegistrationController {
   /**
    * save a user just registrated with form registration.
    * 
-   * @param model model to pass pojo with information about user
-   * @param userDto informations of user form the form registration
-   * @param bindingResult list of errors if problem of validation
-   * @return page registration if there is a validation's error or home with sucessfull
+   * @param model          model to pass pojo with information about user
+   * @param userDto        informations of user form the form registration
+   * @param bindingResult  list of errors if problem of validation
+   * @param authentication authentication of connected user
+   * @return page registration if there is a validation's error or home with
+   *         sucessfull
    *         authentication.
    */
   @PostMapping("/registration")
-  public String saveNewUser(Model model, @Valid @ModelAttribute(value = "user") UserDto userDto, BindingResult bindingResult, Authentication authentication) {
+  public String saveNewUser(Model model, @Valid @ModelAttribute(value = "user") UserDto userDto,
+      BindingResult bindingResult, Authentication authentication) {
 
     if (bindingResult.hasErrors()) {
       return REGISTRATION;
@@ -119,7 +128,8 @@ public class RegistrationController {
         appAccountService.createAccountforUser(newUser);
       } catch (NoSuchAlgorithmException e) {
         e.printStackTrace();
-        throw new ApplicationAccountException("A problem occurs because , can't be able to create a account for new user" + newUser.getFullName());
+        throw new ApplicationAccountException(
+            "A problem occurs because , can't be able to create a account for new user" + newUser.getFullName());
       }
 
       User saveUser = userService.save(newUser);
@@ -134,13 +144,14 @@ public class RegistrationController {
 
       UserDetails userDetails = customUserDetailsService.loadUserByUsername(saveUser.getEmail());
 
-      UsernamePasswordAuthenticationToken userToken = new UsernamePasswordAuthenticationToken(userDetails, userDetails.getPassword(), userDetails.getAuthorities());
+      UsernamePasswordAuthenticationToken userToken = new UsernamePasswordAuthenticationToken(userDetails,
+          userDetails.getPassword(), userDetails.getAuthorities());
 
       context.setAuthentication(userToken);
 
-
     } else {
-      bindingResult.addError(new FieldError("user", "duplicatedUser", "Please chose another names and email because they already use by another user!"));
+      bindingResult.addError(new FieldError("user", "duplicatedUser",
+          "Please chose another names and email because they already use by another user!"));
 
       log.error("user {} {} already existed in database.", userDto.getLastName(), userDto.getFirstName());
       return REGISTRATION;

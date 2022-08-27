@@ -11,6 +11,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/**
+ * the Dto of a transaction .
+ */
 @Getter
 @Setter
 @NoArgsConstructor

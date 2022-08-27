@@ -10,6 +10,10 @@ import com.paymybuddy.model.AuthProvider;
  */
 public class OAuth2UserInfoFactory {
 
+    private OAuth2UserInfoFactory() {
+        throw new IllegalStateException("Utility class");
+      }
+
     public static OAuth2UserInfo getOAuth2UserInfoService(String registrationId, Map<String, Object> attributes) {
         if (registrationId == null) {
             return null;

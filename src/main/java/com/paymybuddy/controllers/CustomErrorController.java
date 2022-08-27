@@ -16,6 +16,9 @@ import org.springframework.web.context.request.ServletWebRequest;
 
 import lombok.extern.log4j.Log4j2;
 
+/**
+ * Controller for manage and handle error from application.
+ */
 @Controller
 @Log4j2
 public class CustomErrorController implements ErrorController {
@@ -25,7 +28,12 @@ public class CustomErrorController implements ErrorController {
 
   @Autowired
   private ErrorAttributes errorAttributes;
-
+/**
+ * Error handler to redirect on error or custom error page when a exception is thrown by application.
+ * @param request the request 
+ * @param model model to put informations for error page
+ * @return either custom error or error page according to status of it.
+ */
   @RequestMapping("/error")
   public String handleError(HttpServletRequest request, Model model) {
     Object status = request.getAttribute(RequestDispatcher.ERROR_STATUS_CODE);

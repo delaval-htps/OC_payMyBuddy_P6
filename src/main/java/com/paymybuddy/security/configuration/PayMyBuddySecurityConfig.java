@@ -19,6 +19,9 @@ import com.paymybuddy.security.oauth2.components.CustomOAuth2SuccessHandler;
 import com.paymybuddy.security.oauth2.services.CustomOAuth2UserService;
 import com.paymybuddy.security.services.CustomUserDetailsService;
 
+/**
+ * Class of configuration for springSecurity.
+ */
 @Configuration
 @EnableWebSecurity
 public class PayMyBuddySecurityConfig extends WebSecurityConfigurerAdapter {

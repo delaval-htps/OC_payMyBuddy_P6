@@ -28,9 +28,17 @@ import com.paymybuddy.service.ApplicationTransactionService;
 import com.paymybuddy.service.BankAccountServiceImpl;
 import com.paymybuddy.service.UserService;
 
+/**
+ * Controller to manage the profuile page of application.
+ */
 @Controller
 @RequestMapping("/profile")
 public class ProfileController {
+
+        private static final String ERROR = "error";
+        private static final String BANK_TRANSACTION = "bankTransaction";
+        private static final String BANK_ACCOUNT = "bankAccount";
+        private static final String REDIRECT_PROFILE = "redirect:/profile";
         @Autowired
         private UserService userService;
 
@@ -45,7 +53,7 @@ public class ProfileController {
 
         /**
          * return view with profile and bankAccount's' information of user.
-         * If bankAccount information are not defined -> user can fill form to perform
+         * If bankAccount information are not defined - user can fill form to perform
          * it.
          * 
          * @param authentication authentication of user
@@ -76,16 +84,16 @@ public class ProfileController {
                                                         ApplicationAccountDto.class));
 
                         // send bankTransaction
-                        if (!model.containsAttribute("bankTransaction")) {
-                                model.addAttribute("bankTransaction", new ApplicationTransactionDto());
+                        if (!model.containsAttribute(BANK_TRANSACTION)) {
+                                model.addAttribute(BANK_TRANSACTION, new ApplicationTransactionDto());
                         }
 
                         // send bankAccount of user
-                        if (!model.containsAttribute("bankAccount")) {
+                        if (!model.containsAttribute(BANK_ACCOUNT)) {
                                 BankAccountDto bankAccountDto = (currentUser.getBankAccount() != null)
                                                 ? modelMapper.map(currentUser.getBankAccount(), BankAccountDto.class)
                                                 : new BankAccountDto();
-                                model.addAttribute("bankAccount", bankAccountDto);
+                                model.addAttribute(BANK_ACCOUNT, bankAccountDto);
                         }
                         // send bankCard of user
                         if (!model.containsAttribute("bankCard")) {
@@ -108,12 +116,12 @@ public class ProfileController {
          * Generally, his already have a applicationAccount, a bankAccount and a
          * bankcard because edit the profile need to fill in form of this attributes.
          * 
-         * @param profileUserDto the Dto of connected user
-         * @param bindingResult  the binding result if there is errors when fill in form
-         *                       of profile
-         * @param model          model to put again user's attributes before return
-         *                       profile
-         * @param authentication authentication of user
+         * @param profileUserDto     the Dto of connected user
+         * @param bindingResult      the binding result if there is errors when fill in
+         *                           form
+         *                           of profile
+         * @param redirectAttributes allow to send flashAttribute in model
+         * @param authentication     authentication of user
          * @return the view of profile.
          */
         @PostMapping("/user")
@@ -129,7 +137,7 @@ public class ProfileController {
                         User existedUser = user.get();
 
                         if (bindingResult.hasErrors()) {
-                                redirectAttributes.addFlashAttribute("error",
+                                redirectAttributes.addFlashAttribute(ERROR,
                                                 "a problem has occured when editing profile, please check red fields!");
 
                                 redirectAttributes.addFlashAttribute(
@@ -162,12 +170,29 @@ public class ProfileController {
                                         + " is not registred in application!");
                 }
 
-                return "redirect:/profile";
+                return REDIRECT_PROFILE;
         }
 
+        /**
+         * PostMapping to save banl account of connected user by form.
+         * 
+         * @param model                    model to add attributes to next view page.
+         * @param bankAccountDto           a bankAccountDto recevive from form with
+         *                                 informations about bank account of user.
+         * @param bindingResultBankAccount the binding result for bankAccount in case of
+         *                                 validation error
+         * @param bankCardDto              the bankCardDto receive from form with
+         *                                 informations about user's card
+         * @param bindingResultBankCard    the bindig result of bankcardDto incase of
+         *                                 validation error
+         * @param redirectAttributes       redirectAttribute to send attirbutes by using
+         *                                 redirection
+         * @param authentication           authentication of connected user
+         * @return the view page Profile either by redirection or not
+         */
         @PostMapping("/bankaccount")
         public String createBankAccount(Model model,
-                        @Valid @ModelAttribute(value = "bankAccount") BankAccountDto bankAccountDto,
+                        @Valid @ModelAttribute(value = BANK_ACCOUNT) BankAccountDto bankAccountDto,
                         BindingResult bindingResultBankAccount,
                         @Valid @ModelAttribute(value = "bankCard") BankCardDto bankCardDto,
                         BindingResult bindingResultBankCard, RedirectAttributes redirectAttributes,
@@ -177,12 +202,12 @@ public class ProfileController {
 
                 // case of errors in form
                 if (bindingResultBankAccount.hasErrors()) {
-                        redirectAttributes.addFlashAttribute("error",
+                        redirectAttributes.addFlashAttribute(ERROR,
                                         "a problem has occured, please check red fields!");
                         redirectAttributes.addFlashAttribute(
                                         "org.springframework.validation.BindingResult.bankAccount",
                                         bindingResultBankAccount);
-                        redirectAttributes.addFlashAttribute("bankAccount", bankAccountDto);
+                        redirectAttributes.addFlashAttribute(BANK_ACCOUNT, bankAccountDto);
 
                 } else if (user.isPresent()) {
 
@@ -201,9 +226,8 @@ public class ProfileController {
 
                         // if bankAccount already exist retrieve it plus bankcard
                         if (existedBankAccount.isPresent()) {
-                                bankAccount = existedBankAccount.get();
 
-                                redirectAttributes.addFlashAttribute("error",
+                                redirectAttributes.addFlashAttribute(ERROR,
                                                 "Your bank account already exist.If you want to change it please contact us by email.");
 
                         } else {
@@ -217,7 +241,7 @@ public class ProfileController {
                                 redirectAttributes.addFlashAttribute("success",
                                                 "your bank account was correctly registred.");
 
-                                redirectAttributes.addFlashAttribute("bankAccount",
+                                redirectAttributes.addFlashAttribute(BANK_ACCOUNT,
                                                 modelMapper.map(userBankAccount, BankAccountDto.class));
 
                         }
@@ -225,12 +249,26 @@ public class ProfileController {
                         throw new UserNotFoundException("this user with email " + authentication.getName()
                                         + " is not registred in application!");
                 }
-                return "redirect:/profile";
+                return REDIRECT_PROFILE;
         }
 
+        /**
+         * PostMapping that represents a user transaction to either withdraw or credit
+         * his bank account with a amount
+         * 
+         * @param authentication            authentication of connected user
+         * @param applicationTransactionDto applicationTransactionDto to receive
+         *                                  informations about transaction to proceed
+         *                                  with user's bank
+         * @param bindingResult             bindingResult if validation error with
+         *                                  transaction
+         * @param redirectAttributes        to send message and add attributes when
+         *                                  redirected
+         * @return the page of profile with or not redirection
+         */
         @PostMapping("/bank_transaction")
         public String bankTransaction(Authentication authentication,
-                        @Valid @ModelAttribute(name = "bankTransaction") ApplicationTransactionDto applicationTransactionDto,
+                        @Valid @ModelAttribute(name = BANK_TRANSACTION) ApplicationTransactionDto applicationTransactionDto,
                         BindingResult bindingResult, RedirectAttributes redirectAttributes) {
 
                 Optional<User> user = userService.findByEmail(applicationTransactionDto.getSenderEmail());
@@ -240,43 +278,44 @@ public class ProfileController {
                 }
 
                 if (bindingResult.hasErrors()) {
-                        redirectAttributes.addFlashAttribute("error",
+                        redirectAttributes.addFlashAttribute(ERROR,
                                         "a problem has occured in transaction, please check red fields!");
 
                         redirectAttributes.addFlashAttribute(
                                         "org.springframework.validation.BindingResult.bankTransaction", bindingResult);
 
-                        redirectAttributes.addFlashAttribute("bankTransaction", applicationTransactionDto);
+                        redirectAttributes.addFlashAttribute(BANK_TRANSACTION, applicationTransactionDto);
 
-                        return "redirect:/profile";
+                } else {
+
+                        User existedUser = user.get();
+
+                        ApplicationTransaction bankTransaction = modelMapper.map(applicationTransactionDto,
+                                        ApplicationTransaction.class);
+
+                        try {
+                                ApplicationTransaction executedBankTransaction = appTransactionService
+                                                .proceedBankTransaction(bankTransaction, existedUser);
+
+                                String messageTransaction = executedBankTransaction.getType()
+                                                .equals(TransactionType.WITHDRAW)
+                                                                ? "from your application account to your bank account"
+                                                                : "from your bank account to your application account";
+
+                                redirectAttributes.addFlashAttribute("success",
+                                                "the " + executedBankTransaction.getType().toString().toLowerCase()
+                                                                + " of "
+                                                                + executedBankTransaction.getAmount()
+                                                                + "€ was correctly realised " + messageTransaction);
+
+                        } catch (Exception e) {
+                                redirectAttributes.addFlashAttribute(ERROR,
+                                                "A problem occured with the transaction, it was not executed: "
+                                                                + e.getMessage()
+                                                                + ". Please retry it or contact us from more information.");
+                        }
                 }
-
-                User existedUser = user.get();
-
-                ApplicationTransaction bankTransaction = modelMapper.map(applicationTransactionDto,
-                                ApplicationTransaction.class);
-
-                try {
-                        ApplicationTransaction executedBankTransaction = appTransactionService
-                                        .proceedBankTransaction(bankTransaction, existedUser);
-
-                        String messageTransaction = executedBankTransaction.getType().equals(TransactionType.WITHDRAW)
-                                        ? "from your application account to your bank account"
-                                        : "from your bank account to your application account";
-
-                        redirectAttributes.addFlashAttribute("success",
-                                        "the " + executedBankTransaction.getType().toString().toLowerCase()
-                                                        + " of "
-                                                        + executedBankTransaction.getAmount()
-                                                        + "€ was correctly realised " + messageTransaction);
-
-                } catch (Exception e) {
-                        redirectAttributes.addFlashAttribute("error",
-                                        "A problem occured with the transaction, it was not executed: " + e.getMessage()
-                                                        + ". Please retry it or contact us from more information.");
-                }
-
-                return "redirect:/profile";
+                return REDIRECT_PROFILE;
 
         }
 

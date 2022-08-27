@@ -9,6 +9,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/**
+ * the Dto of profile's user: we just need informations of him like names ...
+ */
 @Getter
 @Setter
 @AllArgsConstructor

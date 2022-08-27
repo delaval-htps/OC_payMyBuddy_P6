@@ -15,6 +15,9 @@ import com.paymybuddy.model.ApplicationTransaction;
 import com.paymybuddy.model.BankCard;
 import com.paymybuddy.model.ApplicationTransaction.TransactionType;
 
+/**
+ * Class of configuration for ModelMapper to convert correctly Dto in entity.
+ */
 @Configuration
 public class ModelMapperConfig {
 
@@ -59,7 +62,8 @@ public class ModelMapperConfig {
 
   @Bean
   public Converter<String, TransactionType> convertStringToEnum() {
-    return context -> context.getSource().equalsIgnoreCase("CREDIT") ? TransactionType.CREDIT : TransactionType.WITHDRAW;
+    return context -> context.getSource().equalsIgnoreCase("CREDIT") ? TransactionType.CREDIT
+        : TransactionType.WITHDRAW;
   }
 
   PropertyMap<BankCardDto, BankCard> bankCardMap = new PropertyMap<BankCardDto, BankCard>() {

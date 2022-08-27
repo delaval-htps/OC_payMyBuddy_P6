@@ -27,6 +27,9 @@ import com.paymybuddy.service.ApplicationTransactionService;
 import com.paymybuddy.service.UserService;
 import lombok.extern.log4j.Log4j2;
 
+/**
+ * Controller for page transfert to manage transaction between users.
+ */
 @Controller
 @RequestMapping("/transfert")
 @Log4j2
@@ -52,6 +55,7 @@ public class TransfertController {
    * have a bank account registred.
    *
    * @param authentication authentication of connected user.
+   * @param redirectAttrs  to send message of error to view
    * @param model          model to send informations for the view
    * @return view of transfert or view Profile to complete bank account
    *         information to proceed a transfert.
@@ -125,6 +129,15 @@ public class TransfertController {
     }
   }
 
+  /**
+   * To get all transactions page if connected user.
+   * 
+   * @param pageNumber     the page that we need
+   * @param size           the number of transaction in a page
+   * @param authentication authentication of connected user
+   * @param redirectAttrs  to return result by redirection
+   * @return the page transfert
+   */
   @GetMapping("/paging")
   public String getPageTransaction(
       @RequestParam(value = "pageNumber", required = false, defaultValue = "1") int pageNumber,
@@ -159,7 +172,7 @@ public class TransfertController {
    *
    * @param email         email of connected user we want to add for authenticated
    *                      user
-   * @param redirectAttrs allows to send success, warning & error messages.
+   * @param redirectAttrs allows to send success, warning and error messages.
    * @param auth          authentication to retreive information of user
    * @return redirectedUrl to /transfert if no problems
    * @throws UserNotFoundException if authenticated user is not found in bdd.
@@ -206,15 +219,15 @@ public class TransfertController {
 
   /**
    * endpoint to send money between authenticated user and connected user. a
-   * transactionDto is send
-   * with all informations.
+   * transactionDto is send with all informations.
    *
    * @param transactionDto     to retrieve informations to create a transaction
    *                           between users
    * @param bindingResult      if fields are not correctly validated for
    *                           transaction
    * @param authentication     authentication to retreive information of user
-   * @param redirectAttributes allows to send success, warning & error message and
+   * @param redirectAttributes allows to send success, warning and error message
+   *                           and
    *                           resend
    *                           transactionDto and bindigResult to transfert view
    *                           if errors.
@@ -245,7 +258,7 @@ public class TransfertController {
       User sender = user.get();
 
       ApplicationTransaction transaction = modelMapper.map(transactionDto, ApplicationTransaction.class);
-      
+
       Optional<User> receiverUser = userService.findByEmail(transactionDto.getReceiverEmail());
 
       if (receiverUser.isPresent()) {
@@ -254,7 +267,8 @@ public class TransfertController {
 
         // proceed transaction beetween sender and receiver
         try {
-          ApplicationTransaction succeededTransaction = appTransactionService.proceedTransactionBetweenUsers(transaction, sender,
+          ApplicationTransaction succeededTransaction = appTransactionService.proceedTransactionBetweenUsers(
+              transaction, sender,
               receiver);
 
           redirectAttributes.addFlashAttribute(SUCCESS_MESSAGE, "Transaction of "
