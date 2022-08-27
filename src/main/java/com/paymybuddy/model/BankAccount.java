@@ -12,6 +12,9 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+
+import org.springframework.stereotype.Component;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -22,12 +25,8 @@ import lombok.Setter;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class BankAccount  extends Account implements  Serializable {
-
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Column
-  private Long id;
+@Component
+public class BankAccount extends Account implements Serializable {
 
   @Column
   private String bic;
@@ -35,11 +34,8 @@ public class BankAccount  extends Account implements  Serializable {
   @Column
   private String iban;
 
-  @Column
-  private double balance;
-
   // a bank Account can be open for many users ( example a couple)
-  @OneToMany(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH}, mappedBy = "bankAccount")
+  @OneToMany(cascade = { CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH }, mappedBy = "bankAccount")
   private Set<User> users = new HashSet<>();
 
   @OneToOne(cascade = CascadeType.ALL)
