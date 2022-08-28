@@ -138,7 +138,7 @@ public class ApplicationTransactionServiceIT {
     @Order(6)
     void calculateAmountCommission_whenAmountGreaterThanZero_thenReturnOneCent() {
         double amount = 0.01d;
-        double result = cut.calculateAmountCommission(amount);
+        double result = cut.calculateAmountWithCommission(amount);
         assertThat(result).isEqualTo(0.01d);
     }
 
@@ -146,7 +146,7 @@ public class ApplicationTransactionServiceIT {
     @Order(7)
     void calculateAmountCommission() {
         double amount = 10;
-        double result = cut.calculateAmountCommission(amount);
+        double result = cut.calculateAmountWithCommission(amount);
         assertThat(result).isEqualTo(10 * ApplicationTransaction.COMMISSIONPERCENT);
     }
 
@@ -156,7 +156,7 @@ public class ApplicationTransactionServiceIT {
         double amount = -Double.MIN_VALUE;
 
         assertThrows(IllegalArgumentException.class, () -> {
-            cut.calculateAmountCommission(amount);
+            cut.calculateAmountWithCommission(amount);
         });
     }
 

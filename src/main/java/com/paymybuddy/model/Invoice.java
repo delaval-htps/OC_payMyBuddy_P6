@@ -16,13 +16,18 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/**
+ * Class that represente invoice for each transaction proceeded.
+ */
 @Entity
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class Invoice implements Serializable{
+public class Invoice implements Serializable {
 
+    public static final double TAXE_PERCENT = 1.2d;
+    
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -30,7 +35,6 @@ public class Invoice implements Serializable{
     private Date dateInvoice;
     private double priceHt;
     private double priceTtc;
-    private double taxePercent;
 
     @OneToOne(cascade = { CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH })
     @JoinColumn(name = "transaction_id")

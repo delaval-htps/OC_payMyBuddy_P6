@@ -100,7 +100,7 @@ public class ApplicationTransactionService {
      * @param amount the amount to withdraw.
      * @return the total to withdraw.
      */
-    public double calculateAmountCommission(double amount) {
+    public double calculateAmountWithCommission(double amount) {
 
         if (amount >= 0.01d && amount <= 2) {
             return 0.01d;
@@ -136,7 +136,7 @@ public class ApplicationTransactionService {
         transaction.setTransactionDate(new Date());
         transaction.setSender(sender);
         transaction.setReceiver(receiver);
-        transaction.setAmountCommission(this.calculateAmountCommission(transaction.getAmount()));
+        transaction.setAmountCommission(this.calculateAmountWithCommission(transaction.getAmount()));
         transaction.setType(TransactionType.WITHDRAW);
 
         appAccountService.withdraw(transaction.getSender().getApplicationAccount(),
@@ -165,14 +165,14 @@ public class ApplicationTransactionService {
         bankTransaction.setTransactionDate(new Date());
         bankTransaction.setSender(bankAccountOwner);
         bankTransaction.setReceiver(bankAccountOwner);
-        bankTransaction.setAmountCommission(this.calculateAmountCommission(bankTransaction.getAmount()));
+        bankTransaction.setAmountCommission(this.calculateAmountWithCommission(bankTransaction.getAmount()));
 
         if (bankTransaction.getType().equals(TransactionType.WITHDRAW)) {
 
             // application account is withdrawed with amount+ commission and bank account is
             // credited
             appAccountService.withdraw(bankTransaction.getSender().getApplicationAccount(),
-                    this.calculateAmountCommission(bankTransaction.getAmount()));
+                    this.calculateAmountWithCommission(bankTransaction.getAmount()));
 
             bankAccountService.credit(bankTransaction.getSender().getBankAccount(), bankTransaction.getAmount());
         } else {
@@ -180,7 +180,7 @@ public class ApplicationTransactionService {
             // application account is credited with amount and bank account is withdrawed
             // with amount + commission
             bankAccountService.withdraw(bankTransaction.getSender().getBankAccount(),
-                    this.calculateAmountCommission(bankTransaction.getAmount()));
+                    this.calculateAmountWithCommission(bankTransaction.getAmount()));
 
             appAccountService.credit(bankTransaction.getSender().getApplicationAccount(),
                     bankTransaction.getAmount());
