@@ -26,9 +26,6 @@ public class InvoiceService {
     @Autowired
     private ApplicationTransactionRepository appTransactionRepository;
 
-    @Autowired
-    private ApplicationTransactionService appTransactionService;
-
     /**
      * return the invoice by id given.
      * 
@@ -79,8 +76,7 @@ public class InvoiceService {
             ApplicationTransaction tempTransaction = existedTransaction.get();
 
             invoiceCreated.setDateInvoice(new Date());
-            invoiceCreated.setPriceHt(appTransactionService
-                    .calculateAmountWithCommission(tempTransaction.getAmount()));
+            invoiceCreated.setPriceHt(transaction.getAmount()+ transaction.getAmountCommission());
             invoiceCreated.setPriceTtc(invoiceCreated.getPriceHt() * Invoice.TAXE_PERCENT);
             invoiceCreated.setTransaction(tempTransaction);
 

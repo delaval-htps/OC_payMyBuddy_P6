@@ -12,7 +12,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
-import org.assertj.core.util.Arrays;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -30,7 +29,6 @@ import com.paymybuddy.model.Invoice;
 import com.paymybuddy.model.User;
 import com.paymybuddy.repository.ApplicationTransactionRepository;
 import com.paymybuddy.repository.InvoiceRepository;
-import com.paymybuddy.service.ApplicationTransactionService;
 import com.paymybuddy.service.InvoiceService;
 
 @ExtendWith(MockitoExtension.class)
@@ -41,13 +39,10 @@ public class InvoiceServiceTest {
 
     @Mock
     private ApplicationTransactionRepository appTransactionRepository;
-   
-    @Mock
-    private ApplicationTransactionService appTransactionService;
-   
+
     @InjectMocks
     private InvoiceService cut;
-   
+
     static User sender = new User();
     static User receiver = new User();
     static ApplicationTransaction mockTransaction = new ApplicationTransaction();
@@ -59,7 +54,7 @@ public class InvoiceServiceTest {
     static ApplicationTransaction bankTransaction = new ApplicationTransaction();
 
     static Invoice mockInvoice = new Invoice();
-    static  List<Invoice> invoices = new ArrayList<>();
+    static List<Invoice> invoices = new ArrayList<>();
 
     @BeforeEach
     public void init() {
@@ -88,25 +83,26 @@ public class InvoiceServiceTest {
         mockTransaction.setType(TransactionType.WITHDRAW);
         mockTransaction.setTransactionDate(date1);
         mockTransaction.setAmount(100d);
+        mockTransaction.setAmountCommission(5);
         bankAccount.setBalance(1000d);
         bankAccount.setIban("1234-1234-1234-1324-1234-1234-1234-1234-12");
         bankAccount.setBic("TESTACOS");
-        
+
         mockInvoice.setDateInvoice(new Date());
-       mockInvoice.setPriceHt(100d);
-       mockInvoice.setPriceTtc(120d);
-       mockInvoice.setTransaction(mockTransaction);
-      
-       invoices.add(mockInvoice);
+        mockInvoice.setPriceHt(100d);
+        mockInvoice.setPriceTtc(120d);
+        mockInvoice.setTransaction(mockTransaction);
+
+        invoices.add(mockInvoice);
     }
 
-    
     @Test
     void findById_whenInvoiceExisted() {
         when(invoiceRepository.findById(Mockito.anyLong())).thenReturn(Optional.of(mockInvoice));
 
         assertThat(cut.findById(1L)).contains(mockInvoice);
     }
+
     @Test
     void findById_whenInvoiceNotExisted() {
         when(invoiceRepository.findById(Mockito.anyLong())).thenReturn(Optional.empty());
@@ -116,7 +112,7 @@ public class InvoiceServiceTest {
 
     @Test
     void findByUser_whenInvoiceExisted() {
-      
+
         when(invoiceRepository.findAllBySender(Mockito.any(User.class))).thenReturn(invoices);
 
         assertThat(cut.findAllBySender(sender)).contains(mockInvoice);
@@ -128,9 +124,10 @@ public class InvoiceServiceTest {
 
         assertThat(cut.findAllBySender(sender)).isEmpty();
     }
+
     @Test
     void saveInvoice_whenInvoiceExisted() {
-      
+
         when(invoiceRepository.save(Mockito.any(Invoice.class))).thenReturn(mockInvoice);
 
         assertThat(cut.save(mockInvoice)).isEqualTo(mockInvoice);
@@ -138,8 +135,8 @@ public class InvoiceServiceTest {
 
     @Test
     void saveInvoice_whenInvoiceNull() {
-      
-         when(invoiceRepository.save(Mockito.any(Invoice.class))).thenThrow(IllegalArgumentException.class);
+
+        when(invoiceRepository.save(Mockito.any(Invoice.class))).thenThrow(IllegalArgumentException.class);
 
         assertThrows(IllegalArgumentException.class, () -> {
             cut.save(mockInvoice);
@@ -148,12 +145,12 @@ public class InvoiceServiceTest {
 
     @Test
     void createInvoiceForTransaction_whenTransactionNull_thenThrowException() {
-        
+
         ApplicationTransaction mockTransaction = null;
 
         assertThrows(ApplicationTransactionException.class, () -> {
             cut.createInvoiceForTransaction(mockTransaction);
-        },"Transaction is not found!");
+        }, "Transaction is not found!");
     }
 
     @Test
@@ -164,8 +161,6 @@ public class InvoiceServiceTest {
         }, "Transaction is not found!");
     }
 
-    
-    
     @Test
     void createInvoiceForTransaction_whenTransactionNotExisted_thenThrowException() {
 
@@ -175,18 +170,16 @@ public class InvoiceServiceTest {
             cut.createInvoiceForTransaction(mockTransaction);
         }, "the transaction was not registred in application!");
     }
-    
+
     @Test
     void createInvoiceForTransaction_whenTransactionExisted_thenThrowException() {
-       
+
         when(appTransactionRepository.findById(Mockito.anyLong())).thenReturn(java.util.Optional.of(mockTransaction));
-        when(appTransactionService.calculateAmountWithCommission(Mockito.anyDouble())).thenReturn(105d);
-       
-            cut.createInvoiceForTransaction(mockTransaction);
-       
-        
+
+        cut.createInvoiceForTransaction(mockTransaction);
+
         verify(appTransactionRepository, times(1)).save(Mockito.any(ApplicationTransaction.class));
         assertThat(mockTransaction.getInvoice()).isNotNull();
-        assertThat(mockTransaction.getInvoice().getPriceTtc()). isEqualTo(126d);
+        assertThat(mockTransaction.getInvoice().getPriceTtc()).isEqualTo(126d);
     }
 }

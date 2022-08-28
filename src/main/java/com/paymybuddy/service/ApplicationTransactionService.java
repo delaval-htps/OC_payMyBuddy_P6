@@ -21,6 +21,7 @@ import com.paymybuddy.model.User;
 import com.paymybuddy.pagination.Paged;
 import com.paymybuddy.pagination.Paging;
 import com.paymybuddy.repository.ApplicationTransactionRepository;
+
 /**
  * Class that contains services for a transaction.
  */
@@ -95,12 +96,12 @@ public class ApplicationTransactionService {
     }
 
     /**
-     * calculate the total withdraw amount of a transaction: amount +commission.
+     * calculate the commission 's amount
      * 
-     * @param amount the amount to withdraw.
-     * @return the total to withdraw.
+     * @param amount the amount of transaction.
+     * @return the amount commission according to the amount of transaction.
      */
-    public double calculateAmountWithCommission(double amount) {
+    public double calculateAmountCommission(double amount) {
 
         if (amount >= 0.01d && amount <= 2) {
             return 0.01d;
@@ -136,11 +137,12 @@ public class ApplicationTransactionService {
         transaction.setTransactionDate(new Date());
         transaction.setSender(sender);
         transaction.setReceiver(receiver);
-        transaction.setAmountCommission(this.calculateAmountWithCommission(transaction.getAmount()));
+        transaction.setAmountCommission(this.calculateAmountCommission(transaction.getAmount()));
         transaction.setType(TransactionType.WITHDRAW);
 
         appAccountService.withdraw(transaction.getSender().getApplicationAccount(),
                 (transaction.getAmount() + transaction.getAmountCommission()));
+
         appAccountService.credit(transaction.getReceiver().getApplicationAccount(), transaction.getAmount());
 
         return appTransactionRepository.save(transaction);
@@ -156,7 +158,7 @@ public class ApplicationTransactionService {
      *                         commission's amount, description and date.Amount of
      *                         transaction must be positive.
      * @param bankAccountOwner owner of bank account
-     * @return  the transaction saved with all updated field.
+     * @return the transaction saved with all updated field.
      */
     @Transactional(rollbackFor = RuntimeException.class)
     public ApplicationTransaction proceedBankTransaction(ApplicationTransaction bankTransaction,
@@ -165,14 +167,14 @@ public class ApplicationTransactionService {
         bankTransaction.setTransactionDate(new Date());
         bankTransaction.setSender(bankAccountOwner);
         bankTransaction.setReceiver(bankAccountOwner);
-        bankTransaction.setAmountCommission(this.calculateAmountWithCommission(bankTransaction.getAmount()));
+        bankTransaction.setAmountCommission(this.calculateAmountCommission(bankTransaction.getAmount()));
 
         if (bankTransaction.getType().equals(TransactionType.WITHDRAW)) {
 
             // application account is withdrawed with amount+ commission and bank account is
             // credited
             appAccountService.withdraw(bankTransaction.getSender().getApplicationAccount(),
-                    this.calculateAmountWithCommission(bankTransaction.getAmount()));
+                    bankTransaction.getAmount() + bankTransaction.getAmountCommission());
 
             bankAccountService.credit(bankTransaction.getSender().getBankAccount(), bankTransaction.getAmount());
         } else {
@@ -180,7 +182,7 @@ public class ApplicationTransactionService {
             // application account is credited with amount and bank account is withdrawed
             // with amount + commission
             bankAccountService.withdraw(bankTransaction.getSender().getBankAccount(),
-                    this.calculateAmountWithCommission(bankTransaction.getAmount()));
+                    bankTransaction.getAmount() + bankTransaction.getAmountCommission());
 
             appAccountService.credit(bankTransaction.getSender().getApplicationAccount(),
                     bankTransaction.getAmount());

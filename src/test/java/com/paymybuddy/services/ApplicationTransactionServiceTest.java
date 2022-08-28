@@ -180,7 +180,7 @@ public class ApplicationTransactionServiceTest {
     void calculateAmountCommission_whenAmountZero_thenThrowIllegalArgumentException() {
         double amount = 0;
         assertThrows(IllegalArgumentException.class, () -> {
-            cut.calculateAmountWithCommission(amount);
+            cut.calculateAmountCommission(amount);
         });
     }
 
@@ -189,7 +189,7 @@ public class ApplicationTransactionServiceTest {
     @Order(6)
     void calculateAmountCommission_whenAmountBetweenMinAndTwo_thenReturnMinimumCommission(double amount) {
 
-        double result = cut.calculateAmountWithCommission(amount);
+        double result = cut.calculateAmountCommission(amount);
         assertThat(result).isEqualTo(0.01d);
     }
 
@@ -198,7 +198,7 @@ public class ApplicationTransactionServiceTest {
     void calculateAmountCommission_whenAmountGreaterThanTwo_thenReturnRoundingHalfUpDoubleValue() {
         double amount = 2.01d;
 
-        double exactResult = cut.calculateAmountWithCommission(amount);
+        double exactResult = cut.calculateAmountCommission(amount);
 
         BigDecimal expectedResult = BigDecimal.valueOf(amount * ApplicationTransaction.COMMISSIONPERCENT).setScale(2,
                 RoundingMode.HALF_UP);
@@ -210,7 +210,7 @@ public class ApplicationTransactionServiceTest {
     @Order(7)
     void calculateAmountCommission() {
         double amount = 10;
-        double result = cut.calculateAmountWithCommission(amount);
+        double result = cut.calculateAmountCommission(amount);
         assertThat(result).isEqualTo(10 * ApplicationTransaction.COMMISSIONPERCENT);
     }
 
