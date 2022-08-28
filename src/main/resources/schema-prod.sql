@@ -106,7 +106,6 @@ CREATE TABLE IF NOT EXISTS invoice (
 	date_invoice DATETIME NOT NULL,
 	price_ht DECIMAL(8,2) NOT NULL,
 	price_ttc DECIMAL(8,2) NOT NULL,
-	taxe_percent DECIMAL(3,2) NOT NULL,
 	transaction_id INT NOT NULL,
 	PRIMARY KEY (id)
 )ENGINE=InnoDB, DEFAULT CHARSET=utf8mb4 ^;
