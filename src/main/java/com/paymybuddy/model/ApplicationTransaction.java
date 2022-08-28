@@ -2,6 +2,7 @@ package com.paymybuddy.model;
 
 import java.io.Serializable;
 import java.util.Date;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -11,7 +12,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -60,4 +63,6 @@ public class ApplicationTransaction implements Serializable {
     @JoinColumn(name = "receiver_id")
     private User receiver;
 
+    @OneToOne(cascade= CascadeType.ALL,mappedBy="transaction")
+    private Invoice invoice;
 }
