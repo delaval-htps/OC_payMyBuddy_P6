@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org"
+    xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+
+<head th:replace="~{/fragments/my-template::html-head('Contact')}"></head>
+
+<body>
+    <div class="container-fluid">
+
+        <header th:replace="~{/fragments/my-template::header}"></header>
+
+        <nav th:replace="~{/fragments/my-template::nav-breadcrumb('Home,Contact')}"></nav>
+
+
+            <article class="row justify-content-center mb-5">
+           
+                    <div class="col-md-8 m-5">
+                        <h2>Contact us</h2>
+
+                    </div>
+                    <div class="col-md-8">
+                        <div class="row row-cols-md-1 row-cols-lg-3   g-4">
+                            <div class="col-md-6 ">
+                                <div class="card h-100 shadow p-3 mb-5 bg-white rounded">
+
+                                    <h4 class="text-success m-3 text-justify">If you have any questions or queries a member
+                                        of
+                                        staff will always be happy to help. Fell free to contact us by telephone or email
+                                        and we
+                                        will besure to get back to you as
+                                        soon as possible. Or don't hesitate to come and see us...</h4>
+                                    <div class="m-auto">
+                                        <iframe width="300" height="300" frameborder="0" scrolling="no" marginheight="0"
+                                            marginwidth="0"
+                                            src="https://maps.google.com/maps?width=300&amp;height=300&amp;hl=en&amp;q=26%20avenue%20mar%C3%A9chal%20foch+(paymybuddy)&amp;t=&amp;z=12&amp;ie=UTF8&amp;iwloc=B&amp;output=embed"><a
+                                                href="https://www.maps.ie/distance-area-calculator.html">distance
+                                                maps</a></iframe>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <div class="col-md-6">
+                                <fieldset class=" shadow m-5 bg-white rounded">
+                                    <legend class="float-none w-auto lead bg-white mx-2 px-2">
+                                        <h3 class="d-inline"> <img src="/images/icons8-ringer-volume-50.png" alt="phone" style="height:40px;" />
+                                            Call us</h3>
+                                    </legend>
+                                    <h3 class="text-center mb-5">Our phone number : 333-123-132-456</h3classs>
+                                </fieldset>
+                                <fieldset class="shadow m-5 bg-white rounded">
+                                    <legend class="float-none w-auto lead bg-white mx-2 px-2">
+                                        <h3 class="d-inline"> <img src="/images/icons8-map-marker-50.png" alt="map" style="height:40px;" />
+                                             Join us at</h3>
+                                    </legend>
+                                    <h3 class="text-center mb-5">Our address : 26 avenue Maréchal Foch 13260 Cassis</h3classs>
+                                </fieldset>
+                                <fieldset class="shadow m-5 bg-white rounded">
+                                    <legend class="float-none w-auto lead bg-white mx-2 px-2">
+                                        <h3 class="d-inline"> <img src="/images/icons8-mail-50.png" alt="mail" style="height:40px;" />
+                                            Send us an email </h3>
+                                    </legend>
+                                    
+                                        <a style="display: block;" class="text-center mb-5" href="mailto:contact@paymybuddy.com?subject=Demande d'informations&body=Bonjour,">contact@paymybuddy.com</a>
+                                    
+                                </fieldset>
+                            </div>
+                        </div>
+           
+                    </div>
+            </article>
+   
+
+    <footer th:replace="~{/fragments/my-template::footer}"></footer>
+
+    </di>
+
+</body>
+
+</html>

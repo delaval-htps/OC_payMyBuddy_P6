@@ -129,7 +129,7 @@
 	<script th:fragment="script-gauge" th:inline="javascript" type="text/javascript">
 		//--------------- gauge.js ---------------
 		var balance = /*[[${applicationAccount.balance}]]*/ 'null';
-		console.log("balance" + balance);
+	
 		var gauge = new JustGage({
 			id: "gauge", // the id of the html element
 			value: balance,
