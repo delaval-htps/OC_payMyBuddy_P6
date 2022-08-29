@@ -40,6 +40,9 @@ public class ApplicationTransactionService {
     @Qualifier(value = "BankAccountService")
     private AccountService bankAccountService;
 
+    @Autowired
+    private InvoiceService invoiceService;
+
     /**
      * return application transactions of a user by his id. user must not be null
      * 
@@ -145,7 +148,12 @@ public class ApplicationTransactionService {
 
         appAccountService.credit(transaction.getReceiver().getApplicationAccount(), transaction.getAmount());
 
-        return appTransactionRepository.save(transaction);
+        ApplicationTransaction savedTransaction = appTransactionRepository.save(transaction);
+
+        // creation of transaction's invoice
+        invoiceService.createInvoiceForTransaction(savedTransaction);
+
+        return savedTransaction;
     }
 
     /**
@@ -188,7 +196,11 @@ public class ApplicationTransactionService {
                     bankTransaction.getAmount());
 
         }
-        return appTransactionRepository.save(bankTransaction);
+        ApplicationTransaction savedTransaction = appTransactionRepository.save(bankTransaction);
+       
+        //creation of transaction's invoice
+        invoiceService.createInvoiceForTransaction(savedTransaction);
+        return savedTransaction;
     }
 
 }

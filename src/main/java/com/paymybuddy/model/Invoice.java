@@ -29,7 +29,7 @@ public class Invoice implements Serializable {
     public static final double TAXE_PERCENT = 1.2d;
     
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private Date dateInvoice;
