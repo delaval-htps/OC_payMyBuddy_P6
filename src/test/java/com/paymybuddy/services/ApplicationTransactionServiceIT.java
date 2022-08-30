@@ -35,6 +35,7 @@ import com.paymybuddy.model.User;
 import com.paymybuddy.repository.ApplicationAccountRepository;
 import com.paymybuddy.service.AccountService;
 import com.paymybuddy.service.ApplicationTransactionService;
+import com.paymybuddy.service.InvoiceService;
 import com.paymybuddy.service.UserService;
 
 @SpringBootTest
@@ -57,10 +58,14 @@ public class ApplicationTransactionServiceIT {
     private AccountService bankAccountService;
 
     @Autowired
+    private InvoiceService invoiceService;
+
+    @Autowired
     private ApplicationTransactionService cut;
 
     private static Source source;
     private static Table transactionTable;
+    private static Table invoiceTable;
 
     @BeforeAll
     public static void setUp() {
