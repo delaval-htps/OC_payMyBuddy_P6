@@ -83,7 +83,7 @@ public class InvoiceService {
             tempTransaction.setInvoice(invoiceCreated);
 
             // invoice is created because of cascadeType.persist
-            appTransactionRepository.save(tempTransaction);
+            // appTransactionRepository.save(tempTransaction);
 
         } else {
             throw new ApplicationTransactionException("the transaction was not registred in application!");

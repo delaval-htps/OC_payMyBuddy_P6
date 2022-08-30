@@ -44,6 +44,7 @@ import com.paymybuddy.repository.ApplicationTransactionRepository;
 import com.paymybuddy.service.ApplicationAccountServiceImpl;
 import com.paymybuddy.service.ApplicationTransactionService;
 import com.paymybuddy.service.BankAccountServiceImpl;
+import com.paymybuddy.service.InvoiceService;
 
 @ExtendWith(MockitoExtension.class)
 @TestMethodOrder(OrderAnnotation.class)
@@ -57,6 +58,9 @@ public class ApplicationTransactionServiceTest {
 
     @Mock
     private BankAccountServiceImpl bankAccountService;
+
+    @Mock
+    private InvoiceService invoiceService;
 
     @InjectMocks
     private ApplicationTransactionService cut;
@@ -218,6 +222,7 @@ public class ApplicationTransactionServiceTest {
     @Order(8)
     void proceedTransactionBetweenUsersTest() {
 
+        when(appTransactionRepository.save(Mockito.any(ApplicationTransaction.class))).thenReturn(appTransaction1);
         cut.proceedTransactionBetweenUsers(appTransaction1, sender, receiver);
 
         ArgumentCaptor<ApplicationTransaction> appTransactionCaptor = ArgumentCaptor
@@ -237,6 +242,11 @@ public class ApplicationTransactionServiceTest {
         verify(appAccountService, times(1)).credit(appAccountCaptor.capture(), Mockito.anyDouble());
         assertThat(appAccountCaptor.getValue().getUser()).isEqualTo(receiver);
         assertThat(appAccountCaptor.getValue().getBalance()).isEqualTo(1000d);
+
+        verify(appTransactionRepository, times(1)).save(Mockito.any(ApplicationTransaction.class));
+        
+        verify(invoiceService, times(1)).createInvoiceForTransaction(appTransactionCaptor.capture());
+        assertThat(appTransactionCaptor.getValue().getInvoice()).isNull();
     }
 
     @Test
@@ -254,6 +264,9 @@ public class ApplicationTransactionServiceTest {
 
         bankAccount.addUser(owner);
 
+        when(appTransactionRepository.save(Mockito.any(ApplicationTransaction.class))).thenReturn(appTransaction1);
+
+        // when
         cut.proceedBankTransaction(bankTransaction, owner);
 
         ArgumentCaptor<ApplicationTransaction> appTransactionCaptor = ArgumentCaptor
@@ -274,12 +287,18 @@ public class ApplicationTransactionServiceTest {
         verify(bankAccountService, times(1)).credit(bankAccountCaptor.capture(), Mockito.anyDouble());
         assertThat(bankAccountCaptor.getValue().getUsers()).containsExactlyInAnyOrder(owner);
         assertThat(bankAccountCaptor.getValue().getBalance()).isEqualTo(1000d);
+
+        verify(appTransactionRepository, times(1)).save(Mockito.any(ApplicationTransaction.class));
+        
+        verify(invoiceService, times(1)).createInvoiceForTransaction(appTransactionCaptor.capture());
+        assertThat(appTransactionCaptor.getValue().getInvoice()).isNull();
     }
 
     @Test
     @Order(9)
     void proceedBankTransaction_whenCredit_thenOK() {
 
+        // given
         User owner = sender;
         ApplicationTransaction bankTransaction = new ApplicationTransaction();
         bankTransaction.setAmount(100d);
@@ -290,9 +309,12 @@ public class ApplicationTransactionServiceTest {
         bankTransaction.setType(TransactionType.CREDIT);
 
         bankAccount.addUser(owner);
+        when(appTransactionRepository.save(Mockito.any(ApplicationTransaction.class))).thenReturn(appTransaction1);
 
+        // when
         cut.proceedBankTransaction(bankTransaction, owner);
 
+        // then
         ArgumentCaptor<ApplicationTransaction> appTransactionCaptor = ArgumentCaptor
                 .forClass(ApplicationTransaction.class);
         verify(appTransactionRepository, times(1)).save(appTransactionCaptor.capture());
@@ -311,6 +333,11 @@ public class ApplicationTransactionServiceTest {
         verify(bankAccountService, times(1)).withdraw(bankAccountCaptor.capture(), Mockito.anyDouble());
         assertThat(bankAccountCaptor.getValue().getUsers()).containsExactlyInAnyOrder(owner);
         assertThat(bankAccountCaptor.getValue().getBalance()).isEqualTo(1000d);
+
+        verify(appTransactionRepository, times(1)).save(Mockito.any(ApplicationTransaction.class));
+
+        verify(invoiceService, times(1)).createInvoiceForTransaction(appTransactionCaptor.capture());
+        assertThat(appTransactionCaptor.getValue().getInvoice()).isNull();
     }
 
     private static Stream<Arguments> UserNullInput() {
@@ -337,23 +364,21 @@ public class ApplicationTransactionServiceTest {
     @Test
     void getPageOfTransaction_whenTransactionPage_thenReturnNewPage() {
 
-         // mock of applicationTransactionDto for create Paged
-         ApplicationTransaction applicationTransaction = new ApplicationTransaction();
-         applicationTransaction.setAmount(10d);
-         applicationTransaction.setDescription("test_transaction");
-         applicationTransaction.setReceiver(sender);
-         applicationTransaction.setSender(sender);
-         applicationTransaction.setTransactionDate(new Date());
-         applicationTransaction.setAmountCommission(5d);
+        // mock of applicationTransactionDto for create Paged
+        ApplicationTransaction applicationTransaction = new ApplicationTransaction();
+        applicationTransaction.setAmount(10d);
+        applicationTransaction.setDescription("test_transaction");
+        applicationTransaction.setReceiver(sender);
+        applicationTransaction.setSender(sender);
+        applicationTransaction.setTransactionDate(new Date());
+        applicationTransaction.setAmountCommission(5d);
 
-         Page<ApplicationTransaction> page = new PageImpl<>(Arrays.asList(applicationTransaction));
-         
-         
+        Page<ApplicationTransaction> page = new PageImpl<>(Arrays.asList(applicationTransaction));
+
         when(appTransactionRepository.findAllBySender(Mockito.any(User.class),
                 Mockito.any(org.springframework.data.domain.Pageable.class))).thenReturn(Optional.of(page));
 
         assertThat(cut.getPageOfTransaction(sender, 1, 5)).isNotNull();
     }
-
 
 }
