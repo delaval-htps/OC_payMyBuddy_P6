@@ -40,7 +40,7 @@ CREATE TABLE IF NOT EXISTS user_role(
 
 CREATE TABLE IF NOT EXISTS application_account (
 	id INT NOT NULL AUTO_INCREMENT,
-	account_number VARCHAR(14),
+	account_number VARCHAR(36),
 	balance DECIMAL(8,2) NOT NULL,
 	PRIMARY KEY (id)
 )ENGINE=InnoDB, DEFAULT CHARSET=utf8mb4 ^;
@@ -50,7 +50,7 @@ CREATE TABLE IF NOT EXISTS bank_account (
 	iban VARCHAR(38) NOT NULL,
 	bic VARCHAR(10) NOT NULL,
 	balance DECIMAL(8,2) NOT NULL,
-	bank_card_id INT NOT NULL,
+	bank_card_id INT,
 	PRIMARY KEY (id)
 )ENGINE=InnoDB, DEFAULT CHARSET=utf8mb4 ^;
 

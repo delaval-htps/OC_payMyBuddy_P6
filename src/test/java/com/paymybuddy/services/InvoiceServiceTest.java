@@ -177,8 +177,7 @@ public class InvoiceServiceTest {
         when(appTransactionRepository.findById(Mockito.anyLong())).thenReturn(java.util.Optional.of(mockTransaction));
 
         cut.createInvoiceForTransaction(mockTransaction);
-
-        verify(appTransactionRepository, times(1)).save(Mockito.any(ApplicationTransaction.class));
+       
         assertThat(mockTransaction.getInvoice()).isNotNull();
         assertThat(mockTransaction.getInvoice().getPriceTtc()).isEqualTo(126d);
     }

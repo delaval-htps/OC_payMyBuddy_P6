@@ -218,8 +218,51 @@ public class ApplicationTransactionServiceTest {
         assertThat(result).isEqualTo(10 * ApplicationTransaction.COMMISSIONPERCENT);
     }
 
+    private static Stream<Arguments> UserNullInput() {
+        return Stream.of(Arguments.of(null, 0, 0));
+    }
+
+    @ParameterizedTest
+    @MethodSource("UserNullInput")
+    void getPageOfTransaction_whenUserNotFound(User user, int input1, int input2) {
+
+        assertThrows(UserNotFoundException.class, () -> {
+            cut.getPageOfTransaction(user, input1, input2);
+        });
+    }
+
     @Test
-    @Order(8)
+    void getPageOfTransaction_whenNoTransactionPage_thenReturnNull() {
+        when(appTransactionRepository.findAllBySender(Mockito.any(User.class),
+                Mockito.any(org.springframework.data.domain.Pageable.class))).thenReturn(Optional.empty());
+
+        assertThat(cut.getPageOfTransaction(sender, 1, 5)).isNull();
+    }
+
+    @Test
+    void getPageOfTransaction_whenTransactionPage_thenReturnNewPage() {
+
+        // mock of applicationTransactionDto for create Paged
+        ApplicationTransaction applicationTransaction = new ApplicationTransaction();
+        applicationTransaction.setAmount(10d);
+        applicationTransaction.setDescription("test_transaction");
+        applicationTransaction.setReceiver(sender);
+        applicationTransaction.setSender(sender);
+        applicationTransaction.setTransactionDate(new Date());
+        applicationTransaction.setAmountCommission(5d);
+
+        Page<ApplicationTransaction> page = new PageImpl<>(Arrays.asList(applicationTransaction));
+
+        when(appTransactionRepository.findAllBySender(Mockito.any(User.class),
+                Mockito.any(org.springframework.data.domain.Pageable.class))).thenReturn(Optional.of(page));
+
+        assertThat(cut.getPageOfTransaction(sender, 1, 5)).isNotNull();
+    }
+
+    // Note : we can not Unit test on RollBack because even if we mock Services
+    // rollback allows us to not save transaction and invoice but methods are called
+    // anyway... so rollback is tested in integration test.
+    @Test
     void proceedTransactionBetweenUsersTest() {
 
         when(appTransactionRepository.save(Mockito.any(ApplicationTransaction.class))).thenReturn(appTransaction1);
@@ -244,13 +287,12 @@ public class ApplicationTransactionServiceTest {
         assertThat(appAccountCaptor.getValue().getBalance()).isEqualTo(1000d);
 
         verify(appTransactionRepository, times(1)).save(Mockito.any(ApplicationTransaction.class));
-        
+
         verify(invoiceService, times(1)).createInvoiceForTransaction(appTransactionCaptor.capture());
         assertThat(appTransactionCaptor.getValue().getInvoice()).isNull();
     }
 
     @Test
-    @Order(9)
     void proceedBankTransaction_whenWithdraw_thenOK() {
 
         User owner = sender;
@@ -289,13 +331,12 @@ public class ApplicationTransactionServiceTest {
         assertThat(bankAccountCaptor.getValue().getBalance()).isEqualTo(1000d);
 
         verify(appTransactionRepository, times(1)).save(Mockito.any(ApplicationTransaction.class));
-        
+
         verify(invoiceService, times(1)).createInvoiceForTransaction(appTransactionCaptor.capture());
         assertThat(appTransactionCaptor.getValue().getInvoice()).isNull();
     }
 
     @Test
-    @Order(9)
     void proceedBankTransaction_whenCredit_thenOK() {
 
         // given
@@ -338,47 +379,6 @@ public class ApplicationTransactionServiceTest {
 
         verify(invoiceService, times(1)).createInvoiceForTransaction(appTransactionCaptor.capture());
         assertThat(appTransactionCaptor.getValue().getInvoice()).isNull();
-    }
-
-    private static Stream<Arguments> UserNullInput() {
-        return Stream.of(Arguments.of(null, 0, 0));
-    }
-
-    @ParameterizedTest
-    @MethodSource("UserNullInput")
-    void getPageOfTransaction_whenUserNotFound(User user, int input1, int input2) {
-
-        assertThrows(UserNotFoundException.class, () -> {
-            cut.getPageOfTransaction(user, input1, input2);
-        });
-    }
-
-    @Test
-    void getPageOfTransaction_whenNoTransactionPage_thenReturnNull() {
-        when(appTransactionRepository.findAllBySender(Mockito.any(User.class),
-                Mockito.any(org.springframework.data.domain.Pageable.class))).thenReturn(Optional.empty());
-
-        assertThat(cut.getPageOfTransaction(sender, 1, 5)).isNull();
-    }
-
-    @Test
-    void getPageOfTransaction_whenTransactionPage_thenReturnNewPage() {
-
-        // mock of applicationTransactionDto for create Paged
-        ApplicationTransaction applicationTransaction = new ApplicationTransaction();
-        applicationTransaction.setAmount(10d);
-        applicationTransaction.setDescription("test_transaction");
-        applicationTransaction.setReceiver(sender);
-        applicationTransaction.setSender(sender);
-        applicationTransaction.setTransactionDate(new Date());
-        applicationTransaction.setAmountCommission(5d);
-
-        Page<ApplicationTransaction> page = new PageImpl<>(Arrays.asList(applicationTransaction));
-
-        when(appTransactionRepository.findAllBySender(Mockito.any(User.class),
-                Mockito.any(org.springframework.data.domain.Pageable.class))).thenReturn(Optional.of(page));
-
-        assertThat(cut.getPageOfTransaction(sender, 1, 5)).isNotNull();
     }
 
 }

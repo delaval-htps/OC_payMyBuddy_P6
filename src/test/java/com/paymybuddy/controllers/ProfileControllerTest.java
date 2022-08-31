@@ -77,8 +77,8 @@ public class ProfileControllerTest {
     private CustomOAuth2SuccessHandler customOAuth2SuccessHandler;
 
     @SpyBean
-
     private ModelMapper modelMapper;
+    
     private static User existedUser;
     private static BankAccount userBankAccount;
     private static BankCard userBankCard;
