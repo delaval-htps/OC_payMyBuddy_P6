@@ -2,8 +2,6 @@ package com.paymybuddy.services;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
@@ -89,8 +87,7 @@ public class InvoiceServiceTest {
         bankAccount.setBic("TESTACOS");
 
         mockInvoice.setDateInvoice(new Date());
-        mockInvoice.setPriceHt(100d);
-        mockInvoice.setPriceTtc(120d);
+        mockInvoice.setPrice(100d);
         mockInvoice.setTransaction(mockTransaction);
 
         invoices.add(mockInvoice);
@@ -179,6 +176,6 @@ public class InvoiceServiceTest {
         cut.createInvoiceForTransaction(mockTransaction);
        
         assertThat(mockTransaction.getInvoice()).isNotNull();
-        assertThat(mockTransaction.getInvoice().getPriceTtc()).isEqualTo(126d);
+        assertThat(mockTransaction.getInvoice().getPrice()).isEqualTo(105d);
     }
 }

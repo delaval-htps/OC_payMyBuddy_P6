@@ -1,6 +1,5 @@
 package com.paymybuddy.controllers;
 
-import java.security.NoSuchAlgorithmException;
 import java.util.Optional;
 
 import javax.validation.Valid;
@@ -22,7 +21,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import com.paymybuddy.dto.UserDto;
-import com.paymybuddy.exceptions.ApplicationAccountException;
 import com.paymybuddy.model.Role;
 import com.paymybuddy.model.User;
 import com.paymybuddy.security.oauth2.user.CustomOAuth2User;
@@ -123,14 +121,7 @@ public class RegistrationController {
       Role userRole = roleService.findByName("ROLE_USER");
       newUser.addRole(userRole);
 
-      // creation of his application account
-      try {
-        appAccountService.createAccountforUser(newUser);
-      } catch (NoSuchAlgorithmException e) {
-        e.printStackTrace();
-        throw new ApplicationAccountException(
-            "A problem occurs because , can't be able to create a account for new user" + newUser.getFullName());
-      }
+      appAccountService.createAccountforUser(newUser);
 
       User saveUser = userService.save(newUser);
 

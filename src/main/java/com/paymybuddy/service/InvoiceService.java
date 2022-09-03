@@ -76,8 +76,7 @@ public class InvoiceService {
             ApplicationTransaction tempTransaction = existedTransaction.get();
 
             invoiceCreated.setDateInvoice(new Date());
-            invoiceCreated.setPriceHt(transaction.getAmount()+ transaction.getAmountCommission());
-            invoiceCreated.setPriceTtc(invoiceCreated.getPriceHt() * Invoice.TAXE_PERCENT);
+            invoiceCreated.setPrice(transaction.getAmount()+ transaction.getAmountCommission());
             invoiceCreated.setTransaction(tempTransaction);
 
             tempTransaction.setInvoice(invoiceCreated);

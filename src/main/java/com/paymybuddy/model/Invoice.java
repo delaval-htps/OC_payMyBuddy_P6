@@ -27,16 +27,16 @@ import lombok.Setter;
 public class Invoice implements Serializable {
 
     public static final double TAXE_PERCENT = 1.2d;
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private Date dateInvoice;
-    private double priceHt;
-    private double priceTtc;
-// TODO montant unique avec amount +commission
-    @OneToOne(cascade = { CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH })
+
+    private double price;
+
+    @OneToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH})
     @JoinColumn(name = "transaction_id")
     private ApplicationTransaction transaction;
 

@@ -243,7 +243,7 @@ public class RegistrationControllerTest {
         verify(userService, times(1)).save(Mockito.any(User.class));
     }
 
-    @Test
+/*     @Test
     void testSaveNewUser_whenAccountForUSerNotCreated_thenThrowException() throws Exception {
 
         // mock of userDto
@@ -269,6 +269,7 @@ public class RegistrationControllerTest {
                 .thenReturn(new org.springframework.security.core.userdetails.User(mockUserDto.getEmail(),
                         "testPassword", grantedAuthority));
         NoSuchAlgorithmException e = new NoSuchAlgorithmException();
+       
         when(appAccountService.createAccountforUser(Mockito.any(User.class))).thenThrow(e);
 
         mockMvc.perform(post("/registration").flashAttr("user", mockUserDto).with(csrf()))
@@ -278,7 +279,7 @@ public class RegistrationControllerTest {
                 Mockito.any(User.class));
         verify(userService, never()).save(Mockito.any(User.class));
 
-    }
+    } */
 
     @Test
 

@@ -6,17 +6,9 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import java.security.NoSuchAlgorithmException;
+
 import java.util.Optional;
 import java.util.stream.Stream;
-import com.paymybuddy.UtilService;
-import com.paymybuddy.exceptions.ApplicationAccountException;
-import com.paymybuddy.exceptions.UserNotFoundException;
-import com.paymybuddy.model.Account;
-import com.paymybuddy.model.ApplicationAccount;
-import com.paymybuddy.model.User;
-import com.paymybuddy.repository.ApplicationAccountRepository;
-import com.paymybuddy.service.ApplicationAccountServiceImpl;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
@@ -32,6 +24,15 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import com.paymybuddy.UtilService;
+import com.paymybuddy.exceptions.ApplicationAccountException;
+import com.paymybuddy.exceptions.UserNotFoundException;
+import com.paymybuddy.model.Account;
+import com.paymybuddy.model.ApplicationAccount;
+import com.paymybuddy.model.User;
+import com.paymybuddy.repository.ApplicationAccountRepository;
+import com.paymybuddy.service.ApplicationAccountServiceImpl;
 
 @ExtendWith(MockitoExtension.class)
 @TestMethodOrder(OrderAnnotation.class)
@@ -130,7 +131,7 @@ public class ApplicationAccountServiceImplTest {
 
     @Test
     @Order(7)
-    void testCreateAccountforUser_whenUserRegistredAndDontHaveAppAcount_thenReturnHisNewAppAccount() throws NoSuchAlgorithmException {
+    void testCreateAccountforUser_whenUserRegistredAndDontHaveAppAcount_thenReturnHisNewAppAccount()  {
         User userWithAppAccount = new User();
         userWithAppAccount.setApplicationAccount(null);
 
@@ -145,16 +146,19 @@ public class ApplicationAccountServiceImplTest {
 
     @Test
     @Order(8)
-    void testCreateAccountforUser_whenUserRegistredAndHasAppAcount_thenThrowException() throws NoSuchAlgorithmException {
+    void testCreateAccountforUser_whenUserRegistredAndHasAppAcount_thenReturnUserApplicationAccount() {
+     
+    
+        ApplicationAccount returnedAppAccount = cut.createAccountforUser(user);
 
-        assertThrows(ApplicationAccountException.class, () -> {
-            cut.createAccountforUser(user);
-        });
+        assertThat(returnedAppAccount.getAccountNumber()).isNotNull();
+        assertThat(returnedAppAccount.getBalance()).isNotEqualTo(0d);
+        assertThat(user.getApplicationAccount()).isEqualTo(returnedAppAccount);
     }
 
     @Test
     @Order(9)
-    void testCreateAccountforUser_whenUserIsNull_thenThrowException() throws NoSuchAlgorithmException {
+    void testCreateAccountforUser_whenUserIsNull_thenThrowException()  {
 
         assertThrows(UserNotFoundException.class, () -> {
             cut.createAccountforUser(null);
