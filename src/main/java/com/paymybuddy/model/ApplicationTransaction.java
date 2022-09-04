@@ -55,11 +55,11 @@ public class ApplicationTransaction implements Serializable {
 
     private double amountCommission;
 
-    @ManyToOne(cascade = { CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH })
+    @ManyToOne(cascade = { CascadeType.MERGE,  CascadeType.REFRESH })
     @JoinColumn(name = "sender_id")
     private User sender;
 
-    @ManyToOne(cascade = { CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH })
+    @ManyToOne(cascade = { CascadeType.MERGE, CascadeType.REFRESH })
     @JoinColumn(name = "receiver_id")
     private User receiver;
 

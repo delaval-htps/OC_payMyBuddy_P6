@@ -29,13 +29,13 @@
                             <div class="col-sm-12 my-3">
                                 <form method="post" th:action=" @{/transfert/sendmoneyto}" th:object="${transaction}">
                                     <fieldset class="shadow p-3 mb-3 bg-white rounded ">
-                                        <legend class="float-none w-auto lead bg-white ps-2 pe-2"><img
+                                        <legend class="float-none w-auto lead bg-white ps-2 pe-2"><h4 class="d-inline"><img
                                                 src="images/icons8-give-64 (1).png" style="width:60px;"
-                                                class="card-img-top m-1" alt="..."> Send Money</legend>
-                                        <div class="row  my-4 g-2  justify-content-evenly">
-                                            <h4 class="mb-5 text-center text-success">Select a friend, if he's not
+                                                class="card-img-top m-1" alt="..."> Send Money</h4></legend>
+                                        <div class="row  g-2  justify-content-evenly">
+                                            <h5 class="mb-5 text-justify text-success">Select a friend, if he's not
                                                 present : you can add him by clicking button "Add connection" just over
-                                                here !</h4>
+                                                here !</h5>
                                             <input type="hidden" th:value="${userEmail}" name="senderEmail" />
                                             <input type="hidden" th:value="withdraw" name="type" />
 
@@ -152,9 +152,9 @@
         <div class="modal-dialog  modal-lg modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h3 class="modal-title text-success" id="staticBackdropLabel">Add a friend to your
+                    <h5 class="modal-title text-success" id="staticBackdropLabel">Add a friend to your
                         network...
-                    </h3>
+                    </h5>
 
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>

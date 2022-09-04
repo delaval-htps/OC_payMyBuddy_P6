@@ -56,7 +56,7 @@ CREATE TABLE IF NOT EXISTS bank_account (
 
 CREATE TABLE IF NOT EXISTS bank_card (
 	id INT NOT NULL AUTO_INCREMENT,
-	card_number VARCHAR(19),
+	card_number VARCHAR(19) NOT NULL,
 	card_code INT NOT NULL,
 	expiration_date DATE NOT NULL,
 	PRIMARY KEY (id)
@@ -74,7 +74,7 @@ CREATE TABLE IF NOT EXISTS user (
 	zip INT NOT NULL,
 	city VARCHAR(30) NOT NULL,
 	phone VARCHAR(10) NOT NULL,
-	application_account_id INT,
+	application_account_id INT NOT NULL,
 	bank_account_id INT,
 	PRIMARY KEY (id),
 	UNIQUE KEY(email)
@@ -82,8 +82,8 @@ CREATE TABLE IF NOT EXISTS user (
 
 
 CREATE TABLE IF NOT EXISTS connection_user (
-	user_id INT NOT NULL,
-	user_connection_id INT NOT NULL,
+	user_id INT NOT NULL ,
+	user_connection_id INT NOT NULL ,
 	PRIMARY KEY (user_id, user_connection_id)
 )ENGINE=InnoDB, DEFAULT CHARSET=utf8mb4 ^;
 
@@ -124,8 +124,8 @@ BEGIN
 		ALTER TABLE oauth2_provider ADD CONSTRAINT user_oauth2_provider_fk
 		FOREIGN KEY (user_id)
 		REFERENCES user(id)
-		ON DELETE CASCADE 
-		ON UPDATE CASCADE;
+		ON DELETE NO ACTION
+		ON UPDATE NO ACTION;
 	END IF;
 END ^;
 
@@ -140,8 +140,8 @@ BEGIN
 		ALTER TABLE user_role ADD CONSTRAINT user_role_fk
 		FOREIGN KEY (user_id)
 		REFERENCES user(id)
-		ON DELETE  CASCADE
-		ON UPDATE CASCADE;
+		ON DELETE NO ACTION 
+		ON UPDATE NO ACTION;
 	END IF;
 END ^;
 
@@ -156,8 +156,8 @@ BEGIN
 		ALTER TABLE user_role ADD CONSTRAINT user_role_fk1
 		FOREIGN KEY (role_id)
 		REFERENCES role (id)
-		ON DELETE  CASCADE
-		ON UPDATE CASCADE;
+		ON DELETE NO ACTION
+		ON UPDATE NO ACTION;
 	END IF;
 END ^;
 
@@ -172,8 +172,8 @@ BEGIN
 		ALTER TABLE user ADD CONSTRAINT application_account_user_fk
 		FOREIGN KEY (application_account_id)
 		REFERENCES application_account (id)
-		ON DELETE CASCADE 
-		ON UPDATE CASCADE;
+		ON DELETE NO ACTION 
+		ON UPDATE NO ACTION;
 	END IF;
 END ^;
 
@@ -188,7 +188,7 @@ BEGIN
 		ALTER TABLE user ADD CONSTRAINT bank_account_user_fk
 		FOREIGN KEY (bank_account_id)
 		REFERENCES bank_account (id)
-		ON DELETE CASCADE 
+		ON DELETE SET NULL 
 		ON UPDATE CASCADE;
 	END IF;
 END ^;
@@ -204,8 +204,8 @@ BEGIN
 		ALTER TABLE bank_account ADD CONSTRAINT bank_card_bank_account_fk
 		FOREIGN KEY (bank_card_id)
 		REFERENCES bank_card (id)
-		ON DELETE CASCADE 
-		ON UPDATE CASCADE;
+		ON DELETE NO ACTION 
+		ON UPDATE NO ACTION;
 	END IF;
 END ^;
 
@@ -220,8 +220,8 @@ BEGIN
 		ALTER TABLE connection_user ADD CONSTRAINT user_connection_fk
 		FOREIGN KEY (user_id)
 		REFERENCES user (id)
-		ON DELETE CASCADE 
-		ON UPDATE CASCADE;
+		ON DELETE NO ACTION 
+		ON UPDATE NO ACTION;
 	END IF;
 END ^;
 
@@ -236,8 +236,8 @@ BEGIN
 		ALTER TABLE connection_user ADD CONSTRAINT user_connection_fk1
 		FOREIGN KEY (user_connection_id)
 		REFERENCES user (id)
-		ON DELETE CASCADE 
-		ON UPDATE CASCADE;
+		ON DELETE NO ACTION  
+		ON UPDATE NO ACTION;
 
 	END IF;
 END ^;
@@ -253,8 +253,8 @@ BEGIN
 	THEN
 		ALTER TABLE transaction ADD CONSTRAINT sender_transaction_fk
 		FOREIGN KEY (sender_id) REFERENCES user (id)
-		ON DELETE CASCADE 
-		ON UPDATE CASCADE;
+		ON DELETE NO ACTION  
+		ON UPDATE NO ACTION;
 	END IF;
 END ^;
 
@@ -268,8 +268,8 @@ BEGIN
 	THEN
 		ALTER TABLE transaction ADD CONSTRAINT receiver_transaction_fk
 		FOREIGN KEY (receiver_id) REFERENCES user (id)
-		ON DELETE CASCADE 
-		ON UPDATE CASCADE;
+		ON DELETE NO ACTION
+		ON UPDATE NO ACTION;
 	END IF;
 END ^;
 
@@ -284,8 +284,8 @@ BEGIN
 		ALTER TABLE invoice ADD CONSTRAINT transaction_daily_invoice_fk
 		FOREIGN KEY (transaction_id)
 		REFERENCES transaction (id)
-		ON DELETE CASCADE 
-		ON UPDATE CASCADE;
+		ON DELETE NO ACTION  
+		ON UPDATE NO ACTION;
 	END IF;
 END ^;
 

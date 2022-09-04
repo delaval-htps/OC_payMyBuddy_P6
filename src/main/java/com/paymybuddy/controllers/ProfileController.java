@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.paymybuddy.dto.ApplicationAccountDto;
 import com.paymybuddy.dto.ApplicationTransactionDto;
@@ -95,9 +96,9 @@ public class ProfileController {
                                                 : new BankAccountDto();
                                 model.addAttribute(BANK_ACCOUNT, bankAccountDto);
                         }
-                        // send bankCard of user
+                        // send bankCard of user 
                         if (!model.containsAttribute("bankCard")) {
-                                BankCardDto bankCardDto = (currentUser.getBankAccount() != null)
+                                BankCardDto bankCardDto = (currentUser.getBankAccount() != null && currentUser.getBankAccount().getBankCard() != null)
                                                 ? modelMapper.map(currentUser.getBankAccount().getBankCard(),
                                                                 BankCardDto.class)
                                                 : new BankCardDto();
@@ -174,7 +175,7 @@ public class ProfileController {
         }
 
         /**
-         * PostMapping to save banl account of connected user by form.
+         * PostMapping to save bank account of connected user by form.
          * 
          * @param model                    model to add attributes to next view page.
          * @param bankAccountDto           a bankAccountDto recevive from form with
@@ -192,6 +193,7 @@ public class ProfileController {
          */
         @PostMapping("/bankaccount")
         public String createBankAccount(Model model,
+                        @RequestParam(value = "bank-card-to-add") boolean addBankCard,
                         @Valid @ModelAttribute(value = BANK_ACCOUNT) BankAccountDto bankAccountDto,
                         BindingResult bindingResultBankAccount,
                         @Valid @ModelAttribute(value = "bankCard") BankCardDto bankCardDto,
@@ -213,12 +215,25 @@ public class ProfileController {
 
                         User currentUser = user.get();
 
-                        // case of bank account and BankCard correctly fill in
+                        // check if bank account and BankCard correctly fill in
                         BankAccount bankAccount = modelMapper.map(bankAccountDto, BankAccount.class);
 
                         BankCard bankCard = new BankCard();
-                        if (bankCardDto != null) {
+
+                        if (addBankCard) {
+
+                                if (bindingResultBankCard.hasErrors()) {
+                                        redirectAttributes.addFlashAttribute(ERROR,
+                                                        "a problem has occured, please check red fields!");
+                                        redirectAttributes.addFlashAttribute(
+                                                        "org.springframework.validation.BindingResult.bankCard",
+                                                        bindingResultBankCard);
+                                        redirectAttributes.addFlashAttribute("bankCard", bankCardDto);
+                                        return REDIRECT_PROFILE;
+                                }
+
                                 bankCard = modelMapper.map(bankCardDto, BankCard.class);
+
                         }
 
                         // check if bankAccount doesn't already exist
@@ -226,25 +241,24 @@ public class ProfileController {
 
                         // if bankAccount already exist retrieve it plus bankcard
                         if (existedBankAccount.isPresent()) {
-
-                                redirectAttributes.addFlashAttribute(ERROR,
-                                                "Your bank account already exist.If you want to change it please contact us by email.");
-
-                        } else {
-
-                                // save of bank account and bankCard of user
-                                bankAccount.setBankCard(bankCard);
-                                bankAccount.addUser(currentUser);
-                                BankAccount userBankAccount = bankAccountService.save(bankAccount);
-
-                                // send of user's bank account
-                                redirectAttributes.addFlashAttribute("success",
-                                                "your bank account was correctly registred.");
-
-                                redirectAttributes.addFlashAttribute(BANK_ACCOUNT,
-                                                modelMapper.map(userBankAccount, BankAccountDto.class));
+                                // just a warning because we want to able parents to have commun BankAccount.
+                                redirectAttributes.addFlashAttribute("warning",
+                                                "This bank account already exist:If you want to change it please contact us by email.");
 
                         }
+
+                        // save of bank account and bankCard of user
+                        bankAccount.setBankCard(addBankCard?bankCard:null);
+                        bankAccount.addUser(currentUser);
+                        BankAccount userBankAccount = bankAccountService.save(bankAccount);
+
+                        // send of user's bank account
+                        redirectAttributes.addFlashAttribute("success",
+                                        "your bank account was correctly registred.");
+
+                        redirectAttributes.addFlashAttribute(BANK_ACCOUNT,
+                                        modelMapper.map(userBankAccount, BankAccountDto.class));
+
                 } else {
                         throw new UserNotFoundException("this user with email " + authentication.getName()
                                         + " is not registred in application!");

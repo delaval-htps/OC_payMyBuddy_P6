@@ -36,7 +36,7 @@ public class Invoice implements Serializable {
 
     private double price;
 
-    @OneToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH})
+    @OneToOne(cascade = {CascadeType.MERGE, CascadeType.REFRESH})
     @JoinColumn(name = "transaction_id")
     private ApplicationTransaction transaction;
 

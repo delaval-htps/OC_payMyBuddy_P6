@@ -36,7 +36,7 @@ public class BankAccount extends Account implements Serializable {
   private String iban;
 
   // a bank Account can be open for many users ( example a couple)
-  @OneToMany(cascade = { CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH }, mappedBy = "bankAccount")
+  @OneToMany(cascade = {  CascadeType.MERGE, CascadeType.REFRESH }, mappedBy = "bankAccount")
   private Set<User> users = new HashSet<>();
 
   @OneToOne(cascade = CascadeType.ALL)

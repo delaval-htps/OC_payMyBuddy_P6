@@ -30,7 +30,7 @@ public class ApplicationAccount extends Account implements Serializable {
   @NotBlank(message = "the number of account must be not null.")
   private String accountNumber;
 
-  @OneToOne(cascade = { CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH }, mappedBy = "applicationAccount")
+  @OneToOne(cascade = {  CascadeType.MERGE, CascadeType.REFRESH }, mappedBy = "applicationAccount")
   private User user;
 
 }

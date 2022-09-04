@@ -40,13 +40,13 @@
 							th:classappend="${user.bankAccountRegistred} ? '':'special-fieldset'">
 
 							<legend class="float-none w-auto lead bg-white mx-2 px-2">
-								<h3 class="d-inline">
+								<h4 class="d-inline">
 									<img src="/images/icons8-utilisateur-50.png" alt="user image" />Personal
 									Information
-								</h3>
+								</h4>
 							</legend>
-							<h4 class="mb-5 text-center text-success">Here your personnal information, you can edit them
-								by clicking on the pencil in the right</h4>
+							<h5 class="mb-5 text-center text-success">Here your personnal information, you can edit them
+								by clicking on the pencil in the right</h5>
 
 							<div class="row  justify-content-evenly ">
 								<div class="col-6 col-md-5 col-sm-12 ">
@@ -177,10 +177,10 @@
 								<legend class="float-none w-auto lead bg-white ms-3 px-2"> <img
 										src="/images/icons8-bank-64.png" style="width:50px;" class="card-img-top m-1"
 										alt="...">
-									<h3 class="d-inline">Account transaction: withdraw/credit</h3>
+									<h4 class="d-inline">Account transaction: withdraw/credit</h4>
 								</legend>
-								<h4 class="mb-5 text-center text-success">Here you can withdraw or credit your account:
-									just please choose the type of transaction , fill in a amount and save it</h4>
+								<h5 class="mb-5 text-center text-success">Here you can withdraw or credit your account:
+									just please choose the type of transaction , fill in a amount and save it</h5>
 
 								<input type="hidden" th:value="${user.email}" name="senderEmail" />
 								<input type="hidden" th:value="${user.email}" name="receiverEmail" />
@@ -231,27 +231,34 @@
 				</div>
 				<!--------------------- form user's bankAccount  ------------------------>
 				<div class="col-lg-8 col-md-12">
-					<form th:action="@{/profile/bankaccount}" th:object="${bankAccount}" method="post" novalidate>
+					<form id="bank-account-form" th:action="@{/profile/bankaccount}" th:object="${bankAccount}"
+						method="post" novalidate>
+						<!-- add requestParam to url to know if we have to add a bankCard or not-->
+						<input id="bank-card-to-add" name="bank-card-to-add" type="hidden">
 						<div class="row m-auto">
 							<fieldset class=" mb-3 shadow p-2  bg-white rounded ">
 								<legend class="float-none w-auto lead bg-white ms-3 px-3"> <img
 										src="/images/icons8-bank-64.png" style="width:50px;" class="card-img-top m-1"
 										alt="...">
-									<h3 class="d-inline">Bank information</h3>
+									<h4 class="d-inline">Bank information</h4>
 								</legend>
-								<h4 th:if="!${user.bankAccountRegistred}" class="mb-3 text-success">Please fill in
-									informations to activate your account!
-								</h4>
-								<h4 th:if="${user.bankAccountRegistred}" class="mb-5 text-center text-success">Here your
-									bank information. If you want to change them, please contact us</h4>
+								<div class="row justify-content-between mb-3" th:if="!${user.bankAccountRegistred}">
+									<h5 class="mb-3 col-auto text-success">Please fill in
+										informations to activate your account!
+									</h5>
+									<button id="bank-card-button"
+										class=" col-auto m-auto btn-outline-primary btn-sm text-center custom-shadow"
+										onclick="showHideBankCard(event)">Add bank card</button>
+								</div>
+								<h5 th:if="${user.bankAccountRegistred}" class="mb-5 text-center text-success">Here your
+									bank information. If you want to change them, please contact us</h5>
 
 								<div class="row mb-2 align-items-stretch">
 
-									<div class="col-md-5 mx-auto">
-										<fieldset class=" mb-3 shadow p-2  bg-white rounded ">
+									<div id="bank-account-information" class=" mx-auto">
+										<fieldset class=" m-3 shadow p-2  bg-white rounded ">
 											<legend class="float-none w-auto lead bg-white ms-2 px-2">
-												<img class="img_bank" src="/images/icons8-swift-32.png"
-													alt"swift" />Iban &
+												<img class="img_bank" src="/images/icons8-swift-32.png" alt"swift" />Iban &
 												codeSWIFT (BIC)
 											</legend>
 											<div class="row justify-content-around">
@@ -299,8 +306,8 @@
 
 
 									<div class="col-md-5 mx-auto" th:object="${bankCard}">
-
-										<fieldset class=" mb-3 shadow p-2  bg-white rounded ">
+										<fieldset id="add-bank-card" class=" m-3 shadow p-2  bg-white rounded "
+											style="display:none;">
 											<legend class="float-none w-auto lead bg-white ms-2 px-2"> <img
 													class="img_bank" src="/images/icons8-mastercard-logo-64.png"
 													alt="..." /> Bank
@@ -361,7 +368,8 @@
 									</div>
 									<div th:if="!${user.bankAccountRegistred}"
 										class="row mt-5 justify-content-evenly my-4">
-										<input class="col-2 btn btn-	 custom-shadow " id="valider" type="submit"
+										<input onclick="submitBankAccountForm(event)"
+											class="col-2 btn btn-success custom-shadow " id="valider" type="submit"
 											value="enregistrer">
 									</div>
 								</div>
@@ -422,6 +430,7 @@
 	var errorMessage = /*[[${error}]]*/'null';
 	var successMessage = /*[[${success}]]*/'null';
 	var warningMessage = /*[[${warning}]]*/'null';
+	var userBankCard = true;
 
 	function showProfile() {
 		if (!editionProfile) {
@@ -454,10 +463,26 @@
 		$('#profileForm input').prop('readonly', true);
 
 	}
+
+	function showHideBankCard(e) {
+		e.preventDefault();
+		$('#bank-card-button').text($('#bank-card-button').text() == 'Add bank card' ? 'Don\'t add bank card' : 'Add bank card');
+		$('#add-bank-card').toggle();
+		$('#bank-account-information').toggleClass('col-md-5');
+	}
+
+	function submitBankAccountForm(e) {
+		e.preventDefault();
+		$('#bank-card-to-add').val($('#bank-card-button').text() == 'Add bank card' ? false : true);
+		$('#bank-account-form').submit();
+
+	}
+
 	$(document).ready(function () {
 
 		if (editionProfile) { editProfile(); }
 		if (errorMessage || successMessage || warningMessage) { $('#liveToast').toast('show'); }
+
 
 	});
 
