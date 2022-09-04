@@ -1,8 +1,14 @@
 body {
 	height: 100vh;
 	overflow-y: scroll;
+	
 
 }
+
+html{
+	font-size: 0.8em;
+}
+
 ::-webkit-scrollbar {
     width: 0px;
     background: transparent; /* make scrollbar transparent */
