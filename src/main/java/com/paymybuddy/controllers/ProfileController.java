@@ -215,7 +215,7 @@ public class ProfileController {
 
                         User currentUser = user.get();
 
-                        // check if bank account and BankCard correctly fill in
+                        // check bank account and BankCard correctly fill in
                         BankAccount bankAccount = modelMapper.map(bankAccountDto, BankAccount.class);
 
                         BankCard bankCard = new BankCard();

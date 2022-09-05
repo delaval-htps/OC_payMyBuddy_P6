@@ -223,8 +223,7 @@ public class ApplicationTransactionServiceIT {
         assertThat(invoiceChanges).change()
                 .rowAtEndPoint()
                 .value("id").isNotNull()
-                .value("price_ht").isEqualTo(315)
-                .value("price_ttc").isEqualTo(378)
+                .value("price").isEqualTo(315)
                 .value("transaction_id").isEqualTo(3L)
                 .value("date_invoice").isCloseTo(DateTimeValue.now(), TimeValue.of(1, 0));
 
@@ -392,8 +391,7 @@ public class ApplicationTransactionServiceIT {
         assertThat(invoiceChanges).change()
                 .rowAtEndPoint()
                 .value("id").isNotNull()
-                .value("price_ht").isEqualTo(315)
-                .value("price_ttc").isEqualTo(378)
+                .value("price").isEqualTo(315)
                 .value("transaction_id").isEqualTo(3L)
                 .value("date_invoice").isCloseTo(DateTimeValue.now(), TimeValue.of(1, 0));
 
@@ -458,8 +456,7 @@ public class ApplicationTransactionServiceIT {
         assertThat(invoiceChanges).change()
                 .rowAtEndPoint()
                 .value("id").isNotNull()
-                .value("price_ht").isEqualTo(315)
-                .value("price_ttc").isEqualTo(378)
+                .value("price").isEqualTo(315)
                 .value("transaction_id").isEqualTo(3L)
                 .value("date_invoice").isCloseTo(DateTimeValue.now(), TimeValue.of(1, 0));
 

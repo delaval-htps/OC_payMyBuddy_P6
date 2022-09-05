@@ -51,5 +51,6 @@ public class UserDto {
   private String matchingPassword;
 
   private boolean duplicatedUser = false;
+  private boolean bankAccountRegistred=false;
 
 }

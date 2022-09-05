@@ -26,6 +26,7 @@ public class Paging {
     private int pageSize;
     private boolean nextEnable;
     private boolean previousEnable;
+    @Builder.Default
     private List<PageItem> items = new ArrayList<>();
 
     /**

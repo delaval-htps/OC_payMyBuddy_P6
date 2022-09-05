@@ -26,9 +26,9 @@ Below you can log to it either:
 * by filling your login and password, if you are allready registred in application
 
 <div style="display:flex;flex-direction: row;">
-<img src="src/main/resources/images/loginPage.png"
+<img src="src/main/resources/static/images/loginPage.png"
      alt="login-page"
-     style="margin:auto;width: 80%; " />
+     style="margin:auto;width: 30%; " />
 </div>
 
 ## Run test
