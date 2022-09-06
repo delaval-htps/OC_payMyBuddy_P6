@@ -15,6 +15,7 @@ DROP PROCEDURE IF EXISTS receiver_transaction_fk^;
 DROP PROCEDURE IF EXISTS transaction_invoice_fk^;
 DROP PROCEDURE IF EXISTS user_role_fk^;
 DROP PROCEDURE IF EXISTS user_role_fk1^;
+DROP PROCEDURE IF EXISTS bank_card_user_fk^;
 
 -- creation of Tables if not exists -- 
 
@@ -50,7 +51,6 @@ CREATE TABLE IF NOT EXISTS bank_account (
 	iban VARCHAR(38) NOT NULL,
 	bic VARCHAR(10) NOT NULL,
 	balance DECIMAL(8,2) NOT NULL,
-	bank_card_id INT,
 	PRIMARY KEY (id)
 )ENGINE=InnoDB, DEFAULT CHARSET=utf8mb4 ^;
 
@@ -59,6 +59,7 @@ CREATE TABLE IF NOT EXISTS bank_card (
 	card_number VARCHAR(19) NOT NULL,
 	card_code INT NOT NULL,
 	expiration_date DATE NOT NULL,
+	bank_account_id INT,
 	PRIMARY KEY (id)
 )ENGINE=InnoDB, DEFAULT CHARSET=utf8mb4 ^;
 
@@ -76,6 +77,7 @@ CREATE TABLE IF NOT EXISTS user (
 	phone VARCHAR(10) NOT NULL,
 	application_account_id INT NOT NULL,
 	bank_account_id INT,
+	bank_card_id INT,
 	PRIMARY KEY (id),
 	UNIQUE KEY(email)
 )ENGINE=InnoDB, DEFAULT CHARSET=utf8mb4 ^;
@@ -193,21 +195,7 @@ BEGIN
 	END IF;
 END ^;
 
-CREATE PROCEDURE bank_card_bank_account_fk() 
-BEGIN
-	IF NOT EXISTS(SELECT null 
-				FROM information_schema.TABLE_CONSTRAINTS
-				WHERE TABLE_SCHEMA = 'paymybuddy' 
-				AND CONSTRAINT_NAME= 'bank_card_bank_account_fk'
-				AND CONSTRAINT_TYPE= 'FOREIGN KEY')
-	THEN
-		ALTER TABLE bank_account ADD CONSTRAINT bank_card_bank_account_fk
-		FOREIGN KEY (bank_card_id)
-		REFERENCES bank_card (id)
-		ON DELETE NO ACTION 
-		ON UPDATE NO ACTION;
-	END IF;
-END ^;
+
 
 CREATE PROCEDURE user_connection_fk() 
 BEGIN
@@ -241,7 +229,6 @@ BEGIN
 
 	END IF;
 END ^;
-
 
 CREATE PROCEDURE sender_transaction_fk() 
 BEGIN
@@ -289,11 +276,42 @@ BEGIN
 	END IF;
 END ^;
 
+CREATE PROCEDURE bank_card_bank_account_fk() 
+BEGIN
+	IF NOT EXISTS(SELECT null 
+				FROM information_schema.TABLE_CONSTRAINTS
+				WHERE TABLE_SCHEMA = 'paymybuddy' 
+				AND CONSTRAINT_NAME= 'bank_card_bank_account_fk'
+				AND CONSTRAINT_TYPE= 'FOREIGN KEY')
+	THEN
+		ALTER TABLE bank_card ADD CONSTRAINT bank_card_bank_account_fk
+		FOREIGN KEY (bank_account_id)
+		REFERENCES bank_account (id)
+		ON DELETE SET NULL
+		ON UPDATE NO ACTION;
+	END IF;
+END ^;
+
+CREATE PROCEDURE bank_card_user_fk() 
+BEGIN
+	IF NOT EXISTS(SELECT null 
+				FROM information_schema.TABLE_CONSTRAINTS
+				WHERE TABLE_SCHEMA = 'paymybuddy' 
+				AND CONSTRAINT_NAME= 'bank_card_user_fk'
+				AND CONSTRAINT_TYPE= 'FOREIGN KEY')
+	THEN
+		ALTER TABLE user ADD CONSTRAINT bank_card_user_fk
+		FOREIGN KEY (bank_card_id)
+		REFERENCES bank_card (id)
+		ON DELETE SET NULL 
+		ON UPDATE CASCADE;
+	END IF;
+END ^;
+
 -- call of procedures
 CALL user_oauth2_provider_fk()^;
 CALL application_account_user_fk()^;
 CALL bank_account_user_fk()^;
-CALL bank_card_bank_account_fk()^;
 CALL user_connection_fk()^;
 CALL user_connection_fk1()^;
 CALL sender_transaction_fk()^;
@@ -301,6 +319,8 @@ CALL receiver_transaction_fk()^;
 CALL transaction_invoice_fk()^;
 CALL user_role_fk()^;
 CALL user_role_fk1()^;
+CALL bank_card_bank_account_fk()^;
+CALL bank_card_user_fk()^;
 
 
 

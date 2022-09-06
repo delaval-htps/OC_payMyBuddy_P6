@@ -1,7 +1,9 @@
 package com.paymybuddy.controllers;
 
 import java.util.Optional;
+
 import javax.validation.Valid;
+
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
 import com.paymybuddy.dto.ApplicationAccountDto;
 import com.paymybuddy.dto.ApplicationTransactionDto;
 import com.paymybuddy.dto.BankAccountDto;
@@ -21,10 +24,10 @@ import com.paymybuddy.dto.BankCardDto;
 import com.paymybuddy.dto.ProfileUserDto;
 import com.paymybuddy.exceptions.UserNotFoundException;
 import com.paymybuddy.model.ApplicationTransaction;
+import com.paymybuddy.model.ApplicationTransaction.TransactionType;
 import com.paymybuddy.model.BankAccount;
 import com.paymybuddy.model.BankCard;
 import com.paymybuddy.model.User;
-import com.paymybuddy.model.ApplicationTransaction.TransactionType;
 import com.paymybuddy.service.ApplicationTransactionService;
 import com.paymybuddy.service.BankAccountServiceImpl;
 import com.paymybuddy.service.UserService;
@@ -96,12 +99,13 @@ public class ProfileController {
                                                 : new BankAccountDto();
                                 model.addAttribute(BANK_ACCOUNT, bankAccountDto);
                         }
-                        // send bankCard of user 
+                        // send bankCard of user
                         if (!model.containsAttribute("bankCard")) {
-                                BankCardDto bankCardDto = (currentUser.getBankAccount() != null && currentUser.getBankAccount().getBankCard() != null)
-                                                ? modelMapper.map(currentUser.getBankAccount().getBankCard(),
-                                                                BankCardDto.class)
+                            
+                                BankCardDto bankCardDto = (currentUser.getBankCard()!= null)
+                                                ? modelMapper.map(currentUser.getBankCard(),BankCardDto.class)
                                                 : new BankCardDto();
+
                                 model.addAttribute("bankCard", bankCardDto);
                         }
                         return "profile";
@@ -245,10 +249,11 @@ public class ProfileController {
                                 redirectAttributes.addFlashAttribute("warning",
                                                 "This bank account already exist:If you want to change it please contact us by email.");
 
+                                bankAccount = existedBankAccount.get();
                         }
-
                         // save of bank account and bankCard of user
-                        bankAccount.setBankCard(addBankCard?bankCard:null);
+                        bankAccount.addBankCard(addBankCard ? bankCard : null);
+                        currentUser.setBankCard(addBankCard ? bankCard : null);
                         bankAccount.addUser(currentUser);
                         BankAccount userBankAccount = bankAccountService.save(bankAccount);
 

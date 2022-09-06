@@ -93,6 +93,10 @@ public class User implements Serializable {
   @JoinColumn(name = "application_account_id", nullable = false)
   private ApplicationAccount applicationAccount;
 
+  @OneToOne(cascade = CascadeType.ALL)
+  @JoinColumn(name = "bank_card_id")
+  private BankCard bankCard;
+
   /**
    * method to link a OAuth2Identier to a user.
    *

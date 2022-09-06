@@ -8,6 +8,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
@@ -36,12 +37,11 @@ public class BankAccount extends Account implements Serializable {
   private String iban;
 
   // a bank Account can be open for many users ( example a couple)
-  @OneToMany(cascade = {  CascadeType.MERGE, CascadeType.REFRESH }, mappedBy = "bankAccount")
+  @OneToMany(cascade = { CascadeType.MERGE, CascadeType.REFRESH }, mappedBy = "bankAccount")
   private Set<User> users = new HashSet<>();
 
-  @OneToOne(cascade = CascadeType.ALL)
-  @JoinColumn(name = "bank_card_id")
-  private BankCard bankCard;
+  @OneToMany(cascade = CascadeType.ALL, mappedBy = "bankAccount")
+  private Set<BankCard> bankCards = new HashSet<>();
 
   /**
    * method to add user to a bank account.
@@ -53,6 +53,20 @@ public class BankAccount extends Account implements Serializable {
     if (user != null) {
       this.users.add(user);
       user.setBankAccount(this);
+    }
+
+  }
+
+  /**
+   * method to add card to a bank account.
+   * 
+   * @param card card to add to a BankAccount
+   */
+
+  public void addBankCard(BankCard card) {
+    if (card != null) {
+      this.bankCards.add(card);
+      card.setBankAccount(this);
     }
   }
 

@@ -108,7 +108,7 @@ public class ProfileControllerTest {
                 userBankAccount.setUsers(Set.of(existedUser));
 
                 userBankCard = new BankCard();
-                userBankAccount.setBankCard(userBankCard);
+                userBankAccount.addBankCard(userBankCard);
 
                 appAccount = new ApplicationAccount();
                 appAccount.setAccountNumber("12345");
