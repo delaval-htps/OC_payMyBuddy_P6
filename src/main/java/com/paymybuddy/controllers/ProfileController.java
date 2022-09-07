@@ -101,9 +101,9 @@ public class ProfileController {
                         }
                         // send bankCard of user
                         if (!model.containsAttribute("bankCard")) {
-                            
-                                BankCardDto bankCardDto = (currentUser.getBankCard()!= null)
-                                                ? modelMapper.map(currentUser.getBankCard(),BankCardDto.class)
+
+                                BankCardDto bankCardDto = (currentUser.getBankCard() != null)
+                                                ? modelMapper.map(currentUser.getBankCard(), BankCardDto.class)
                                                 : new BankCardDto();
 
                                 model.addAttribute("bankCard", bankCardDto);
@@ -215,7 +215,11 @@ public class ProfileController {
                                         bindingResultBankAccount);
                         redirectAttributes.addFlashAttribute(BANK_ACCOUNT, bankAccountDto);
 
-                } else if (user.isPresent()) {
+                        return REDIRECT_PROFILE;
+
+                }
+
+                if (user.isPresent()) {
 
                         User currentUser = user.get();
 
@@ -224,6 +228,7 @@ public class ProfileController {
 
                         BankCard bankCard = new BankCard();
 
+                        // if addBankCard is true there is a bankCardDto to check else bankCard is null but created (new bankcard())
                         if (addBankCard) {
 
                                 if (bindingResultBankCard.hasErrors()) {
@@ -237,7 +242,6 @@ public class ProfileController {
                                 }
 
                                 bankCard = modelMapper.map(bankCardDto, BankCard.class);
-
                         }
 
                         // check if bankAccount doesn't already exist
@@ -251,10 +255,12 @@ public class ProfileController {
 
                                 bankAccount = existedBankAccount.get();
                         }
+
                         // save of bank account and bankCard of user
                         bankAccount.addBankCard(addBankCard ? bankCard : null);
                         currentUser.setBankCard(addBankCard ? bankCard : null);
                         bankAccount.addUser(currentUser);
+
                         BankAccount userBankAccount = bankAccountService.save(bankAccount);
 
                         // send of user's bank account
@@ -268,6 +274,7 @@ public class ProfileController {
                         throw new UserNotFoundException("this user with email " + authentication.getName()
                                         + " is not registred in application!");
                 }
+
                 return REDIRECT_PROFILE;
         }
 

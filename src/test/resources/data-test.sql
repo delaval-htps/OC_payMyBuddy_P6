@@ -5,13 +5,12 @@ VALUES
 	(2, '000002', 500.50);
 
 INSERT INTO
-	bank_account(id, iban, bic, balance, bank_card_id) 
+	bank_account(id, iban, bic, balance) 
 	VALUES(
 		1,
 		'IBAN-FR78-9456-1234-5645-6891-2341-213',
 		'TESTACCO',
-		1000,
-		NULL
+		1000
 	);
 
 --	insert datas in table use

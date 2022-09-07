@@ -21,7 +21,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -105,7 +104,7 @@ public class ProfileControllerTest {
                 userBankAccount.setBalance(1000d);
                 userBankAccount.setBic("TESTACOS");
                 userBankAccount.setIban("azertyuiopqsdfghjklmwxcvbnazertyuiopqs");
-                userBankAccount.setUsers(Set.of(existedUser));
+                userBankAccount.addUser(existedUser);
 
                 userBankCard = new BankCard();
                 userBankAccount.addBankCard(userBankCard);
@@ -118,6 +117,7 @@ public class ProfileControllerTest {
                 bankAccountDto = new BankAccountDto();
                 bankAccountDto.setBic("TESTACOS");
                 bankAccountDto.setIban("azertyuiopqsdfghjklmwxcvbnazertyuiopqs");
+                
 
         }
 
@@ -214,7 +214,8 @@ public class ProfileControllerTest {
                                 });
 
                 verify(userService, never()).save(Mockito.any(User.class));
-                assertThat(profileUserDto.isBankAccountRegistred()).isFalse();
+                //as existedUser has already a bankAccount ( cf initialisation)
+                assertThat(profileUserDto.isBankAccountRegistred()).isTrue();
         }
 
         @Test
@@ -335,7 +336,7 @@ public class ProfileControllerTest {
 
                 ArgumentCaptor<Account> bankAccountCaptor = ArgumentCaptor.forClass(Account.class);
                 verify(bankAccountService, times(1)).save((BankAccount) bankAccountCaptor.capture());
-                assertThat(bankAccountCaptor.getValue()).extracting("bankCard").isNull();
+                assertThat(bankAccountCaptor.getValue()).extracting("bankCards").toString().isEmpty();
 
         }
 
@@ -365,13 +366,13 @@ public class ProfileControllerTest {
 
                 ArgumentCaptor<Account> bankAccountCaptor = ArgumentCaptor.forClass(Account.class);
                 verify(bankAccountService, times(1)).save((BankAccount) bankAccountCaptor.capture());
-                assertThat(bankAccountCaptor.getValue()).extracting("bankCard").isNotNull();
+                assertThat(bankAccountCaptor.getValue()).extracting("bankCards").toString().contains("bankCard");
 
         }
 
         @Test
         @WithMockUser
-        void createBankAccount_whenUserExistedWithExitedBankAccount_thenRedirectProfile() throws Exception {
+        void createBankAccount_whenUserExistedWithExistedBankAccount_thenRedirectProfile() throws Exception {
 
                 when(userService.findByEmail(Mockito.anyString())).thenReturn(Optional.of(existedUser));
                 // initilisation bankAccountDto
@@ -380,6 +381,8 @@ public class ProfileControllerTest {
 
                 when(bankAccountService.findByIban(Mockito.anyString())).thenReturn(Optional.of(userBankAccount));
                 when(bankAccountService.save(Mockito.any(BankAccount.class))).thenReturn(userBankAccount);
+
+            
 
                 mockMvc.perform(post("/profile/bankaccount").param("bank-card-to-add", "false").flashAttrs(mapBank)
                                 .with(csrf()))
