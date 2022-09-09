@@ -26,10 +26,5 @@ public class BankCardService {
     public BankCard save(BankCard card) {
         return bankCardRepository.save(card);
     }
-
-    public void delete(BankCard card) {
-        if (card != null) {
-            bankCardRepository.delete(card);
-        }
-    }
+ 
 }
