@@ -46,7 +46,7 @@ Below you can log to it either:
 * by fill in your login and password, if you are allready registred in application
 * by using provider like GITHUB, GOOGLE or FACEBOOK with OAuth2 login
 
-<div style="display:flex;flex-direction: row;justify-content:center;margin:30px 0px 30px 0px;">
+<div style="display:flex;flex-direction: row;margin:auto;margin:30px 0px 30px 0px;">
 <img src="src/main/resources/static/images/loginPage.png"
      alt="login-page"
      style="margin:auto;width: 50%; " />
