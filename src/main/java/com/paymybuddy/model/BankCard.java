@@ -1,18 +1,22 @@
 package com.paymybuddy.model;
 
 import java.io.Serializable;
-import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/**
+ * Class that represents a bnak card's of connected user.
+ */
 @Entity
 @Getter
 @Setter
@@ -32,9 +36,8 @@ public class BankCard implements Serializable {
     private int cardCode;
 
     @Column
-    private Date expirationDate;
+    private String expirationDate;
 
     @OneToOne(mappedBy = "bankCard")
-    private BankAccount bankAccount;
-
+    private User user;
 }

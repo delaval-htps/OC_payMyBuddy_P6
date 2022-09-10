@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Error Page</title>
+    <!-- CDN bootstrap  -->
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+
+
+<body>
+    <div class="container-fluid " style="height:100vh;">
+        <div class="row " style="height:100%; margin:auto;">
+            <div class="col-sm-8 m-auto">
+                <h1><i class="fa-regular fa-face-frown-open" aria-hidden="true"></i> Something went wrong! </h1>
+
+                <div th:switch="${statusCode}">
+                    <h2 th:case="404">Sorry, you couldn't find the page you were loking for</h2>
+                    <h2 th:case="403">Sorry, you have not permission to go to this page</h2>
+                    <h2 th:case="500">Sorry, there is a internal problem, our Engineers are on it</h2>
+                </div>
+                <table class="table table-bordered table-danger error-attributes">
+                    <caption>table with description of error</caption>
+                    <thead>
+                        <th>Error Key</th>
+                        <th>Error Value</th>
+                    </thead>
+                    <tr th:each="error :${errorAttributes}">
+                        <td th:text="${error.key}"></td>
+                        <td th:text="${error.value}"></td>
+                    </tr>
+
+                </table>
+                <a th:href="@{/logout}">Go Back</a>
+            </div>
+        </div>
+    </div>
+</body>
+
+
+</html>

@@ -75,14 +75,14 @@ public class User implements Serializable {
   @OneToMany(fetch = FetchType.EAGER, mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
   private Set<OAuth2Provider> oauth2Identifiers = new HashSet<>();
 
-  @ManyToMany(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH})
+  @ManyToMany(cascade = { CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH})
   @JoinTable(name = "connection_user", joinColumns = @JoinColumn(name = "user_id", table = "user"), inverseJoinColumns = @JoinColumn(name = "user_connection_id", table = "connection_user"))
   private Set<User> connectionUsers = new HashSet<>();
 
-  @OneToMany(mappedBy = "sender", cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.REMOVE})
+  @OneToMany(mappedBy = "sender", cascade = { CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.REMOVE})
   private Set<ApplicationTransaction> senderTransactions = new HashSet<>();
 
-  @OneToMany(mappedBy = "receiver", cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH})
+  @OneToMany(mappedBy = "receiver", cascade = { CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH})
   private Set<ApplicationTransaction> receiverTransactions = new HashSet<>();
 
   @ManyToOne(cascade = CascadeType.ALL)
@@ -92,6 +92,10 @@ public class User implements Serializable {
   @OneToOne(cascade = CascadeType.ALL)
   @JoinColumn(name = "application_account_id", nullable = false)
   private ApplicationAccount applicationAccount;
+
+  @OneToOne(cascade = CascadeType.ALL)
+  @JoinColumn(name = "bank_card_id")
+  private BankCard bankCard;
 
   /**
    * method to link a OAuth2Identier to a user.
@@ -113,18 +117,20 @@ public class User implements Serializable {
     identifier.setUser(null);
   }
 
-  /**
-   * method to add a user to the list of connectionUsers.
-   */
+/**
+ * method to add a user to the list of connectionUsers.
+ * @param user user to add
+ */
   public void addConnectionUser(User user) {
     if (user != null) {
       connectionUsers.add(user);
     }
   }
 
-  /**
-   * method to remove a user to the list of connectionUsers.
-   */
+/**
+ * method to remove a user to the list of connectionUsers.
+ * @param user the user to remove from list connectedUsers
+ */
   public void removeConnectionUser(User user) {
     if (user != null && this.connectionUsers.contains(user)) {
       connectionUsers.remove(user);
@@ -133,14 +139,34 @@ public class User implements Serializable {
 
   /**
    * method to add Role to user.
+   * @param role the role to add to list
    */
   public void addRole(Role role) {
     this.roles.add(role);
   }
 
   /**
+   * method to add senderTransaction to user.
+   * @param senderTransaction the transaction of sender user to add to list
+   */
+  public void addSenderTransaction(ApplicationTransaction senderTransaction) {
+    if (senderTransaction != null) {
+      this.senderTransactions.add(senderTransaction);
+    }
+  }
+
+  /**
+   * method to add senderTransaction to user.
+   * @param transaction the transaction to add to the list
+   */
+  public void addReceiverTransaction(ApplicationTransaction transaction) {
+    if (transaction != null) {
+      this.senderTransactions.add(transaction);
+    }
+  }
+
+  /**
    * return the fullname= firstname + lastname of user.
-   * 
    * @return fullname
    */
   public String getFullName() {

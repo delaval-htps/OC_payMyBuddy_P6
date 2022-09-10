@@ -4,7 +4,15 @@ import java.util.Map;
 
 import com.paymybuddy.model.AuthProvider;
 
+/**
+ * class that allows to check from wiche registrationId come the Oauth2 login and in fonction of it
+ * retrieve correctly informations that we need.
+ */
 public class OAuth2UserInfoFactory {
+
+    private OAuth2UserInfoFactory() {
+        throw new IllegalStateException("Utility class");
+      }
 
     public static OAuth2UserInfo getOAuth2UserInfoService(String registrationId, Map<String, Object> attributes) {
         if (registrationId == null) {

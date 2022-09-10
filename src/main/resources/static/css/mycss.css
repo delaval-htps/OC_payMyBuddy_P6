@@ -1,9 +1,21 @@
 body {
 	height: 100vh;
+	overflow-y: scroll;
+	
+
+}
+
+html{
+	font-size: 0.8em;
+}
+
+::-webkit-scrollbar {
+    width: 0px;
+    background: transparent; /* make scrollbar transparent */
 }
 
 .container-fluid {
-	min-height: 100%;
+	min-height: 100%;	
 }
 
 .col-login {
@@ -107,8 +119,12 @@ input[type=number]::-webkit-outer-spin-button {
 fieldset {
 	box-shadow: 0px 0px 1px rgb(194, 194, 194) !important;
 	border-radius: 5px !important;
-}
 
+}
+fieldset .img_bank{
+	height: 32px;
+	width:32px;
+}
 .is-invalid {
 	border: 1px solid #dc3545 !important;
 	border-radius: 0.25 rem ! important;
@@ -143,9 +159,6 @@ label {
 	cursor: pointer;
 }
 
-#liveToast {
-	margin-top: 120px !important;
-}
 
 #amount-input::-webkit-inner-spin-button,
 #amount-input::-webkit-outer-spin-button {
@@ -153,3 +166,4 @@ label {
 	-moz-appearance: textfield;
 	appearance: textfield;
 }
+
