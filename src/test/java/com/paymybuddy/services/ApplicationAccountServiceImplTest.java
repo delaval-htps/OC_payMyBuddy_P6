@@ -25,7 +25,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.paymybuddy.UtilService;
 import com.paymybuddy.exceptions.ApplicationAccountException;
 import com.paymybuddy.exceptions.UserNotFoundException;
 import com.paymybuddy.model.Account;
@@ -40,9 +39,6 @@ public class ApplicationAccountServiceImplTest {
 
     @Mock
     private ApplicationAccountRepository appAccountRepository;
-
-    @Mock
-    private UtilService utilService;
 
     @InjectMocks
     private ApplicationAccountServiceImpl cut;
@@ -135,11 +131,9 @@ public class ApplicationAccountServiceImplTest {
         User userWithAppAccount = new User();
         userWithAppAccount.setApplicationAccount(null);
 
-        when(utilService.getRandomApplicationAccountNumber()).thenReturn("randomGeneratedNumber");
-
         ApplicationAccount returnedAppAccount = cut.createAccountforUser(userWithAppAccount);
 
-        assertThat(returnedAppAccount.getAccountNumber()).isNotNull().isEqualTo("randomGeneratedNumber");
+        assertThat(returnedAppAccount.getAccountNumber()).isNotNull();
         assertThat(returnedAppAccount.getBalance()).isEqualTo(0d);
         assertThat(userWithAppAccount.getApplicationAccount()).isEqualTo(returnedAppAccount);
     }

@@ -11,10 +11,14 @@ public class ExpirationDateValidator implements ConstraintValidator<ExpirationDa
     @Override
     public void initialize(ExpirationDateContraint expirationDate) {
     }
-
+    
+    /**
+     * allow to validate a expiration date for a bankCard.
+     * The value must be not null and not empty because of validation ajax @NotBlank on field expirationDate in {@link com.paymybuddy.dto.BankCardDto}
+     */
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
-        if ( !value.equalsIgnoreCase("")) {
+        if (value!= null && !value.equalsIgnoreCase("")) {
             boolean firstValid = value.matches("^((0?[1-9]|1[012])-([0-9]{2}))$");
 
             boolean secondValid = false;

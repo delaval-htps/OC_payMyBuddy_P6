@@ -168,7 +168,7 @@ public class ProfileController {
                                 profileUserDto.setBankAccountRegistred(existedUser.getBankAccount() != null);
                                 profileUserDto.setBankCardRegistred(existedUser.getBankCard() != null);
 
-                                profileUserDto.setFullName(user.get().getFullName());
+                                profileUserDto.setFullName(existedUser.getFullName());
 
                                 // for keep on profile form
                                 profileUserDto.setEditionProfile(true);

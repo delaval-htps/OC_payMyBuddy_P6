@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
-import java.util.Date;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeAll;
@@ -43,7 +42,7 @@ public class BankCardServiceTest {
         existedUser.setEmail("test@gmail.com");
         bankCard.setCardCode(1234);
         bankCard.setCardNumber("1234567890");
-        bankCard.setExpirationDate(new Date());
+        bankCard.setExpirationDate("09-2022");
     }
 
     @Test
