@@ -43,6 +43,7 @@ public class ApplicationController {
       ProfileUserDto profileUserDto = modelMapper.map(currentUser, ProfileUserDto.class);
 
       profileUserDto.setBankAccountRegistred(currentUser.getBankAccount() != null);
+      profileUserDto.setBankCardRegistred(currentUser.getBankCard() != null);
       profileUserDto.setFullName(currentUser.getFullName());
 
       model.addAttribute("user", profileUserDto);

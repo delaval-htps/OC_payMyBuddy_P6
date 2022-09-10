@@ -149,8 +149,7 @@
 		//----------- put color green to navbar link selected
 		$('.navbar-nav .nav-item .nav-link').each(function () {
 			var text = $(this).attr("href");
-			console.log(text);
-			console.log(window.location.href);
+		
 			if (window.location.href.includes(text)) {
 				$(this).css('color', 'green');
 				flag = true;

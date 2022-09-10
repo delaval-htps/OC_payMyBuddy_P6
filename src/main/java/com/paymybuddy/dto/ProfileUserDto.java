@@ -40,6 +40,8 @@ public class ProfileUserDto {
   
     private int zip;
     
+    private boolean bankCardRegistred = false;
     private boolean bankAccountRegistred = false;
     private boolean editionProfile = false;
+
 }

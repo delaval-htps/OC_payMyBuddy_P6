@@ -12,8 +12,8 @@ import lombok.Setter;
  * the dto of user : informations contains password and matching password from
  * the frontend contrary to {@link ProfileUserDto}
  */
-@Getter
 @Setter
+@Getter
 @AllArgsConstructor
 @NoArgsConstructor
 
@@ -51,6 +51,6 @@ public class UserDto {
   private String matchingPassword;
 
   private boolean duplicatedUser = false;
-  private boolean bankAccountRegistred=false;
+  private boolean bankAccountRegistred = false;
 
 }

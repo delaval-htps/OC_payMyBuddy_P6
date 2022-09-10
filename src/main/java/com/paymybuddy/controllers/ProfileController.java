@@ -1,5 +1,6 @@
 package com.paymybuddy.controllers;
 
+import java.text.ParseException;
 import java.util.Optional;
 
 import javax.validation.Valid;
@@ -76,6 +77,7 @@ public class ProfileController {
                         ProfileUserDto profileUserDto = modelMapper.map(currentUser, ProfileUserDto.class);
 
                         profileUserDto.setBankAccountRegistred(currentUser.getBankAccount() != null);
+                        profileUserDto.setBankCardRegistred(currentUser.getBankCard() != null);
                         profileUserDto.setFullName(currentUser.getFullName());
 
                         if (!model.containsAttribute("user")) {
@@ -94,20 +96,34 @@ public class ProfileController {
 
                         // send bankAccount of user
                         if (!model.containsAttribute(BANK_ACCOUNT)) {
+                                // case when there is no bindingResult
                                 BankAccountDto bankAccountDto = (currentUser.getBankAccount() != null)
                                                 ? modelMapper.map(currentUser.getBankAccount(), BankAccountDto.class)
                                                 : new BankAccountDto();
+                                bankAccountDto.setIban(hideInformation(bankAccountDto.getIban()));
+                                bankAccountDto.setBic(hideInformation(bankAccountDto.getBic()));
                                 model.addAttribute(BANK_ACCOUNT, bankAccountDto);
+                        } else if (currentUser.getBankAccount() != null) {
+                                BankAccountDto bankAccountDto = ((BankAccountDto) model.getAttribute("bankAccount"));
+                                bankAccountDto.setIban(hideInformation(bankAccountDto.getIban()));
+                                bankAccountDto.setBic(hideInformation(bankAccountDto.getBic()));
                         }
+
                         // send bankCard of user
                         if (!model.containsAttribute("bankCard")) {
-
+                                // case when there is no bindingResult
                                 BankCardDto bankCardDto = (currentUser.getBankCard() != null)
                                                 ? modelMapper.map(currentUser.getBankCard(), BankCardDto.class)
                                                 : new BankCardDto();
-
+                                bankCardDto.setCardNumber(hideInformation(bankCardDto.getCardNumber()));
+                                bankCardDto.setCardCode("");
                                 model.addAttribute("bankCard", bankCardDto);
+                        } else if (currentUser.getBankCard() != null){
+                                BankCardDto bankCardDto = (BankCardDto) model.getAttribute("bankCard");
+                                bankCardDto.setCardNumber(hideInformation(bankCardDto.getCardNumber()));
+                                bankCardDto.setCardCode(hideInformation(bankCardDto.getCardCode()));
                         }
+
                         return "profile";
 
                 } else {
@@ -150,6 +166,8 @@ public class ProfileController {
                                                 bindingResult);
 
                                 profileUserDto.setBankAccountRegistred(existedUser.getBankAccount() != null);
+                                profileUserDto.setBankCardRegistred(existedUser.getBankCard() != null);
+
                                 profileUserDto.setFullName(user.get().getFullName());
 
                                 // for keep on profile form
@@ -194,6 +212,7 @@ public class ProfileController {
          *                                 redirection
          * @param authentication           authentication of connected user
          * @return the view page Profile either by redirection or not
+         * @throws ParseException
          */
         @PostMapping("/bankaccount")
         public String createBankAccount(Model model,
@@ -214,7 +233,7 @@ public class ProfileController {
                                         "org.springframework.validation.BindingResult.bankAccount",
                                         bindingResultBankAccount);
                         redirectAttributes.addFlashAttribute(BANK_ACCOUNT, bankAccountDto);
-
+                        redirectAttributes.addFlashAttribute("bankCard", bankCardDto);
                         return REDIRECT_PROFILE;
 
                 }
@@ -228,7 +247,8 @@ public class ProfileController {
 
                         BankCard bankCard = new BankCard();
 
-                        // if addBankCard is true there is a bankCardDto to check else bankCard is null but created (new bankcard())
+                        // if addBankCard is true there is a bankCardDto to check else bankCard is null
+                        // but created (new bankcard())
                         if (addBankCard) {
 
                                 if (bindingResultBankCard.hasErrors()) {
@@ -238,6 +258,7 @@ public class ProfileController {
                                                         "org.springframework.validation.BindingResult.bankCard",
                                                         bindingResultBankCard);
                                         redirectAttributes.addFlashAttribute("bankCard", bankCardDto);
+                                        redirectAttributes.addFlashAttribute("bankAccount", bankAccountDto);
                                         return REDIRECT_PROFILE;
                                 }
 
@@ -257,7 +278,6 @@ public class ProfileController {
                         }
 
                         // save of bank account and bankCard of user
-                        bankAccount.addBankCard(addBankCard ? bankCard : null);
                         currentUser.setBankCard(addBankCard ? bankCard : null);
                         bankAccount.addUser(currentUser);
 
@@ -343,6 +363,19 @@ public class ProfileController {
                 }
                 return REDIRECT_PROFILE;
 
+        }
+
+        private String hideInformation(String field) {
+
+                if (field != null && !field.equalsIgnoreCase("")) {
+                        int n = field.length() / 2;
+                        StringBuilder result = new StringBuilder(field);
+                        for (int i = n - 1; i <= field.length() - 1; i++) {
+                                result.setCharAt(i, 'x');
+                        }
+                        return result.toString();
+                }
+                return "";
         }
 
 }
