@@ -37,9 +37,6 @@ public class BankAccount extends Account implements Serializable {
   @OneToMany(cascade = { CascadeType.MERGE, CascadeType.REFRESH }, mappedBy = "bankAccount")
   private Set<User> users = new HashSet<>();
 
-  @OneToMany(cascade = CascadeType.ALL, mappedBy = "bankAccount")
-  private Set<BankCard> bankCards = new HashSet<>();
-
   /**
    * method to add user to a bank account.
    * 
@@ -52,19 +49,6 @@ public class BankAccount extends Account implements Serializable {
       user.setBankAccount(this);
     }
 
-  }
-
-  /**
-   * method to add card to a bank account.
-   * 
-   * @param card card to add to a BankAccount
-   */
-
-  public void addBankCard(BankCard card) {
-    if (card != null) {
-      this.bankCards.add(card);
-      card.setBankAccount(this);
-    }
   }
 
 }

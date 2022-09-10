@@ -5,7 +5,6 @@ USE paymybuddy ^;
 
 -- drop procedures to be able to recreate them when restart app
 DROP PROCEDURE IF EXISTS user_oauth2_provider_fk^;
-DROP PROCEDURE IF EXISTS bank_card_bank_account_fk^;
 DROP PROCEDURE IF EXISTS application_account_user_fk^;
 DROP PROCEDURE IF EXISTS bank_account_user_fk^;
 DROP PROCEDURE IF EXISTS user_connection_fk^;
@@ -58,8 +57,7 @@ CREATE TABLE IF NOT EXISTS bank_card (
 	id INT NOT NULL AUTO_INCREMENT,
 	card_number VARCHAR(19) NOT NULL,
 	card_code INT NOT NULL,
-	expiration_date DATE NOT NULL,
-	bank_account_id INT,
+	expiration_date VARCHAR(5) NOT NULL,
 	PRIMARY KEY (id)
 )ENGINE=InnoDB, DEFAULT CHARSET=utf8mb4 ^;
 
@@ -276,22 +274,6 @@ BEGIN
 	END IF;
 END ^;
 
-CREATE PROCEDURE bank_card_bank_account_fk() 
-BEGIN
-	IF NOT EXISTS(SELECT null 
-				FROM information_schema.TABLE_CONSTRAINTS
-				WHERE TABLE_SCHEMA = 'paymybuddy' 
-				AND CONSTRAINT_NAME= 'bank_card_bank_account_fk'
-				AND CONSTRAINT_TYPE= 'FOREIGN KEY')
-	THEN
-		ALTER TABLE bank_card ADD CONSTRAINT bank_card_bank_account_fk
-		FOREIGN KEY (bank_account_id)
-		REFERENCES bank_account (id)
-		ON DELETE SET NULL
-		ON UPDATE NO ACTION;
-	END IF;
-END ^;
-
 CREATE PROCEDURE bank_card_user_fk() 
 BEGIN
 	IF NOT EXISTS(SELECT null 
@@ -319,7 +301,6 @@ CALL receiver_transaction_fk()^;
 CALL transaction_invoice_fk()^;
 CALL user_role_fk()^;
 CALL user_role_fk1()^;
-CALL bank_card_bank_account_fk()^;
 CALL bank_card_user_fk()^;
 
 

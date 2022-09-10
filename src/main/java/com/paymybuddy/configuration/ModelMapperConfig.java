@@ -1,12 +1,9 @@
 package com.paymybuddy.configuration;
 
 import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.PropertyMap;
-import org.modelmapper.spi.MappingContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import com.paymybuddy.dto.ApplicationTransactionDto;
@@ -39,21 +36,6 @@ public class ModelMapperConfig {
     return context -> Long.parseLong(context.getSource());
   }
 
-  @Bean
-  public Converter<String, Date> convertStringToDate() {
-    return this::extracted;
-  }
-
-  private Date extracted(MappingContext<String, Date> context) {
-    SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
-    Date date = new Date();
-    try {
-      date = df.parse(context.getSource());
-    } catch (java.text.ParseException e) {
-      e.printStackTrace();
-    }
-    return date;
-  }
 
   @Bean
   public Converter<BigDecimal, Double> convertBigDecimalToDouble() {
@@ -71,7 +53,7 @@ public class ModelMapperConfig {
     @Override
     protected void configure() {
       using(convertStringToInteger()).map(source.getCardCode(), destination.getCardCode());
-      using(convertStringToDate()).map(source.getExpirationDate(), destination.getExpirationDate());
+     
     }
   };
 
