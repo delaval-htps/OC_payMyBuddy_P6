@@ -9,17 +9,17 @@ This application was developed with springBoot, springSecurity for back-end and 
 *************************
 Just bellow, you will find the classe's diagram and the PDM (physical data model) with relation ships between tables in bdd:
 
-<div style="display:flex;flex-direction: row;margin:30px 0px 30px 0px;">
+<p align="center" width="100%">
 <img src="src/main/resources/static/images/class_diagram.png"
-     alt="login-page" />
-</div>
+     alt="login-page" width="100%" />
+</p>
 
 
 
-<div style="display:flex;flex-direction: row;justify-content:center;margin:30px 0px 30px 0px;">
+<p align="center" width="100%">
 <img src="src/main/resources/static/images/paymybuddy.png"
-     alt="login-page" />
-</div>
+     alt="login-page" width="100%" />
+</p>
 
 **********************************
 ## Running the application locally
@@ -46,22 +46,22 @@ Below you can log to it either:
 * by fill in your login and password, if you are allready registred in application
 * by using provider like GITHUB, GOOGLE or FACEBOOK with OAuth2 login
 
-<div style="display:flex;flex-direction: row;margin:auto;margin:30px 0px 30px 0px;">
+<p align="center" width="100%">
 <img src="src/main/resources/static/images/loginPage.png"
      alt="login-page"
-     style="margin:auto;width: 50%; " />
-	</div>
+     width: 50%; />
+</p>
 
 
 Application uses springsecurity to secure all access to it whether it is by fillin in your login & password or by loging with Oauth2 provider: A role is assigned to each user of the application and each password is registred in bdd with a password encrypter.
 
 For Oauht2 login, I use a CustomOauth2SuccessHandler to verify connection and providers (only 3 provider are accepted , mentioned above).
 
-<div style="display:flex;flex-direction: row;justify-content:center;margin:30px 0px 30px 0px;">
+<p align="center" width="100%">
 <img src="src/main/resources/static/images/springSecurity.png"
      alt="login-page"
-     style="margin:auto;width: 80%; " />
-	</div>
+   width: 80%;  />
+</p>
 All connections were verify with springSecurityTest Framework.
 
 
