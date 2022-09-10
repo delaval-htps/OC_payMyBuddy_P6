@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.paymybuddy.UtilService;
 import com.paymybuddy.exceptions.ApplicationAccountException;
 import com.paymybuddy.exceptions.UserNotFoundException;
 import com.paymybuddy.model.Account;
@@ -24,8 +23,6 @@ public class ApplicationAccountServiceImpl implements AccountService {
   @Autowired
   private ApplicationAccountRepository applicationAccountRepository;
 
-  @Autowired
-  private UtilService utilService;
 
   /**
    * retrieve application account of a user by its id.
@@ -70,7 +67,7 @@ public class ApplicationAccountServiceImpl implements AccountService {
     if (user != null) {
       if (user.getApplicationAccount() == null) {
         ApplicationAccount appAccountOfUser = new ApplicationAccount();
-        appAccountOfUser.setAccountNumber(utilService.getRandomApplicationAccountNumber());
+        appAccountOfUser.setAccountNumber(AccountService.getRandomApplicationAccountNumber());
         appAccountOfUser.setBalance(0d);
         user.setApplicationAccount(appAccountOfUser);
         return appAccountOfUser;

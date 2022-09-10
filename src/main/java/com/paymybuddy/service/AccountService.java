@@ -1,5 +1,7 @@
 package com.paymybuddy.service;
 
+import java.util.UUID;
+
 import com.paymybuddy.model.Account;
 
 /**
@@ -10,4 +12,9 @@ public interface AccountService {
     public void withdraw(Account senderAccount, double amount);
 
     public void credit(Account receiverAccount, double amount);
+    
+    public static String getRandomApplicationAccountNumber() {
+        UUID uuid = UUID.randomUUID();
+        return uuid.toString();
+    }
 }
