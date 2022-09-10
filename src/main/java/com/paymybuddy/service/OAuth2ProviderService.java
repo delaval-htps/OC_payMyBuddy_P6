@@ -9,7 +9,9 @@ import com.paymybuddy.repository.OAuth2ProviderRepository;
 import com.paymybuddy.security.oauth2.user.CustomOAuth2User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
+/**
+ * Class that contains services for management of OAuth2Provider.
+ */
 @Service
 public class OAuth2ProviderService {
 

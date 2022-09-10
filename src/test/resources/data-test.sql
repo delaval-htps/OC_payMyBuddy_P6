@@ -4,6 +4,15 @@ VALUES
 	(1, '000001', 1000),
 	(2, '000002', 500.50);
 
+INSERT INTO
+	bank_account(id, iban, bic, balance) 
+	VALUES(
+		1,
+		'IBAN-FR78-9456-1234-5645-6891-2341-213',
+		'TESTACCO',
+		1000
+	);
+
 --	insert datas in table use
 INSERT INTO
 	user (
@@ -17,7 +26,8 @@ INSERT INTO
 		zip,
 		city,
 		phone,
-		application_account_id
+		application_account_id,
+		bank_account_id
 	)
 VALUES
 	(
@@ -38,7 +48,8 @@ VALUES
 				application_account
 			WHERE
 				account_number = '000001'
-		)
+		),
+		1
 	),
 	(
 		2,
@@ -58,7 +69,8 @@ VALUES
 				application_account
 			WHERE
 				account_number = '000002'
-		)
+		),
+		1
 	);
 
 INSERT INTO
@@ -66,6 +78,7 @@ INSERT INTO
 		id,
 		transaction_date,
 		description,
+		type,
 		amount,
 		amount_commission,
 		sender_id,
@@ -76,6 +89,7 @@ VALUES
 		1,
 		'2022-05-29',
 		'transaction1 between sender delaval and receiver emilie',
+		'WITHDRAW',
 		100,
 		5,
 		1,
@@ -85,6 +99,7 @@ VALUES
 		2,
 		'2022-05-30',
 		'transaction2 between sender delaval and receiver emilie',
+		'CREDIT',
 		200,
 		10,
 		1,
@@ -100,6 +115,5 @@ VALUES
 INSERT INTO
 	user_role (user_id, role_id)
 VALUES
-	(2, 1),
-	(1, 1)
-;
+	(1, 1),
+	(2, 1);

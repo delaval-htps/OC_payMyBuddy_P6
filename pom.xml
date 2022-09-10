@@ -12,7 +12,12 @@
 	<artifactId>payMyBuddy-P6_OC</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>payMyBuddy_P6_OC</name>
-	<description>application to transfert money</description>
+	<description>Application to transfert money. This application was created to make a transaction between users easier without using the services of a bank</description>
+	<scm>
+		<connection>scm:https://github.com/delaval-htps/payMyBuddy_P6_OC</connection>
+		<developerConnection>scm:https://github.com/delaval-htps/payMyBuddy_P6_OC</developerConnection>
+		<url>https://github.com/delaval-htps/payMyBuddy_P6_OC</url>
+	</scm>
 	<properties>
 		<java.version>11</java.version>
 		<sonar.organization>delaval-htps</sonar.organization>
@@ -151,7 +156,7 @@
 			<plugin>
 		        <groupId>org.apache.maven.plugins</groupId>
 		        <artifactId>maven-site-plugin</artifactId>
-		        <version>3.9.1</version>
+		        <version>3.7.1</version>
 		        <configuration>
 		          <locales>en,fr</locales>
 		        </configuration>
@@ -206,8 +211,26 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-project-info-reports-plugin</artifactId>
 				<version>3.1.2</version>
+				<reportSets>
+					<reportSet>
+						<reports>
+							<report>index</report>
+							<report>scm</report>
+							<report>dependencies</report>
+							<report>modules</report>
+							<report>plugins</report>
+							<report>plugin-management</report>
+							<report>licenses</report>
+						</reports>
+					</reportSet>
+				</reportSets>
 			</plugin>
 			
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jxr-plugin</artifactId>
+				<version>2.3</version>
+        	</plugin>
 			<!-- === Surefire Report Plugin === -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -238,7 +261,7 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-javadoc-plugin</artifactId>
-					<version>3.3.0</version>
+					<version>3.4.1</version>
 					<reportSets>
 						<reportSet>
 							<reports>

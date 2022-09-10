@@ -93,6 +93,10 @@ public class User implements Serializable {
   @JoinColumn(name = "application_account_id", nullable = false)
   private ApplicationAccount applicationAccount;
 
+  @OneToOne(cascade = CascadeType.ALL)
+  @JoinColumn(name = "bank_card_id")
+  private BankCard bankCard;
+
   /**
    * method to link a OAuth2Identier to a user.
    *
@@ -113,18 +117,20 @@ public class User implements Serializable {
     identifier.setUser(null);
   }
 
-  /**
-   * method to add a user to the list of connectionUsers.
-   */
+/**
+ * method to add a user to the list of connectionUsers.
+ * @param user user to add
+ */
   public void addConnectionUser(User user) {
     if (user != null) {
       connectionUsers.add(user);
     }
   }
 
-  /**
-   * method to remove a user to the list of connectionUsers.
-   */
+/**
+ * method to remove a user to the list of connectionUsers.
+ * @param user the user to remove from list connectedUsers
+ */
   public void removeConnectionUser(User user) {
     if (user != null && this.connectionUsers.contains(user)) {
       connectionUsers.remove(user);
@@ -133,6 +139,7 @@ public class User implements Serializable {
 
   /**
    * method to add Role to user.
+   * @param role the role to add to list
    */
   public void addRole(Role role) {
     this.roles.add(role);
@@ -140,6 +147,7 @@ public class User implements Serializable {
 
   /**
    * method to add senderTransaction to user.
+   * @param senderTransaction the transaction of sender user to add to list
    */
   public void addSenderTransaction(ApplicationTransaction senderTransaction) {
     if (senderTransaction != null) {
@@ -149,6 +157,7 @@ public class User implements Serializable {
 
   /**
    * method to add senderTransaction to user.
+   * @param transaction the transaction to add to the list
    */
   public void addReceiverTransaction(ApplicationTransaction transaction) {
     if (transaction != null) {
@@ -158,7 +167,6 @@ public class User implements Serializable {
 
   /**
    * return the fullname= firstname + lastname of user.
-   * 
    * @return fullname
    */
   public String getFullName() {

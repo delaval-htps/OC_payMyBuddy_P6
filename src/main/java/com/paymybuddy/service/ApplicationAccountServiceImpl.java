@@ -2,10 +2,11 @@ package com.paymybuddy.service;
 
 import java.security.NoSuchAlgorithmException;
 import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-import com.paymybuddy.UtilService;
+
 import com.paymybuddy.exceptions.ApplicationAccountException;
 import com.paymybuddy.exceptions.UserNotFoundException;
 import com.paymybuddy.model.Account;
@@ -13,14 +14,14 @@ import com.paymybuddy.model.ApplicationAccount;
 import com.paymybuddy.model.User;
 import com.paymybuddy.repository.ApplicationAccountRepository;
 
-@Service
+/**
+ * Class that contains services for a application account.
+ */
+@Component(value = "ApplicationAccountService")
 public class ApplicationAccountServiceImpl implements AccountService {
 
   @Autowired
   private ApplicationAccountRepository applicationAccountRepository;
-
-  @Autowired
-  private UtilService utilService;
 
 
   /**
@@ -47,11 +48,11 @@ public class ApplicationAccountServiceImpl implements AccountService {
   /**
    * save a ApplicationAccount.
    * 
-   * @param appAccount
+   * @param appAccount tha application Account to save.
    * @return the application account saved.
    */
   public ApplicationAccount save(ApplicationAccount appAccount) {
-    return applicationAccountRepository.save( appAccount);
+    return applicationAccountRepository.save(appAccount);
   }
 
   /**
@@ -59,20 +60,19 @@ public class ApplicationAccountServiceImpl implements AccountService {
    * 
    * @param user the new user
    * @return application account initialized.
-   * @throws NoSuchAlgorithmException
+   * @throws NoSuchAlgorithmException in case of a problem when created account.
    */
-  public ApplicationAccount createAccountforUser(User user) throws NoSuchAlgorithmException {
+  public ApplicationAccount createAccountforUser(User user) {
 
     if (user != null) {
       if (user.getApplicationAccount() == null) {
         ApplicationAccount appAccountOfUser = new ApplicationAccount();
-        appAccountOfUser.setAccountNumber(utilService.getRandomApplicationAccountNumber());
+        appAccountOfUser.setAccountNumber(AccountService.getRandomApplicationAccountNumber());
         appAccountOfUser.setBalance(0d);
         user.setApplicationAccount(appAccountOfUser);
         return appAccountOfUser;
       } else {
-        throw new ApplicationAccountException("this user " + user.getFullName() + "has already an application account.");
-
+        return user.getApplicationAccount();
       }
     } else {
       throw new UserNotFoundException("For creation of application account,the user doesn't exist");
@@ -80,17 +80,20 @@ public class ApplicationAccountServiceImpl implements AccountService {
   }
 
   /**
-   * Withdraw a amount on applicationAccount (commission included) and save it in bdd.
+   * Withdraw a amount on applicationAccount (commission included) and save it in
+   * bdd.
    * 
-   * @param senderApplicationAccount the application account of sender of amount
-   * @param amount the amount of transaction ( commission included)
-   * @throws ApplicationAccountException extends RuntimeException if amount is greater than balance of
-   *         account.
-   * @throws IllegalArgumentException extends RuntimeException in case the given
-   *         senderApplicationAccount is null.
+   * @param senderAccount the application account of sender of amount
+   * @param amount        the amount of transaction ( commission included)
+   * @throws ApplicationAccountException extends RuntimeException if amount is
+   *                                     greater than balance of
+   *                                     account.
+   * @throws IllegalArgumentException    extends RuntimeException in case the
+   *                                     given
+   *                                     senderApplicationAccount is null.
    */
   @Override
-  @Transactional(rollbackFor = { RuntimeException.class})
+  @Transactional(rollbackFor = { RuntimeException.class })
   public void withdraw(Account senderAccount, double amount) {
 
     if (senderAccount.getBalance() >= amount) {
@@ -100,7 +103,8 @@ public class ApplicationAccountServiceImpl implements AccountService {
       applicationAccountRepository.save((ApplicationAccount) senderAccount);
 
     } else {
-      throw new ApplicationAccountException("You can't send this amount (commision included)" + amount + " to your friend because your balance is not sufficient");
+      throw new ApplicationAccountException("You can't send this amount (commision included)" + amount
+          + " to your friend because your balance is not sufficient");
     }
 
   }
@@ -108,13 +112,13 @@ public class ApplicationAccountServiceImpl implements AccountService {
   /**
    * credit application account with the amount in parameter and save it in bdd.
    * 
-   * @param receiverApplicationAccount application account of receiver of amount
-   * @param amount amount to credit
+   * @param receiverAccount application account of receiver of amount
+   * @param amount          amount to credit
    * @throws IllegalArgumentException extends RuntimeException in case the given
-   *         receiverApplicationAccount is null.
+   *                                  receiverApplicationAccount is null.
    */
   @Override
-  @Transactional(rollbackFor = { RuntimeException.class})
+  @Transactional(rollbackFor = { RuntimeException.class })
   public void credit(Account receiverAccount, double amount) {
 
     receiverAccount.setBalance(receiverAccount.getBalance() + amount);

@@ -14,6 +14,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/**
+ * Class to represents Role of User (only USER_ROLE and ADMIN_ROLE never uses in application)
+ */
 @Entity
 @Getter
 @Setter

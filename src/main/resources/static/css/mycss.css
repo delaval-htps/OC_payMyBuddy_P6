@@ -1,9 +1,21 @@
 body {
 	height: 100vh;
+	overflow-y: scroll;
+	
+
+}
+
+html{
+	font-size: 0.8em;
+}
+
+::-webkit-scrollbar {
+    width: 0px;
+    background: transparent; /* make scrollbar transparent */
 }
 
 .container-fluid {
-	min-height: 100%;
+	min-height: 100%;	
 }
 
 .col-login {

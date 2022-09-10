@@ -1,16 +1,20 @@
 package com.paymybuddy.service;
 
 import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+
 import com.paymybuddy.exceptions.BankAccountException;
 import com.paymybuddy.model.Account;
 import com.paymybuddy.model.BankAccount;
 import com.paymybuddy.repository.BankAccountRepository;
 
-
-@Service
+/**
+ * Class that contains services for a bank account.
+ */
+@Component(value = "BankAccountService")
 public class BankAccountServiceImpl implements AccountService {
 
     @Autowired
@@ -19,7 +23,7 @@ public class BankAccountServiceImpl implements AccountService {
     /**
      * save a BankAccount.
      * 
-     * @param bankAccount
+     * @param bankAccount the bankAccount to save
      * @return the saved bankAccount if success
      */
     public BankAccount save(BankAccount bankAccount) {
@@ -48,9 +52,7 @@ public class BankAccountServiceImpl implements AccountService {
     @Transactional(rollbackFor  = { RuntimeException.class})
     public void withdraw(Account bankAccount, double amount) {
        
-            retrieveBalance(bankAccount);
-       
-        if (bankAccount.getBalance() >= amount) {
+        if (connectionAndCheckBankAccount(bankAccount)) {
 
             bankAccount.setBalance(bankAccount.getBalance() - amount);
            
@@ -69,10 +71,14 @@ public class BankAccountServiceImpl implements AccountService {
         bankAccountRepository.save((BankAccount) bankAccount);
     }
     
-    
-    private void retrieveBalance(Account bankAccount) {
-        //TODO create a method to retrieve balance of bank Account of user using IBAN & SWIFT code(BIC)
-        //bu default, we put 1000€ on each bankAccount
-        bankAccount.setBalance(1000d);
+    /**
+     * method to connect to bank Account of user using IBAN and SWIFT code(BIC)
+     * and to check if balance of bankAccount greater than or equals to amount.
+     * @param bankAccount user bank Account {@link BankAccount}
+     * @return  always true cause we mock this behaviour
+     */
+    public boolean connectionAndCheckBankAccount(Account bankAccount) {
+        return true;
+
     }
 }

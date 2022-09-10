@@ -5,6 +5,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/**
+ * the Dto of a conneted user.
+ */
 @Getter
 @Setter
 @NoArgsConstructor

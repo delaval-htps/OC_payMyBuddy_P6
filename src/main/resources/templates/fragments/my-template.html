@@ -36,7 +36,7 @@
 
 <body>
 	<header th:fragment="header">
-		<nav
+		<nav aria-label="horizontal-navigation"
 			class="navbar navbar-expand-lg navbar-light bg-white fs-4 row  justify-content-between align-items-center pe-3">
 
 			<a class="navbar-brand col-4 justify-content-start" href="#">
@@ -52,7 +52,7 @@
 					<li class="nav-item active me-5">
 						<a class="nav-link h2 "
 							th:classappend="${#httpServletRequest.requestURI =='/registration'}? 'disabled':''"
-							th:href="@{/home}">Home<span class="sr-only">(current)</span></a>
+							th:href="@{/home}">Home</a>
 					</li>
 
 					<li class="nav-item me-5">
@@ -106,7 +106,7 @@
 	<div th:fragment="toastr">
 		<div class="toast-container position-absolute top-0 start-50 translate-middle-x p-3" id="toastPlacement">
 			<div id="liveToast" class="toast  align-text-center text-white bg-primary border-0 mt-1" role="alert"
-				aria-live="assertive" aria-atomic="true"
+				aria-live="assertive" aria-atomic="true" data-animation="true" data-delay="500"
 				th:classappend="${success} ?'bg-success bg-gradient': (${warning}?'bg-warning bg-gradient':'bg-danger bg-gradient')"
 				th:if="${success}or${error}or${warning}">
 				<div class="d-flex">
@@ -129,7 +129,7 @@
 	<script th:fragment="script-gauge" th:inline="javascript" type="text/javascript">
 		//--------------- gauge.js ---------------
 		var balance = /*[[${applicationAccount.balance}]]*/ 'null';
-		console.log("balance" + balance);
+	
 		var gauge = new JustGage({
 			id: "gauge", // the id of the html element
 			value: balance,
@@ -149,18 +149,14 @@
 		//----------- put color green to navbar link selected
 		$('.navbar-nav .nav-item .nav-link').each(function () {
 			var text = $(this).attr("href");
-			console.log(text);
-			console.log(window.location.href);
+		
 			if (window.location.href.includes(text)) {
 				$(this).css('color', 'green');
 				flag = true;
 			}
 		});
 	</script>
-		<script  th:inline="javascript" type="text/javascript">
-			$('.toast').toast({animation:true,delay:500});
-		</script>
-</body>
 
+</body>
 
 </html>

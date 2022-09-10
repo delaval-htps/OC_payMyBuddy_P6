@@ -8,7 +8,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
+/**
+ * the Dto of a bank account of user .
+ */
 @Getter
 @Setter
 @NoArgsConstructor
@@ -25,7 +27,7 @@ public class BankAccountDto {
 
     @NotBlank(message = "the bic must not be null or empty")
     @Size(min = 8, max = 8, message = "the bic must only contain 8 characters")
-    @Pattern(regexp = "[A-Z]{8}", message = "the bic must only contain 8 characters")
+    @Pattern(regexp = "[A-Z]{8}", message = "the bic must contain 8 characters")
     private String bic;
 
 
