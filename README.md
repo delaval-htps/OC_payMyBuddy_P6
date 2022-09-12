@@ -5,7 +5,7 @@ The user connects to the application via Oauht2 or a login and password or regis
 
 This application was developed with springBoot, springSecurity for back-end and Thymeleaf, Jquery for front-end.
 ## Classe's diagram & PDM:
-Just bellow, you will find the classe's diagram and the PDM (physical data model) with relation ships between tables in bdd:
+Just bellow, you will find the classe's diagram and the PDM (physical data model) with relation ships between tables in db:
 
 <p align="center" width="100%">
 <img src="src/main/resources/static/images/class_diagram.png"
