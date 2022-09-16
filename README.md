@@ -121,5 +121,6 @@ and in `target/site` you will find a page index.html that you can open in your w
 
 ## Versions
 
+* **V1.0.1**	:	Second version with correction of bug paging in transfert.html
 * **V1.0.0**	:	First version of application with upgrade tests:
 
