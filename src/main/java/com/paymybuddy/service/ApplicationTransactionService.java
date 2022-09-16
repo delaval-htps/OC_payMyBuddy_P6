@@ -70,11 +70,11 @@ public class ApplicationTransactionService {
         if (user != null) {
 
             Optional<Page<ApplicationTransaction>> appTransactionsPage = appTransactionRepository.findAllBySender(user,
-                    PageRequest.of(pageNumber, size, Direction.DESC, "id"));
+                    PageRequest.of(pageNumber-1, size, Direction.DESC, "id"));
 
             if (appTransactionsPage.isPresent()) {
                 return new Paged<>(appTransactionsPage.get(),
-                        Paging.of(appTransactionsPage.get().getTotalPages() - 1, pageNumber, size));
+                        Paging.of(appTransactionsPage.get().getTotalPages(), pageNumber==0?1:pageNumber, size));
             } else {
                 return null;
             }
