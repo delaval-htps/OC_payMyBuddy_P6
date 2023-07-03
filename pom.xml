@@ -10,7 +10,8 @@
 	</parent>
 	<groupId>com.paymybuddy</groupId>
 	<artifactId>payMyBuddy-P6_OC</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<packaging>war</packaging>
+	<version>1.0.2-SNAPSHOT</version>
 	<name>payMyBuddy_P6_OC</name>
 	<description>Application to transfert money. This application was created to make a transaction between users easier without using the services of a bank</description>
 	<scm>
@@ -19,6 +20,8 @@
 		<url>https://github.com/delaval-htps/payMyBuddy_P6_OC</url>
 	</scm>
 	<properties>
+		<start-class>com.paymybuddy.PayMyBuddyApplication</start-class>
+		<tomcat.version>9.0.76</tomcat.version>
 		<java.version>11</java.version>
 		<sonar.organization>delaval-htps</sonar.organization>
 		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
@@ -91,11 +94,9 @@
 		<dependency>
 		  <groupId>org.assertj</groupId>
 		  <artifactId>assertj-core</artifactId>
-		  <!-- use 2.9.1 for Java 7 projects -->
 		  <version>3.22.0</version>
 		  <scope>test</scope>
 		</dependency>
-		<!-- https://mvnrepository.com/artifact/com.h2database/h2 -->
 		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
@@ -107,14 +108,22 @@
 		<version>2.0.2</version>
 		<scope>test</scope>
 		</dependency>
-		</dependencies>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-tomcat</artifactId>
+			<version>3.1.1</version>
+			<scope>provided</scope> 
+		</dependency>
+	</dependencies>
 
 	<build>
+		<finalName>payMyBuddy</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<configuration>
+				
 					<excludes>
 						<exclude>
 							<groupId>org.projectlombok</groupId>
@@ -161,8 +170,8 @@
 		          <locales>en,fr</locales>
 		        </configuration>
 	      	</plugin>
+
 			  <!-- === Jacoco === -->
-			
 			<plugin>
 				<groupId>org.jacoco</groupId>
 	            <artifactId>jacoco-maven-plugin</artifactId>
@@ -190,6 +199,7 @@
 	                </execution>
 	             </executions>
 	         </plugin>
+
 		</plugins>
 	</build>
 		<!-- =============================================================== -->
